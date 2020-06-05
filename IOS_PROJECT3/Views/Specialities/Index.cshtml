@@ -1,0 +1,30 @@
+﻿@model IOS_PROJECT3.ViewModels.SpecialitiesViewModel
+@using IOS_PROJECT3.Models;
+<h3 style="align-self:center; margin-bottom:25px">Список специальностей кафедры @Model.DepartmentName</h3>
+<div class="container-fluid">
+    @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || User.IsInRole("Admin"))
+    {
+        <a style="margin-bottom:15px" asp-controller="Specialities" asp-route-DepId="@Model.DepartmentId" asp-action="Create">Добавить специальность</a>
+    }
+    <table class="table">
+        <tr><td><b>Специальность</b></td></tr>
+        @foreach (var spec in Model.Specialities)
+        {
+            <tr>
+                <td>@spec.Name</td>
+                @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || User.IsInRole("Admin"))
+                {
+                    <td>
+                        <form asp-action="Delete" asp-controller="Specialities" asp-route-Id="@spec.Id" method="post">
+                            <a class="btn btn-sm btn-primary" asp-controller="Specialities" asp-action="Edit" asp-route-Id="@spec.Id">Изменить</a>
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                Удалить
+                            </button>
+                        </form>
+                    </td>
+                }
+
+            </tr>
+        }
+    </table>
+</div>

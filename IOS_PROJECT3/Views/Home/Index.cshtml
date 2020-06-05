@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Главная страница";
+}
+@model IOS_PROJECT3.ViewModels.UserPageViewModel
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="grid-container container-fluid">
+        <div class="institutes">
+            @foreach (var inst in Model.Institutions)
+            {
+                
+            <a style="display:block; margin-bottom:10px"asp-controller="Departments" asp-action="Index" asp-route-InstId="@inst.Id">@inst.Name</a>
+            }
+        </div>
+        <div class="p-info">
+      <p style="position:absolute; right:3%">Добро пожаловать, @Model.UserFIO</p>
+        </div>
+        <div class="personal-panel">
+            @if (User.Identity.IsAuthenticated)
+            {
+                if (!User.IsInRole("Student"))
+                {
+                    if (User.IsInRole("Admin"))
+                    {
+                        <h5 style="position:relative; margin-right:3%">Вам доступны действия:</h5>
+                        <a class="btn btn-secondary" style="margin-top:5px" asp-controller="UsersAdmin" asp-action="Index" value="Список пользователей">Список пользователей</a>
+                        <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Roles" asp-action="Index" value="Список ролей">Список ролей</a>
+                        <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Institutions" asp-action="Index" value="Список институтов">Управление институтами</a>
+                    };
+                    if (User.IsInRole("Teacher"))
+                    {
+
+                    };
+                    if (User.IsInRole("Manager"))
+                    {
+
+                    };
+                }
+            }
+        </div>
+    </div>
+}
+else
+{
+    foreach (var inst in Model.Institutions)
+    {
+        <p>@inst.Name</p>
+    }
+
+    //<a asp-controller="Account" asp-action="Login">Вход</a>
+    //<a asp-controller="UsersAdmin" asp-action="Index">Users</a>
+    // <a asp-controller="Roles" asp-action="Index">Roles</a>
+}

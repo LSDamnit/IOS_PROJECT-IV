@@ -1,0 +1,23 @@
+﻿@model IOS_PROJECT3.ViewModels.InstitutionsViewModel
+<h3 style="align-self:center; margin-bottom:25px">Управление списком институтов</h3>
+<div class="container-fluid">
+    <a style="position:center; margin-bottom:15px" asp-controller="Institutions" asp-action="Create">Добавить институт</a>
+    <table class="table">
+        <tr><td><b>Институт</b></td><td><b>Менеджер</b></td><td><b>Управление</b></td></tr>
+        @foreach (var inst in Model.Institutions)
+        {
+            <tr>
+                <td>@inst.Name</td>
+                <td>@inst.Manager.FIO</td>
+                <td>
+                    <form asp-action="Delete" asp-route-Id="@inst.Id" method="post">
+                        <a class="btn btn-sm btn-primary" asp-controller="Institutions" asp-action="Edit" asp-route-Id="@inst.Id">Изменить</a>
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            Удалить
+                        </button>
+                    </form>
+                </td>                
+            </tr>
+        }
+    </table>
+</div>

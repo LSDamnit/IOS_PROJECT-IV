@@ -1,0 +1,31 @@
+﻿@model IOS_PROJECT3.ViewModels.DepartmentsViewModel
+@using IOS_PROJECT3.Models;
+<h3 style="align-self:center; margin-bottom:25px">Список кафедр института @Model.InstitutionName</h3>
+<div class="container-fluid">
+    @if ((User.IsInRole("Manager") && User.Identity.Name == Model.ManagerEmail)||User.IsInRole("Admin"))
+    {
+        <a style="margin-bottom:15px" asp-controller="Departments" asp-route-InstId="@Model.InstitutionId" asp-action="Create">Добавить кафедру</a>
+    }
+    <table class="table">
+        <tr><td><b>Кафедра</b></td><td><b>Заведующий</b></td>@*<td><b>Управление</b></td*@</tr>
+        @foreach (var dep in Model.Departments)
+        {
+            <tr>
+                <td><a style="margin-bottom:15px" asp-controller="Specialities" asp-route-DepId="@dep.Id" asp-action="Index">@dep.Name</a></td>
+                <td>@dep.HeadTeacher.FIO</td>
+                @if ((User.IsInRole("Manager") && User.Identity.Name == Model.ManagerEmail)||User.IsInRole("Admin"))
+                {
+                    <td>
+                            <form asp-action="Delete" asp-controller="Departments" asp-route-Id="@dep.Id" method="post">
+                                <a class="btn btn-sm btn-primary" asp-controller="Departments" asp-action="Edit" asp-route-Id="@dep.Id">Изменить</a>
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    Удалить
+                                </button>
+                            </form>
+                        </td>
+                }
+
+            </tr>
+        }
+    </table>
+</div>

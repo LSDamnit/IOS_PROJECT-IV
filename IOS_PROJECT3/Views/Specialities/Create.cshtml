@@ -1,0 +1,15 @@
+﻿@model IOS_PROJECT3.ViewModels.CreateSpecialityViewModel
+@{
+    ViewBag.Title = "Добавление специальности";
+}
+<form method="post" asp-action="Create" asp-controller="Specialities">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <input type="hidden" asp-for="DepId" class="form-control" />
+        <label asp-for="Name" class="control-label">Введите название:</label>
+        <input type="text" asp-for="Name" class="form-control" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Добавить" class="btn btn-outline-secondary" />
+    </div>
+</form>

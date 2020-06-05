@@ -1,0 +1,25 @@
+﻿@model IOS_PROJECT3.ViewModels.EditDepartmentViewModel
+@{
+    ViewBag.Title = "Редактирование кафедры";
+}
+<form method="post" asp-action="Edit" asp-controller="Departments">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Name" class="control-label">Введите название:</label>
+        <input type="text" asp-for="Name" class="form-control" />
+        <input type="hidden" asp-for="DepartmentId" class="form-control" />
+        <input type="hidden" asp-for="InstitutionId" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="HeadTeacherId" class="control-label">Выберите менеджера:</label>
+        <select asp-for="HeadTeacherId" class="form-control">
+            @foreach (var man in Model.AvailableTeachers)
+            {
+                <option value="@man.Id">@man.FIO</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Сохранить" class="btn btn-outline-secondary" />
+    </div>
+</form>

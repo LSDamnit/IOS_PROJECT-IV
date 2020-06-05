@@ -1,0 +1,59 @@
+﻿@model IOS_PROJECT3.ViewModels.UsersAdminViewModel
+@{
+    ViewBag.Title = "Список пользователей";
+}
+<a asp-action="Create" id="singleRed">Зарегистрировать одного пользователя</a>
+<div style="margin-bottom:10px; margin-top:10px">
+    <label margin-right:5px;>Массовая регистрация </label><input type="checkbox" id="massRegCheck" name="Массовая регистрация" value="Массовая регистрация" />
+</div> 
+<div hidden="hidden" id="massReg" class="alert alert-primary">    
+<form  asp-action="AddFile" asp-controller="UsersAdmin" method="post" enctype="multipart/form-data">
+    <input type="file" style="margin-bottom:5px; display:inline;" name="uploadedFile" />
+    
+    <input type="submit" style="display:inline;margin-left:15px" class="btn btn-sm btn-primary" value="Загрузить" />
+</form>
+    </div>
+<script>
+    $('#massRegCheck').on('click', function () {
+        if ($(this).is(':checked')) {
+            document.getElementById('massReg').hidden = false;
+            document.getElementById('singleRed').hidden = true;
+        } else {
+            document.getElementById('massReg').hidden = true;
+            document.getElementById('singleRed').hidden = false;
+        }
+    })</script>
+<table class="table">
+    <tr><th>Email</th><th>ФИО</th><th></th></tr>
+    @foreach (var user in Model.Users)
+    {
+        <tr>
+            <td>@user.Email</td>
+            <td>@user.FIO</td>
+            <td>
+                @if (@user.Email != "firstadmin@admin.adm")
+                {
+                <form asp-action="Delete" asp-route-id="@user.Id" method="post">
+                    <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@user.Id">Изменить</a>
+                    <a class="btn btn-sm btn-primary" asp-action="ResetPassword" asp-route-id="@user.Id">Сброс пароля</a>
+                    <a class="btn btn-sm btn-primary" asp-controller="Roles" asp-action="Edit" asp-route-userid="@user.Id">Роли пользователя</a>
+
+                    @if (Model.IsDeletable(user))
+                    {
+                        <button type="submit" class="btn btn-sm btn-danger replacable">
+                            Удалить
+                        </button>
+                    }
+                    else
+                    {                   
+
+                        <a href="#" title="" data-default-text="Удаление заблокировано" class="btn btn-danger btn-sm disabled" role="button" aria-disabled="true">Удаление заблокировано</a> <p title ="@Model.WhyTitles[user]"class="badge badge-pill badge-light" style="display:inline; margin-left:10%; cursor: help ">?</p>
+                    }
+
+
+                </form>
+                }
+            </td>
+        </tr>
+    }
+</table>
