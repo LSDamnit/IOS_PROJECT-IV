@@ -21,12 +21,15 @@ namespace IOS_PROJECT3.Controllers
         UserManager<EUser> userManager;
         DBMergedContext database;
         IWebHostEnvironment enviroment;
-        
-        public UsersAdminController(UserManager<EUser> userManager, DBMergedContext db, IWebHostEnvironment enviroment)
+        RoleManager<IdentityRole> roleManager;
+
+
+        public UsersAdminController(UserManager<EUser> userManager, DBMergedContext db, IWebHostEnvironment enviroment, RoleManager<IdentityRole> roleManager)
         {
             this.userManager = userManager;
             database = db;
             this.enviroment = enviroment;
+            this.roleManager = roleManager;
            
         }
 
@@ -41,7 +44,14 @@ namespace IOS_PROJECT3.Controllers
         }
 
 
-
+        public IActionResult MassRegistrationFails(List<string> list)
+        {
+            var model = new MassRegErrorViewModel()
+            {
+                FailedUsers = list
+            };
+            return View(model);
+        }
         public IActionResult Create()
         {
             return View();
@@ -50,37 +60,66 @@ namespace IOS_PROJECT3.Controllers
         [HttpPost]
         public async Task<IActionResult> MassRegistration(MassRegViewModel model)
         {
-            for(int i=0;i<model.Count;i++)
+
+
+            List<string> FailedUsers = new List<string>();
+
+            for (int i = 0; i < model.Count; i++)
             {
                 var fio = model.FIOs[i];
                 var email = model.Emails[i];
                 var pass = model.Passwords[i];
                 var role = model.Roles[i];
-                if(!String.IsNullOrWhiteSpace(fio)&&
-                    !String.IsNullOrWhiteSpace(email)&&
-                    !String.IsNullOrWhiteSpace(pass)&&
-                    !String.IsNullOrWhiteSpace(role))
+                bool isOk = true;
+                string reason = "";
+                if (String.IsNullOrWhiteSpace(fio) || String.IsNullOrWhiteSpace(email) || String.IsNullOrWhiteSpace(pass) || String.IsNullOrWhiteSpace(role))
                 {
-                    try
+                    isOk = false;
+                    reason = "В ФИО/Email/Пароль/Роль было передано пустое значение";
+                }
+                if (isOk)
+                {
+                    EUser user = new EUser()
                     {
-                        EUser user = new EUser()
+                        Email = email,
+                        UserName = email,
+                        FIO = fio
+                    };
+                    var result0=await userManager.UserValidators[0].ValidateAsync(userManager,user);
+                    var result01 = await userManager.PasswordValidators[0].ValidateAsync(userManager, user, pass);
+                    if (!result0.Succeeded || !result01.Succeeded)
+                    {
+                        isOk = false;
+                        if(result0.Succeeded)
+                        reason = "Неверный формат пароля";
+                        if (result01.Succeeded)
+                            reason = "Неверный формат Email'a, либо данный Email уже занят другим пользователем";
+                    }
+                    if (isOk)
+                    {
+                        if (!await roleManager.RoleExistsAsync(role))
                         {
-                            Email = email,
-                            UserName = email,
-                            FIO = fio
-                        };
-                        var result = await userManager.CreateAsync(user, pass);
-                        var result2 = await userManager.AddToRoleAsync(user, role);
-                        if (!result.Succeeded||!result2.Succeeded)
-                            throw new Exception("UserManager error, please verify data for user " + email);
+                            isOk = false;
+                            reason = "Роли " + role + " не существует";
+                        }
+                        if (isOk)
+                        {
+                            var result = await userManager.CreateAsync(user, pass);
+                            var result2 = await userManager.AddToRoleAsync(user, role);
+                            if (!result.Succeeded || !result2.Succeeded)
+                            {
+                                isOk = false;
+                                reason = "Ошибка внесения изменений в базу данных, точная причина неизвестна";
+                            }
+                        }
                     }
-                    catch(Exception e)
-                    {
-                        //доделать catch
-                    }
-                }//создать лист неудачников, показать его на отдельной или текущей вьюхе
+                }
+                if (!isOk)
+                    FailedUsers.Add(fio + " | " + email + " | " + pass + " | " + role+" - "+reason);
             }
+            if(FailedUsers.Count==0)
             return RedirectToAction("Index");
+            else return RedirectToAction("MassRegistrationFails",new {list=FailedUsers});
 
         }
 
@@ -194,34 +233,49 @@ namespace IOS_PROJECT3.Controllers
         [HttpPost]
         public async Task<IActionResult> AddFile(IFormFile uploadedFile)
         {
-            if (uploadedFile != null)
+            try
             {
-                // путь к папке Files
-                string path = "/RegFiles/" + uploadedFile.FileName;
-                if (!path.EndsWith(".xlsx"))
-                    throw new Exception("File is not Excel file");
-                // сохраняем файл в папку Files в каталоге wwwroot
-                using (var fileStream = new FileStream(enviroment.WebRootPath + path, FileMode.Create))
+                if (uploadedFile != null)
                 {
-                    await uploadedFile.CopyToAsync(fileStream);
+                    // путь к папке Files
+                    string path = "/RegFiles/" + uploadedFile.FileName;
+                    if (!path.EndsWith(".xlsx"))
+                        throw new Exception("File is not .xlsx file");
+                    // сохраняем файл в папку Files в каталоге wwwroot
+                    using (var fileStream = new FileStream(enviroment.WebRootPath + path, FileMode.Create))
+                    {
+                        await uploadedFile.CopyToAsync(fileStream);
+                    }
+                    // RegFile filereg = new RegFile { Name = uploadedFile.FileName, Path = enviroment.WebRootPath + path };
+                    return RedirectToAction("MassRegistration", new { Path = (enviroment.WebRootPath + path) });
                 }
-               // RegFile filereg = new RegFile { Name = uploadedFile.FileName, Path = enviroment.WebRootPath + path };
-                return RedirectToAction("MassRegistration",new {Path= (enviroment.WebRootPath + path)});
+            }
+            catch (Exception e)
+            {
+                return RedirectToAction("ErrorLoadingFile", new { message = e.Message });
             }
             return RedirectToAction("Index");
             
         }
-
+        public IActionResult ErrorLoadingFile(string message)
+        {
+            ViewBag.Message = message;
+            return View();
+        }
         public List<string> ReadColumn(string path, int column)
         {
+            
             OleDbConnection conn = new OleDbConnection();
             //conn.ConnectionString = conn.ConnectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" +path
             // +";Extended Properties='Excel 12.0 Xml;HDR=NO;IMEX=1;MAXSCANROWS=0'";
             conn.ConnectionString = String.Format(@"Provider=Microsoft.ACE.OLEDB.12.0;Excel 12.0 Xml;HDR=No;Data Source={0}", path);
+            conn.Open();
+            var dtSchema = conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, new object[] { null, null, null, "TABLE" });
+            var Sheet1 = dtSchema.Rows[0].Field<string>("TABLE_NAME");
             var comm = new OleDbCommand();
             comm.Connection = conn;
-            comm.CommandText = "Select * from [Лист1$]";
-            OleDbDataAdapter adapter = new OleDbDataAdapter(comm.CommandText, conn);
+            comm.CommandText = String.Format("Select * from [{0}]",Sheet1);
+             OleDbDataAdapter adapter = new OleDbDataAdapter(comm.CommandText, conn);
             DataTable dsXLS = new DataTable();
             adapter.Fill(dsXLS);
             List<string> result = new List<string>();
@@ -235,19 +289,27 @@ namespace IOS_PROJECT3.Controllers
         }
         public IActionResult MassRegistration(string Path)
         {
-            MassRegViewModel model = new MassRegViewModel()
+            try
             {
-                FIOs = ReadColumn(Path, 0),
-                Emails = ReadColumn(Path, 1),
-                Passwords = ReadColumn(Path, 2),
-                Roles = ReadColumn(Path, 3)
-            };
-            int em = model.Emails.Count;
-            int fi = model.FIOs.Count;
-            int pa = model.FIOs.Count;
-            int ro = model.Roles.Count;
-            model.Count = Math.Max(Math.Max(em, fi), Math.Max(pa, ro));
-            return View(model);                       
+                MassRegViewModel model = new MassRegViewModel()
+                {
+                    FIOs = ReadColumn(Path, 0),
+                    Emails = ReadColumn(Path, 1),
+                    Passwords = ReadColumn(Path, 2),
+                    Roles = ReadColumn(Path, 3)
+                };
+                int em = model.Emails.Count;
+                int fi = model.FIOs.Count;
+                int pa = model.FIOs.Count;
+                int ro = model.Roles.Count;
+                model.Count = Math.Max(Math.Max(em, fi), Math.Max(pa, ro));
+                return View(model);
+            }
+            catch(Exception e)
+            {
+                return RedirectToAction("ErrorLoadingFile",new {message=e.Message });
+            }
+                            
         }
     }
 }

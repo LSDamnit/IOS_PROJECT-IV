@@ -1,0 +1,27 @@
+﻿@model string
+@{
+}
+@{
+    ViewBag.Title = "Ошибка чтения Excel файла";
+}
+<h3>Ошибка чтения файла</h3>
+<div class="alert alert-danger" role="alert">
+    Во время чтения Excel файла произошла ошибка. Пожалуйста, убедитесь, что формат файла имеет расширение .xlsx, данные располагаются на первом листе в первых трех столбцах.
+    Обращаем ваше внимание, что истинная причина ошибки может быть в другом (маловероятно), поэтому вы можете просмотреть полное сообщение об ошибке.
+</div>
+<label margin-right:5px;>Показать сообщение об ошибке </label>
+<input type="checkbox" id="errorcheck" />
+<div id="errormessage" class="alert alert-info" role="alert" hidden="hidden">
+    <p>@ViewBag.Message</p>
+</div>
+<br>
+<a class="btn btn-secondary" style="margin-top:5px" asp-controller="UsersAdmin" asp-action="Index" value="Список пользователей">Назад к списку пользователей</a>
+<script>
+    $('#errorcheck').on('click', function () {
+        if ($(this).is(':checked')) {
+            document.getElementById('errormessage').hidden = false;
+
+        } else {
+            document.getElementById('errormessage').hidden = true;
+        }
+    })</script>
