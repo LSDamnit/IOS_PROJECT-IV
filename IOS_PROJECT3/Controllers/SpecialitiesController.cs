@@ -13,11 +13,11 @@ namespace IOS_PROJECT3.Controllers
     public class SpecialitiesController : Controller
     {
         private DBMergedContext DBContext;
-        private UserManager<EUser> UserManager;
-        public SpecialitiesController(DBMergedContext context, UserManager<EUser> manager)
+       // private UserManager<EUser> UserManager;
+        public SpecialitiesController(DBMergedContext context)
         {
             DBContext = context;
-            UserManager = manager;
+           // UserManager = manager;
         }
         public async Task<IActionResult> Index(string DepId)
         {           
@@ -51,7 +51,7 @@ namespace IOS_PROJECT3.Controllers
             }
             else ModelState.AddModelError("Index", "No such department");
 
-            return View();
+            return RedirectToAction("Index");
         }
 
         public IActionResult Create(string DepId)
@@ -87,7 +87,7 @@ namespace IOS_PROJECT3.Controllers
                 return RedirectToAction("Index", new { DepId = model.DepId });
             }
             ModelState.AddModelError("Create", "Error in dep create");
-            return View(model);
+            return RedirectToAction("Index");
         }
 
         public async Task<IActionResult> Edit(string Id)
@@ -121,7 +121,7 @@ namespace IOS_PROJECT3.Controllers
                 return RedirectToAction("Index", new { DepId = model.DepId });
             }
             ModelState.AddModelError("Edit", "Error in spec edit");
-            return View(model);
+            return RedirectToAction("Index");
         }
 
         [HttpPost]

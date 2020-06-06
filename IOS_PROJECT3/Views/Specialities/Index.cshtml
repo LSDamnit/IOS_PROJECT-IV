@@ -11,7 +11,7 @@
         @foreach (var spec in Model.Specialities)
         {
             <tr>
-                <td>@spec.Name</td>
+                <td><a style="margin-bottom:15px" asp-controller="Disciplines" asp-route-SpecId="@spec.Id" asp-action="Index">@spec.Name</a></td>
                 @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || User.IsInRole("Admin"))
                 {
                     <td>

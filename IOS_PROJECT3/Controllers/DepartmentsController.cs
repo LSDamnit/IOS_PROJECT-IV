@@ -73,15 +73,9 @@ namespace IOS_PROJECT3.Controllers
                     Name = name,
                     HeadTeacher = headt                   
                 };
-                /*var ideps =  (from i in DBContext.Institutions.Where(h=>h.Id.ToString()==model.InstId).Include(d => d.Departments)
-                            // where i.Id.ToString() == model.InstId
-                             select i.Departments).FirstOrDefault();*/
-
-                // Console.WriteLine(inst.Departments.Count);
+                
                 inst.Departments.Add(dep);
-               // DBContext.Entry(dep).Property("EInstitutionId").CurrentValue = model.InstId;
                 DBContext.Departments.Add(dep);
-               // ideps.Add(dep);
                 await DBContext.SaveChangesAsync();
                 
                 return RedirectToAction("Index", new { InstId = model.InstId });
