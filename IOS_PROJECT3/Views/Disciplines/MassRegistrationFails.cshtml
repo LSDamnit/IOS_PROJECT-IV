@@ -1,0 +1,22 @@
+﻿@model IOS_PROJECT3.ViewModels.MassRegErrorViewModel
+@{
+    ViewBag.Title = "Ошибки массового зачисления студентов на специальность";
+}
+<h3>Не удалось зарегистрировать следующих пользователей:</h3>
+<div class="alert alert-warning" role="alert">
+    <table>
+        @foreach (var s in Model.FailedUsers)
+        {
+            <tr><td><p>@s</p><td></tr>
+        }
+    </table>
+</div>
+<div class="alert alert-info" role="alert">
+    <p>
+        Данные представлены в виде "ФИО (если определено) | Email - Причина". Обратите внимание, что точная причина ошибки может некардинально отличаться от указанной.
+    </p>
+</div>
+<div class="alert alert-primary" role="alert">
+    <p>Проверьте их данные и попробуйте еще раз, загрузив новый Excel файл. Либо зачислите каждого из них на данную специальность индивидуально.</p>
+</div>
+<a class="btn btn-secondary" style="margin-top:5px" asp-controller="Disciplines" asp-action="Index" asp-route-SpecId="@ViewBag.SpecId">Назад к странице специальности</a>

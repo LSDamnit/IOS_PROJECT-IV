@@ -4,7 +4,7 @@
     .grid-container-spec {
         display: grid;
         grid-template-columns: /*1.2fr 0.8fr;*/ 80% 20%;
-        grid-gap:15px;
+        grid-gap:10px;
         grid-template-areas: "disciplines-spec students-spec";
     }
 
@@ -65,11 +65,42 @@
         <h5 style="align-self:center; margin-bottom:25px">Список студентов</h5>
         @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || User.IsInRole("Admin"))
         {
-            <a style="margin-bottom: 15px" asp-controller="Disciplines" asp-route-SpecId="@Model.SpecialityId" asp-action="AddStudent">Зачислить студента</a>
+            <div style="margin-bottom:10px; margin-top:10px">
+                <label margin-right:5px;>Зачислить студентов из Excel файла </label><input type="checkbox" id="massRegCheck" name="Зачислить студентов из Excel файла" value="Зачислить студентов из Excel файла" />
+            </div>
+            <a style="margin-bottom: 15px" asp-controller="Disciplines" id="singleReg" asp-route-SpecId="@Model.SpecialityId" asp-action="AddStudent">Зачислить студента</a>
+            <div hidden="hidden" id="massReg" class="alert alert-primary">
+                <form style="font-size:70%" asp-action="AddFile" asp-route-SpecId="@Model.SpecialityId" asp-controller="Disciplines" method="post" enctype="multipart/form-data">
+                    <input type="file" style="margin-bottom:5px; display:block;" name="uploadedFile" />
+
+                    <input type="submit" style="display:block;margin-bottom:7px" class="btn btn-sm btn-primary" value="Загрузить" />
+                </form>
+            </div>
+            <div class="alert alert-info" role="alert" id="InfoReg" hidden="hidden">
+                <h6>Требования к данным</h6>
+                <p>
+                    Загруженный файл должен иметь формат <b>.xlsx</b>, для зачисления пользователей на данную специальность, в загружаемом файле в <b>первом</b>
+                    столбце <b>первого</b> листа необходимо указать их email'ы, использованные при регистрации. Сами пользователи должны иметь роль Student.
+                </p>
+            </div>
+            <script>
+                $('#massRegCheck').on('click', function () {
+                    if ($(this).is(':checked')) {
+                        document.getElementById('massReg').hidden = false;
+                        document.getElementById('InfoReg').hidden = false;
+                        document.getElementById('singleReg').hidden = true;    
+                        document.getElementById('studentsTable').hidden = true;  
+                    } else {
+                        document.getElementById('massReg').hidden = true;
+                        document.getElementById('InfoReg').hidden = true;
+                        document.getElementById('singleReg').hidden = false;
+                        document.getElementById('studentsTable').hidden = false;  
+                    }
+                })</script>
         }
         @if (Model.Students.Count > 0)
         {
-            <table class="table table-bordered" style="border-collapse:collapse;table-layout:auto; text-align:center;">
+            <table id="studentsTable"class="table table-bordered" style="border-collapse:collapse;table-layout:auto; text-align:center;">
                 <tr>
                     <th>ФИО студента</th>
                     @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || User.IsInRole("Admin"))

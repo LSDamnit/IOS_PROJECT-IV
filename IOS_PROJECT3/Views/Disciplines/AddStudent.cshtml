@@ -1,0 +1,17 @@
+﻿@model IOS_PROJECT3.ViewModels.AddStudentViewModel
+@{
+    ViewBag.Title = "Поиск студента";
+}
+<form method="post" asp-action="AddStudentFillData" asp-controller="Disciplines">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <input type="hidden" asp-for="TargetSpecId" class="form-control" />
+        <label asp-for="Email" class="control-label">Email:</label>
+        <input type="email" asp-for="Email" class="form-control" />
+
+    </div>
+
+<div class="form-group">    
+    <input type="submit" value="Поиск" class="btn btn-outline-secondary" />
+</div>
+</form>

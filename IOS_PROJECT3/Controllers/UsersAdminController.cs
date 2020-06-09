@@ -6,12 +6,10 @@ using IOS_PROJECT3.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using IOS_PROJECT3.ViewModels;
-using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
-using System.Data.OleDb;
-using System.Data;
+using System.Text.RegularExpressions;
 
 namespace IOS_PROJECT3.Controllers
 {
@@ -79,37 +77,47 @@ namespace IOS_PROJECT3.Controllers
                 }
                 if (isOk)
                 {
-                    EUser user = new EUser()
-                    {
-                        Email = email,
-                        UserName = email,
-                        FIO = fio
-                    };
-                    var result0=await userManager.UserValidators[0].ValidateAsync(userManager,user);
-                    var result01 = await userManager.PasswordValidators[0].ValidateAsync(userManager, user, pass);
-                    if (!result0.Succeeded || !result01.Succeeded)
+                    Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
+                    if(!regex.IsMatch(email))
                     {
                         isOk = false;
-                        if(result0.Succeeded)
-                        reason = "Неверный формат пароля";
-                        if (result01.Succeeded)
-                            reason = "Неверный формат Email'a, либо данный Email уже занят другим пользователем";
+                        reason = "Email имеет неверный формат";
                     }
                     if (isOk)
                     {
-                        if (!await roleManager.RoleExistsAsync(role))
+                        EUser user = new EUser()
+                        {
+                            Email = email,
+                            UserName = email,
+                            FIO = fio
+                        };
+
+                        var result0 = await userManager.UserValidators[0].ValidateAsync(userManager, user);
+                        var result01 = await userManager.PasswordValidators[0].ValidateAsync(userManager, user, pass);
+                        if (!result0.Succeeded || !result01.Succeeded)
                         {
                             isOk = false;
-                            reason = "Роли " + role + " не существует";
+                            if (result0.Succeeded)
+                                reason = "Неверный формат пароля";
+                            if (result01.Succeeded)
+                                reason = "Данный Email уже занят другим пользователем";
                         }
                         if (isOk)
                         {
-                            var result = await userManager.CreateAsync(user, pass);
-                            var result2 = await userManager.AddToRoleAsync(user, role);
-                            if (!result.Succeeded || !result2.Succeeded)
+                            if (!await roleManager.RoleExistsAsync(role))
                             {
                                 isOk = false;
-                                reason = "Ошибка внесения изменений в базу данных, точная причина неизвестна";
+                                reason = "Роли " + role + " не существует";
+                            }
+                            if (isOk)
+                            {
+                                var result = await userManager.CreateAsync(user, pass);
+                                var result2 = await userManager.AddToRoleAsync(user, role);
+                                if (!result.Succeeded || !result2.Succeeded)
+                                {
+                                    isOk = false;
+                                    reason = "Ошибка внесения изменений в базу данных, точная причина неизвестна";
+                                }
                             }
                         }
                     }
@@ -241,7 +249,7 @@ namespace IOS_PROJECT3.Controllers
                     string path = "/RegFiles/" + uploadedFile.FileName;
                     if (!path.EndsWith(".xlsx"))
                         throw new Exception("File is not .xlsx file");
-                    // сохраняем файл в папку Files в каталоге wwwroot
+                    
                     using (var fileStream = new FileStream(enviroment.WebRootPath + path, FileMode.Create))
                     {
                         await uploadedFile.CopyToAsync(fileStream);
@@ -252,51 +260,23 @@ namespace IOS_PROJECT3.Controllers
             }
             catch (Exception e)
             {
-                return RedirectToAction("ErrorLoadingFile", new { message = e.Message });
+                return RedirectToAction("ErrorLoadingFile", "Errors", new { message = e.Message });
             }
             return RedirectToAction("Index");
             
         }
-        public IActionResult ErrorLoadingFile(string message)
-        {
-            ViewBag.Message = message;
-            return View();
-        }
-        public List<string> ReadColumn(string path, int column)
-        {
-            
-            OleDbConnection conn = new OleDbConnection();
-            //conn.ConnectionString = conn.ConnectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" +path
-            // +";Extended Properties='Excel 12.0 Xml;HDR=NO;IMEX=1;MAXSCANROWS=0'";
-            conn.ConnectionString = String.Format(@"Provider=Microsoft.ACE.OLEDB.12.0;Excel 12.0 Xml;HDR=No;Data Source={0}", path);
-            conn.Open();
-            var dtSchema = conn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, new object[] { null, null, null, "TABLE" });
-            var Sheet1 = dtSchema.Rows[0].Field<string>("TABLE_NAME");
-            var comm = new OleDbCommand();
-            comm.Connection = conn;
-            comm.CommandText = String.Format("Select * from [{0}]",Sheet1);
-             OleDbDataAdapter adapter = new OleDbDataAdapter(comm.CommandText, conn);
-            DataTable dsXLS = new DataTable();
-            adapter.Fill(dsXLS);
-            List<string> result = new List<string>();
-
-            var foo = dsXLS.Rows;
-            for (int i = 0; i < foo.Count; i++)
-            {
-                result.Add(foo[i].ItemArray[column].ToString());
-            }
-            return result;
-        }
+       
         public IActionResult MassRegistration(string Path)
         {
             try
             {
+                ExcelParser ep = new ExcelParser();
                 MassRegViewModel model = new MassRegViewModel()
                 {
-                    FIOs = ReadColumn(Path, 0),
-                    Emails = ReadColumn(Path, 1),
-                    Passwords = ReadColumn(Path, 2),
-                    Roles = ReadColumn(Path, 3)
+                    FIOs = ep.ReadColumn(Path, 0),
+                    Emails = ep.ReadColumn(Path, 1),
+                    Passwords = ep.ReadColumn(Path, 2),
+                    Roles = ep.ReadColumn(Path, 3)
                 };
                 int em = model.Emails.Count;
                 int fi = model.FIOs.Count;
@@ -307,7 +287,7 @@ namespace IOS_PROJECT3.Controllers
             }
             catch(Exception e)
             {
-                return RedirectToAction("ErrorLoadingFile",new {message=e.Message });
+                return RedirectToAction("ErrorLoadingFile", "Errors",new {message=e.Message });
             }
                             
         }

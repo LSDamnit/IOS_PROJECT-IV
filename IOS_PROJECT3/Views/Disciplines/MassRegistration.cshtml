@@ -1,0 +1,19 @@
+﻿@model IOS_PROJECT3.ViewModels.MassRegViewModel
+@{
+    ViewBag.Title = "Список для зачисления";
+}
+<h3>Заготовка данных для зачисления студентов</h3>
+<br>
+<p>Всего: <b>@Model.Count</b> пользователей</p>
+<form method="post" asp-controller="Disciplines" asp-action="MassRegistration">
+    <input type="hidden" asp-for="Count" value="@Model.Count" />
+    <input type="hidden" asp-for="TargetSpecId" value="@Model.TargetSpecId" />
+    <table style="border-spacing:30px 10px;border-collapse:separate">
+        <tr><th>Email</th><th>ФИО</th></tr>
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <tr> <td><input type="text" asp-for="Emails[i]" value="@Model.Emails[i]" /></td><td><input type="text" readonly="readonly" value="@Model.FIOs[i]" /></td></tr>
+        }
+    </table>
+    <button class="btn btn-primary" type="submit">Подтвердить</button>
+</form>
