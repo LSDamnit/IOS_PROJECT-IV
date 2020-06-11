@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IOS_PROJECT3.Migrations
 {
     [DbContext(typeof(DBMergedContext))]
-    [Migration("20200611135856_ReInit4")]
-    partial class ReInit4
+    [Migration("20200611192823_ReInitF2")]
+    partial class ReInitF2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -96,10 +96,10 @@ namespace IOS_PROJECT3.Migrations
                     b.Property<int?>("EDisciplineId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Extension")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Path")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Tag")

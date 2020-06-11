@@ -20,7 +20,8 @@ namespace IOS_PROJECT3.ViewModels
         public string InstId { get; set; }
         public string InstManagerId { get; set; }
         public string InstManagerEmail { get; set; }
-        public IList<EFile> Files { get; set; }
+        public IList<EFile> LectionFiles { get; set; }
+        public IList<EFile> PracticeFiles { get; set; }
 
     }
 }

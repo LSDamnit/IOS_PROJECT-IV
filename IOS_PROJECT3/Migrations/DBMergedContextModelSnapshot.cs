@@ -94,10 +94,10 @@ namespace IOS_PROJECT3.Migrations
                     b.Property<int?>("EDisciplineId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Extension")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Path")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Tag")

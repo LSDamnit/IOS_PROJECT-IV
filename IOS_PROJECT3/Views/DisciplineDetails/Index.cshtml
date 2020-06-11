@@ -23,9 +23,19 @@
         height: 100%;
         white-space: pre-wrap;
         resize: none;
-        border: none !important;
+        border: none;
         background-color:transparent;
         color:black;
+    }
+
+    #delFile
+    {
+        font-size:12px;
+        border-radius:20px;
+        width:20px;
+        height:20px;
+        text-align:center;
+        padding:0;
     }
 
     /*Стили для дерева файлов*/
@@ -89,14 +99,37 @@
         @* фрэйм с файлами *@
         @if (grant)
         {
-            //загрузить файл
+            //Добавить возможность показать-скрыть форму загрузки
+        <form method="post" asp-controller="DisciplineDetails" asp-action="UploadFile" enctype="multipart/form-data">
+            <input type="hidden" name="id" value="@Model.DisciplineId"/>
+            <input type="hidden" name="user" value="@User.Identity.Name"/>
+            <input type="file" name="upload" /><br>
+            <input type="radio" name="tag" value="lection" checked="checked"/>Лекция<br>
+            <input type="radio" name="tag" value="practice"/>Практика<br>
+            <button type="submit">Загрузить</button>
+        </form>
         }
         <ul id="myUL">
             <li>
                 <span class="caret">Лекции</span>
                 <ul class="nested">
-                    <li>TestLec</li>
-                    @* Лекции *@
+
+                    @foreach (var f in Model.LectionFiles) 
+                    { 
+                        
+                          <li>
+                              <form method="post" asp-controller="DisciplineDetails" asp-action="DeleteFile" asp-route-FileId="@f.Id">
+                                  <a asp-controller="DisciplineDetails" asp-route-FileId="@f.Id" asp-action="DownloadFile">@f.Name</a>
+                                  @if(grant)
+                                  {
+                              <button type="submit" class="btn btn-sm btn-danger" id="delFile">
+                                  &#128936;
+                              </button>
+                                  }
+                              </form>
+                          </li>
+                    }
+
                 </ul>
             </li>
             <li>
