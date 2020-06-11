@@ -109,5 +109,15 @@ namespace IOS_PROJECT3.Controllers
             await DBContext.SaveChangesAsync();
             return RedirectToAction("Index", new { DiscId = disc.Id});
         }
+
+        public async Task<IActionResult> DownloadFile(string FileId)
+        {
+            var file = await (from f in DBContext.Files where f.Id.ToString() == FileId select f).FirstOrDefaultAsync();
+            string ftype = "application/octet-stream";
+            string fname = file.Name;
+            string fpath = file.Path;
+            return PhysicalFile(fpath, ftype, fname);
+
+        }
     }
 }

@@ -28,7 +28,7 @@
         color:black;
     }
 
-    #delFile
+    #circleBtn
     {
         font-size:12px;
         border-radius:20px;
@@ -122,7 +122,7 @@
                                   <a asp-controller="DisciplineDetails" asp-route-FileId="@f.Id" asp-action="DownloadFile">@f.Name</a>
                                   @if(grant)
                                   {
-                              <button type="submit" class="btn btn-sm btn-danger" id="delFile">
+                              <button type="submit" class="btn btn-sm btn-danger" id="circleBtn">
                                   &#128936;
                               </button>
                                   }
