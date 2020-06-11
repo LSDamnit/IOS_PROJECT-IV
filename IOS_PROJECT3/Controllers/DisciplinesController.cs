@@ -83,6 +83,9 @@ namespace IOS_PROJECT3.Controllers
                               where s.Id.ToString() == model.SpecialityId
                               select s).FirstOrDefaultAsync();
             var name = model.Name;
+            var info = "";
+            if (!String.IsNullOrWhiteSpace(model.Info))
+                info = model.Info;
             if (!String.IsNullOrWhiteSpace(name) && teacher != null && !String.IsNullOrWhiteSpace(model.ExamType))
             {
                 EDiscipline disc = new EDiscipline()
@@ -91,7 +94,8 @@ namespace IOS_PROJECT3.Controllers
                     LectionH = model.LectionH,
                     PracticeH = model.PracticeH,
                     ExamType = model.ExamType,
-                    Teacher = teacher
+                    Teacher = teacher,
+                    About = info
 
                 };
                 DBContext.Disciplines.Add(disc);
@@ -120,6 +124,7 @@ namespace IOS_PROJECT3.Controllers
                     PracticeH = disc.PracticeH,
                     ExamType = disc.ExamType,
                     TeacherId = disc.Teacher.Id,
+                    Info=disc.About,
                     AvailableTeachers = await userManager.GetUsersInRoleAsync("Teacher")
 
                 };
@@ -133,7 +138,9 @@ namespace IOS_PROJECT3.Controllers
         {
             var teacher = await userManager.FindByIdAsync(model.TeacherId);
             string name = model.Name;
-
+            var info = "";
+            if (!String.IsNullOrWhiteSpace(model.Info))
+                info = model.Info;
             if (teacher != null && !String.IsNullOrWhiteSpace(name)&& !String.IsNullOrWhiteSpace(model.ExamType))
             {
                 var disc = await (from d in DBContext.Disciplines.Include(h => h.Teacher)
@@ -145,7 +152,7 @@ namespace IOS_PROJECT3.Controllers
                 DBContext.Update(disc).Entity.ExamType = model.ExamType;
                 DBContext.Update(disc).Entity.LectionH = model.LectionH;
                 DBContext.Update(disc).Entity.PracticeH = model.PracticeH;
-
+                DBContext.Update(disc).Entity.About = info;
                 await DBContext.SaveChangesAsync();
                 return RedirectToAction("Index", new { SpecId = model.SpecialityId });
             }

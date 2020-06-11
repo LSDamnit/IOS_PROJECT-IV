@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IOS_PROJECT3.Migrations
 {
     [DbContext(typeof(DBMergedContext))]
-    [Migration("20200603104005_virtOn")]
-    partial class virtOn
+    [Migration("20200611135856_ReInit4")]
+    partial class ReInit4
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -52,6 +52,9 @@ namespace IOS_PROJECT3.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("About")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ESpecialityId")
                         .HasColumnType("int");
@@ -97,6 +100,9 @@ namespace IOS_PROJECT3.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tag")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserLoadId")

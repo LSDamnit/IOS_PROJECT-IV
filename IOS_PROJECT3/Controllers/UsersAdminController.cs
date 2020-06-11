@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.ComponentModel.DataAnnotations;
 
 namespace IOS_PROJECT3.Controllers
 {
@@ -77,8 +78,9 @@ namespace IOS_PROJECT3.Controllers
                 }
                 if (isOk)
                 {
-                    Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
-                    if(!regex.IsMatch(email))
+                    
+                    var email_attr = new EmailAddressAttribute();
+                    if(!email_attr.IsValid(email))
                     {
                         isOk = false;
                         reason = "Email имеет неверный формат";

@@ -1,0 +1,128 @@
+﻿@model IOS_PROJECT3.ViewModels.DisciplineDetailsViewModel
+@{ 
+    ViewBag.Title = "Дисциплина " + Model.DisciplineName;
+}
+<style>
+    .grid-container {
+  display: grid;
+  grid-template-columns: 1fr 0.8fr 1.2fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  column-gap: 1px 1px;
+  grid-template-areas: "d-head d-head d-files d-files" "d-info d-info d-files d-files" "d-info d-info d-files d-files";
+}
+
+.d-head { grid-area: d-head; }
+
+.d-files { grid-area: d-files; }
+
+.d-info { grid-area: d-info; }
+
+    #InfoTextArea
+    {
+        width: 100%;
+        height: 100%;
+        white-space: pre-wrap;
+        resize: none;
+        border: none !important;
+        background-color:transparent;
+        color:black;
+    }
+
+    /*Стили для дерева файлов*/
+    ul, #myUL {
+        list-style-type: none;
+    }
+
+    /* Remove margins and padding from the parent ul */
+#myUL {
+  margin: 0;
+  padding: 0;
+}
+
+/* Style the caret/arrow */
+.caret {
+  cursor: pointer;
+  user-select: none; /* Prevent text selection */
+}
+
+/* Create the caret/arrow with a unicode, and style it */
+.caret::before {
+  content: "\25B6";
+  color: black;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+/* Rotate the caret/arrow icon when clicked on (using JavaScript) */
+.caret-down::before {
+  transform: rotate(90deg);
+}
+
+/* Hide the nested list */
+.nested {
+  display: none;
+}
+
+/* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
+.active {
+  display: block;
+}
+    </style>
+@{
+    bool grant = false; }
+@if((User.Identity.Name==Model.InstManagerEmail&&User.IsInRole("Manager"))||
+ (User.Identity.Name==Model.TeacherEmail&&User.IsInRole("Teacher"))||
+ (User.IsInRole("Admin")))
+{
+    grant = true;
+}
+<div class="grid-container">
+    <div class="d-head">
+        @* инфа о дисциплине *@
+        <h3>@Model.DisciplineName</h3>
+        <p><b>Преподаватель: </b>@Model.TeacherName</p>
+        <p><b>Часов лекций:</b>@Model.LecH</p>
+        <p><b>Часов практики: </b>@Model.PracH</p>
+        <p><b>Зачетность: </b>@Model.ExamType</p>
+    </div>
+    <div class="d-files">
+        @* фрэйм с файлами *@
+        @if (grant)
+        {
+            //загрузить файл
+        }
+        <ul id="myUL">
+            <li>
+                <span class="caret">Лекции</span>
+                <ul class="nested">
+                    <li>TestLec</li>
+                    @* Лекции *@
+                </ul>
+            </li>
+            <li>
+                <span class="caret">Практики</span>
+                <ul class="nested">
+                    @* Практики *@
+                    <li>TestPrac</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="d-info">
+        <h4>Дополнительная информация</h4>
+        <textarea  id="InfoTextArea" disabled="disabled">
+@Model.DisciplineInfo</textarea>
+        @*<p style="white-space:pre">@Model.DisciplineInfo</p>*@
+    </div>
+</div>
+<script>
+    var toggler = document.getElementsByClassName("caret");
+var i;
+
+for (i = 0; i < toggler.length; i++) {
+  toggler[i].addEventListener("click", function() {
+    this.parentElement.querySelector(".nested").classList.toggle("active");
+    this.classList.toggle("caret-down");
+  });
+}
+    </script>

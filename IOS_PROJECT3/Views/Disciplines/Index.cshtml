@@ -40,7 +40,7 @@
             @foreach (var di in Model.Disciplines)
             {
                 <tr>
-                    <td>@di.Name</td>
+                    <td><a style="margin-bottom:15px" asp-controller="DisciplineDetails" asp-route-DiscId="@di.Id" asp-action="Index">@di.Name</a></td>
                     <td>@di.LectionH</td>                   
                     <td>@di.PracticeH</td>
                     <td>@di.ExamType</td>

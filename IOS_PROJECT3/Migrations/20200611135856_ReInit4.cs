@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IOS_PROJECT3.Migrations
 {
-    public partial class init3 : Migration
+    public partial class ReInit4 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -182,6 +182,7 @@ namespace IOS_PROJECT3.Migrations
                     ExamType = table.Column<string>(nullable: true),
                     LectionH = table.Column<int>(nullable: false),
                     PracticeH = table.Column<int>(nullable: false),
+                    About = table.Column<string>(nullable: true),
                     ESpecialityId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -229,6 +230,7 @@ namespace IOS_PROJECT3.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
                     Extension = table.Column<string>(nullable: true),
+                    Tag = table.Column<string>(nullable: true),
                     UserLoadId = table.Column<string>(nullable: true),
                     DateLoad = table.Column<string>(nullable: true),
                     EDisciplineId = table.Column<int>(nullable: true)

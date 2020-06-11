@@ -5,19 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20200601220817_init1.cs" />
-    <Compile Remove="Migrations\20200601220817_init1.Designer.cs" />
-    <Compile Remove="Migrations\20200601221441_init1.cs" />
-    <Compile Remove="Migrations\20200601221441_init1.Designer.cs" />
-    <Compile Remove="Migrations\20200601233044_init2.cs" />
-    <Compile Remove="Migrations\20200601233044_init2.Designer.cs" />
-    <Compile Remove="Migrations\20200602215614_init4.cs" />
-    <Compile Remove="Migrations\20200602215614_init4.Designer.cs" />
-    <Compile Remove="Migrations\20200604172342_RegFilesInit.cs" />
-    <Compile Remove="Migrations\20200604172342_RegFilesInit.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="wwwroot\Images\sstuLogo.png" />
   </ItemGroup>
 

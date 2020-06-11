@@ -10,6 +10,7 @@ namespace IOS_PROJECT3.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Extension { get; set; }
+        public string Tag { get; set; }//lections/practice
         public virtual EUser UserLoad { get; set; }
         public  string DateLoad { get; set; }
     }

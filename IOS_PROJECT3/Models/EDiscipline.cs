@@ -13,6 +13,7 @@ namespace IOS_PROJECT3.Models
         public string ExamType { get; set; }
         public int LectionH { get; set; }
         public int PracticeH { get; set; }
+        public string About { get; set; }
         public virtual List<EFile> Files { get; set; }
     }
 }
