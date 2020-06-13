@@ -1,0 +1,36 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MimeKit;
+using MailKit.Net.Smtp;
+
+namespace IOS_PROJECT3
+{
+    public class EmailService
+    {
+        public async Task SendEmailAsync(string[] emails, string subject, string message)
+        {
+            var emailMessage = new MimeMessage();
+
+            emailMessage.From.Add(new MailboxAddress("ИОС СГТУ - Вам сообщение", "testiosmailsender@gmail.com"));
+            foreach(var email in emails)
+            emailMessage.To.Add(new MailboxAddress("", email));
+            emailMessage.Subject = subject;
+            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Plain)
+            {
+                Text = message
+            };
+
+            using (var client = new SmtpClient())
+            {
+                await client.ConnectAsync("smtp.gmail.com", 587, false);
+                //client.AuthenticationMechanisms.Remove("XOAUTH2");
+                await client.AuthenticateAsync("testiosmailsender@gmail.com", "Test_123");
+                await client.SendAsync(emailMessage);
+
+                await client.DisconnectAsync(true);
+            }
+        }
+    }
+}

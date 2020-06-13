@@ -33,6 +33,7 @@ namespace IOS_PROJECT3
                 }
             }
             host.Run();
+            
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

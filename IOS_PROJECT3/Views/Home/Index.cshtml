@@ -26,6 +26,7 @@
                         <a class="btn btn-secondary" style="margin-top:5px" asp-controller="UsersAdmin" asp-action="Index" value="Список пользователей">Список пользователей</a>
                         <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Roles" asp-action="Index" value="Список ролей">Список ролей</a>
                         <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Institutions" asp-action="Index" value="Список институтов">Управление институтами</a>
+                        <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Message" asp-action="Index" asp-all-route-data='new Dictionary<string,string> { { "ContainerType", "All" }, {"ContainerId", "None" }, { "SenderEmail", User.Identity.Name } }'>Массовая рассылка</a>
                     };
                     if (User.IsInRole("Teacher"))
                     {

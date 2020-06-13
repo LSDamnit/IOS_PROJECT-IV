@@ -21,6 +21,10 @@ namespace IOS_PROJECT3.Controllers
         }
         public async Task<IActionResult> Index(string InstId)
         {
+            //-----!!!! Это был тест отправки сообщений - пусть он тут побудет
+           // EmailService es = new EmailService();
+           // await es.SendEmailAsync("yuridemydko@gmail.com", "SMTP_TEST", "YOLO");
+            //-----!!!!!
             var inst = await (from i in DBContext.Institutions.Include(d => d.Departments).Include(m => m.Manager)
                               where i.Id.ToString() == InstId
                               select i).FirstOrDefaultAsync();

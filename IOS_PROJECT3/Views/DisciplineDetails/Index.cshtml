@@ -1,41 +1,45 @@
 ﻿@model IOS_PROJECT3.ViewModels.DisciplineDetailsViewModel
-@{ 
+@{
     ViewBag.Title = "Дисциплина " + Model.DisciplineName;
 }
 <style>
     .grid-container {
-  display: grid;
-  grid-template-columns: 1fr 0.8fr 1.2fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
-  column-gap: 1px 1px;
-  grid-template-areas: "d-head d-head d-files d-files" "d-info d-info d-files d-files" "d-info d-info d-files d-files";
-}
+        display: grid;
+        grid-template-columns: 1fr 0.8fr 1.2fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+        column-gap: 1px 1px;
+        grid-template-areas: "d-head d-head d-files d-files" "d-info d-info d-files d-files" "d-info d-info d-files d-files";
+    }
 
-.d-head { grid-area: d-head; }
+    .d-head {
+        grid-area: d-head;
+    }
 
-.d-files { grid-area: d-files; }
+    .d-files {
+        grid-area: d-files;
+    }
 
-.d-info { grid-area: d-info; }
+    .d-info {
+        grid-area: d-info;
+    }
 
-    #InfoTextArea
-    {
+    #InfoTextArea {
         width: 100%;
         height: 100%;
         white-space: pre-wrap;
         resize: none;
         border: none;
-        background-color:transparent;
-        color:black;
+        background-color: transparent;
+        color: black;
     }
 
-    #circleBtn
-    {
-        font-size:12px;
-        border-radius:20px;
-        width:20px;
-        height:20px;
-        text-align:center;
-        padding:0;
+    #circleBtn {
+        font-size: 12px;
+        border-radius: 20px;
+        width: 20px;
+        height: 20px;
+        text-align: center;
+        padding: 0;
     }
 
     /*Стили для дерева файлов*/
@@ -44,45 +48,45 @@
     }
 
     /* Remove margins and padding from the parent ul */
-#myUL {
-  margin: 0;
-  padding: 0;
-}
+    #myUL {
+        margin: 0;
+        padding: 0;
+    }
 
-/* Style the caret/arrow */
-.caret {
-  cursor: pointer;
-  user-select: none; /* Prevent text selection */
-}
+    /* Style the caret/arrow */
+    .caret {
+        cursor: pointer;
+        user-select: none; /* Prevent text selection */
+    }
 
-/* Create the caret/arrow with a unicode, and style it */
-.caret::before {
-  content: "\25B6";
-  color: black;
-  display: inline-block;
-  margin-right: 6px;
-}
+        /* Create the caret/arrow with a unicode, and style it */
+        .caret::before {
+            content: "\25B6";
+            color: black;
+            display: inline-block;
+            margin-right: 6px;
+        }
 
-/* Rotate the caret/arrow icon when clicked on (using JavaScript) */
-.caret-down::before {
-  transform: rotate(90deg);
-}
+    /* Rotate the caret/arrow icon when clicked on (using JavaScript) */
+    .caret-down::before {
+        transform: rotate(90deg);
+    }
 
-/* Hide the nested list */
-.nested {
-  display: none;
-}
+    /* Hide the nested list */
+    .nested {
+        display: none;
+    }
 
-/* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
-.active {
-  display: block;
-}
-    </style>
+    /* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
+    .active {
+        display: block;
+    }
+</style>
 @{
     bool grant = false; }
-@if((User.Identity.Name==Model.InstManagerEmail&&User.IsInRole("Manager"))||
- (User.Identity.Name==Model.TeacherEmail&&User.IsInRole("Teacher"))||
- (User.IsInRole("Admin")))
+@if ((User.Identity.Name == Model.InstManagerEmail && User.IsInRole("Manager")) ||
+(User.Identity.Name == Model.TeacherEmail && User.IsInRole("Teacher")) ||
+(User.IsInRole("Admin")))
 {
     grant = true;
 }
@@ -91,71 +95,143 @@
         @* инфа о дисциплине *@
         <h3>@Model.DisciplineName</h3>
         <p><b>Преподаватель: </b>@Model.TeacherName</p>
-        <p><b>Часов лекций:</b>@Model.LecH</p>
+        <p><b>Часов лекций: </b>@Model.LecH</p>
         <p><b>Часов практики: </b>@Model.PracH</p>
         <p><b>Зачетность: </b>@Model.ExamType</p>
     </div>
     <div class="d-files">
         @* фрэйм с файлами *@
+        <h4>Файлы дисциплины</h4>
+        <div id="fileInfo" hidden="hidden" class="alert alert-info" role="alert">
+            <h5>Информация о файле</h5>
+            <p style="display:inline"><b>Название: </b></p><p style="display:inline" id="fname"></p><br>
+            <p style="display:inline"><b>Дата загрузки: </b></p><p style="display:inline" id="fdate"></p><br>
+            <p style="display:inline"><b>Загружен пользователем: </b></p><p style="display:inline" id="fuser"></p><br>
+
+            @if (User.IsInRole("Admin"))
+            {
+                <p style="display:inline"><b>Полный путь: </b></p>
+                <br>
+                <p style="display:inline; font-size:small" id="fpath"></p>
+            }
+            <br>
+            <button onclick="ResetAndHideFileInfo()" type="button" style="margin-top:5px" class="btn btn-sm btn-secondary">
+                Скрыть
+            </button>
+            <script>
+                function ResetAndHideFileInfo() {
+                    document.getElementById('fname').innerHTML = '';
+                    document.getElementById('fuser').innerHTML = '';
+                    document.getElementById('fpath').innerHTML = '';
+                    document.getElementById('fdate').innerHTML = '';
+
+                    document.getElementById('fileInfo').hidden = true;
+                }
+            </script>
+        </div>
+        <div class="alert alert-primary" role="directory" style="width:60%">
+            <ul id="myUL">
+                <li>
+                    <span class="caret">Лекции</span>
+                    <ul class="nested">
+
+                        @foreach (var f in Model.LectionFiles)
+                        {
+
+                            <li>
+                                <form method="post" asp-controller="DisciplineDetails" asp-action="DeleteFile" asp-route-FileId="@f.Id">
+                                    <a asp-controller="DisciplineDetails" asp-route-FileId="@f.Id" asp-action="DownloadFile">@f.Name</a>
+                                    @if (grant)
+                                    {
+                                        <button type="submit" class="btn btn-sm btn-danger" id="circleBtn">
+                                            &#128936;
+                                        </button>
+                                        <button type="button" onclick="ShowFileInfo('@f.Name','@f.UserLoad.FIO','@f.UserLoad.Email','@f.DateLoad','@f.Path.Replace(@"\","/")')" class="btn btn-sm btn-info" id="circleBtn">
+                                            &#128712;
+                                        </button>
+
+                                    }
+                                </form>
+                            </li>
+                        }
+
+                    </ul>
+                </li>
+                <li>
+                    <span class="caret">Практики</span>
+                    <ul class="nested">
+                        @foreach (var f in Model.PracticeFiles)
+                        {
+
+                            <li>
+                                <form method="post" asp-controller="DisciplineDetails" asp-action="DeleteFile" asp-route-FileId="@f.Id">
+                                    <a asp-controller="DisciplineDetails" asp-route-FileId="@f.Id" asp-action="DownloadFile">@f.Name</a>
+                                    @if (grant)
+                                    {
+                                        <button type="submit" class="btn btn-sm btn-danger" id="circleBtn">
+                                            &#128936;
+                                        </button>
+                                        <button type="button" onclick="ShowFileInfo('@f.Name','@f.UserLoad.FIO','@f.UserLoad.Email','@f.DateLoad','@f.Path.Replace("/",@"\")')" class="btn btn-sm btn-info" id="circleBtn">
+                                            &#128712;
+                                        </button>
+                                    }
+                                </form>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <script>
+            function ShowFileInfo(fname, fuserFio, fuserEmail, fdate, fpath) {
+                document.getElementById('fname').innerHTML = fname;
+                document.getElementById('fuser').innerHTML = fuserFio + " / " + fuserEmail;
+                document.getElementById('fpath').innerHTML = fpath;
+                document.getElementById('fdate').innerHTML = fdate;
+                document.getElementById('fileInfo').hidden = false;
+
+            }
+        </script>
         @if (grant)
         {
-            //Добавить возможность показать-скрыть форму загрузки
-        <form method="post" asp-controller="DisciplineDetails" asp-action="UploadFile" enctype="multipart/form-data">
-            <input type="hidden" name="id" value="@Model.DisciplineId"/>
-            <input type="hidden" name="user" value="@User.Identity.Name"/>
-            <input type="file" name="upload" /><br>
-            <input type="radio" name="tag" value="lection" checked="checked"/>Лекция<br>
-            <input type="radio" name="tag" value="practice"/>Практика<br>
-            <button type="submit">Загрузить</button>
-        </form>
+            <button class="btn btn-secondary btn-sm" id="uploadBtn" style="margin-top:5px" onclick="ShowHideUploadForm()">Загрузить файл</button>
+            <div id="uploadForm" class="alert alert-info" role="alert" hidden="hidden" style="width:50%">
+                <form method="post" asp-controller="DisciplineDetails" asp-action="UploadFile" enctype="multipart/form-data">
+                    <input type="hidden" name="id" value="@Model.DisciplineId" />
+                    <input type="hidden" name="user" value="@User.Identity.Name" />
+                    <input type="file" name="upload" /><br>
+                    <input type="radio" name="tag" value="lection" checked="checked" />Лекция<br>
+                    <input type="radio" name="tag" value="practice" />Практика<br>
+                    <button class="btn btn-primary btn-sm" type="submit" style="margin-top:5px">Загрузить</button>
+                    <button class="btn btn-secondary btn-sm" style="margin-top:5px" onclick="ShowHideUploadForm()">Скрыть</button>
+                </form>
+            </div>
+            <script>
+                let isHidden = true;
+                function ShowHideUploadForm() {
+                    document.getElementById('uploadForm').hidden = !isHidden;
+                    document.getElementById('uploadBtn').hidden = isHidden;
+                    isHidden = !isHidden;
+                }
+            </script>
+            <a class="btn btn-sm btn-primary" style="position:absolute; top:10%;right:3%" asp-controller="Disciplines" asp-action="Edit" asp-route-DiscId="@Model.DisciplineId">Изменить</a>
         }
-        <ul id="myUL">
-            <li>
-                <span class="caret">Лекции</span>
-                <ul class="nested">
-
-                    @foreach (var f in Model.LectionFiles) 
-                    { 
-                        
-                          <li>
-                              <form method="post" asp-controller="DisciplineDetails" asp-action="DeleteFile" asp-route-FileId="@f.Id">
-                                  <a asp-controller="DisciplineDetails" asp-route-FileId="@f.Id" asp-action="DownloadFile">@f.Name</a>
-                                  @if(grant)
-                                  {
-                              <button type="submit" class="btn btn-sm btn-danger" id="circleBtn">
-                                  &#128936;
-                              </button>
-                                  }
-                              </form>
-                          </li>
-                    }
-
-                </ul>
-            </li>
-            <li>
-                <span class="caret">Практики</span>
-                <ul class="nested">
-                    @* Практики *@
-                    <li>TestPrac</li>
-                </ul>
-            </li>
-        </ul>
     </div>
     <div class="d-info">
         <h4>Дополнительная информация</h4>
-        <textarea  id="InfoTextArea" disabled="disabled">
+        <textarea id="InfoTextArea" disabled="disabled">
 @Model.DisciplineInfo</textarea>
         @*<p style="white-space:pre">@Model.DisciplineInfo</p>*@
     </div>
 </div>
 <script>
     var toggler = document.getElementsByClassName("caret");
-var i;
+    var i;
 
-for (i = 0; i < toggler.length; i++) {
-  toggler[i].addEventListener("click", function() {
-    this.parentElement.querySelector(".nested").classList.toggle("active");
-    this.classList.toggle("caret-down");
-  });
-}
-    </script>
+    for (i = 0; i < toggler.length; i++) {
+        toggler[i].addEventListener("click", function () {
+            this.parentElement.querySelector(".nested").classList.toggle("active");
+            this.classList.toggle("caret-down");
+        });
+    }
+</script>

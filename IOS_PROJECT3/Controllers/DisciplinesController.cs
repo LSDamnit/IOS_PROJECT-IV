@@ -156,7 +156,7 @@ namespace IOS_PROJECT3.Controllers
                 await DBContext.SaveChangesAsync();
                 return RedirectToAction("Index", new { SpecId = model.SpecialityId });
             }
-            ModelState.AddModelError("Edit", "Error in department edit");
+            ModelState.AddModelError("Edit", "Error in discipline edit");
             return View(model);
         }
 
