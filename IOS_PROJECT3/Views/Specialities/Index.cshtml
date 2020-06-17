@@ -5,6 +5,7 @@
     @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || User.IsInRole("Admin"))
     {
         <a style="margin-bottom:15px" asp-controller="Specialities" asp-route-DepId="@Model.DepartmentId" asp-action="Create">Добавить специальность</a>
+        <a class="btn btn-secondary btn-sm" style="position:absolute; top:10%; right:3%" asp-controller="Message" asp-action="Index" asp-all-route-data='new Dictionary<string,string> { { "ContainerType", "Department" }, {"ContainerId", Model.DepartmentId }, { "SenderEmail", User.Identity.Name } }'>Массовая рассылка</a>
     }
     <table class="table">
         <tr><td><b>Специальность</b></td></tr>

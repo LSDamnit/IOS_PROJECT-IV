@@ -48,7 +48,7 @@ namespace IOS_PROJECT3.Controllers
                     var inst = await (from i in DBContext.Institutions.Include(s => s.Departments).Include(m => m.Manager)
                                       where i.Id.ToString() == model.ContainerId
                                       select i).FirstOrDefaultAsync();
-                    var deps = await (from d in DBContext.Departments.Include(h => h.HeadTeacher)
+                    var deps = await (from d in DBContext.Departments.Include(h => h.HeadTeacher).Include(s=>s.Specialities)
                                       where inst.Departments.Contains(d)
                                       select d).ToListAsync();
                     if (model.SendToStaff)
@@ -68,10 +68,14 @@ namespace IOS_PROJECT3.Controllers
                         }
                         foreach (var spec in specs)
                         {
-                            foreach (var stud in spec.Students)
+                            if(model.SendToStudents)
                             {
-                                model.Receivers.Add(stud);
+                                foreach (var stud in spec.Students)
+                                {
+                                    model.Receivers.Add(stud);
+                                }
                             }
+                            
                             if (model.SendToStaff)
                             {
                                 var discs = await (from di in DBContext.Disciplines.Include(t => t.Teacher)
@@ -103,10 +107,14 @@ namespace IOS_PROJECT3.Controllers
                                        select s).ToListAsync();
                     foreach (var spec in specs)
                     {
-                        foreach (var stud in spec.Students)
+                        if(model.SendToStudents)
                         {
-                            model.Receivers.Add(stud);
+                            foreach (var stud in spec.Students)
+                            {
+                                model.Receivers.Add(stud);
+                            }
                         }
+                        
                         if (model.SendToStaff)
                         {
                             var discs = await (from di in DBContext.Disciplines.Include(t => t.Teacher)
@@ -126,9 +134,12 @@ namespace IOS_PROJECT3.Controllers
                     var spec = await (from s in DBContext.Specialities.Include(s => s.Students).Include(di => di.Disciplines)
                                       where s.Id.ToString() == model.ContainerId
                                       select s).FirstOrDefaultAsync();
-                    foreach (var stud in spec.Students)
+                    if(model.SendToStudents)
                     {
-                        model.Receivers.Add(stud);
+                        foreach (var stud in spec.Students)
+                        {
+                            model.Receivers.Add(stud);
+                        }
                     }
                     if (model.SendToStaff)
                     {
@@ -150,14 +161,23 @@ namespace IOS_PROJECT3.Controllers
                     var spec = await (from s in DBContext.Specialities.Include(d => d.Disciplines).Include(s => s.Students)
                                       where s.Disciplines.Contains(disc)
                                       select s).FirstOrDefaultAsync();
-                    foreach (var stud in spec.Students)
+                    if(model.SendToStaff)
                     {
-                        model.Receivers.Add(stud);
+                        if (disc.Teacher.Email.ToLower() != model.SenderEmail)
+                            model.Receivers.Add(disc.Teacher);
                     }
+                    if(model.SendToStudents)
+                    {
+                        foreach (var stud in spec.Students)
+                        {
+                            model.Receivers.Add(stud);
+                        }
+                    }
+                    
                 }
                 else if (model.ContainerType == "All")
                 {
-                    if (model.SendToStaff)
+                    if (model.SendToStaff&&model.SendToStudents)
                     {
                         var users = await UserManager.Users.ToListAsync();
                         foreach (var u in users)
@@ -166,12 +186,26 @@ namespace IOS_PROJECT3.Controllers
                                 model.Receivers.Add(u);
                         }
                     }
-                    else
+                    else if(model.SendToStudents&&!model.SendToStaff)
                     {
                         var users = await UserManager.GetUsersInRoleAsync("Student");
                         foreach (var u in users)
                         {
                             model.Receivers.Add(u);
+                        }
+                    }
+                    else if(model.SendToStaff)
+                    {
+                        var teachers= await UserManager.GetUsersInRoleAsync("Teacher");
+                        var managers = await UserManager.GetUsersInRoleAsync("Manager");
+                        var admins = await UserManager.GetUsersInRoleAsync("Admin");
+                        List<EUser> union = new List<EUser>(teachers);
+                        union.AddRange(managers);
+                        union.AddRange(admins);
+                        foreach (var u in union)
+                        {
+                            if (u.Email.ToLower() != model.SenderEmail)
+                                model.Receivers.Add(u);
                         }
                     }
 
@@ -193,7 +227,7 @@ namespace IOS_PROJECT3.Controllers
             }
             catch(Exception e)
             {
-                return RedirectToAction("Fail", new { Reason = e.Message });
+                return RedirectToAction("Fail", new { Reason = "Пустое письмо не может быть отправлено\n"+e.Message});//e.Message });
             }
             return RedirectToAction("Fail", new{ Reason="Нет ни одного получателя" });
         }
@@ -204,7 +238,8 @@ namespace IOS_PROJECT3.Controllers
         }
         public IActionResult Fail(string Reason)
         {
-            return View(Reason);
+            ViewBag.Reason = Reason;
+            return View();
         }
     }
 }

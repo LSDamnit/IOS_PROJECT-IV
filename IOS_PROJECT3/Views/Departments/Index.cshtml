@@ -5,7 +5,10 @@
     @if ((User.IsInRole("Manager") && User.Identity.Name == Model.ManagerEmail)||User.IsInRole("Admin"))
     {
         <a style="margin-bottom:15px" asp-controller="Departments" asp-route-InstId="@Model.InstitutionId" asp-action="Create">Добавить кафедру</a>
+        <a class="btn btn-secondary btn-sm" style="position:absolute; top:10%; right:3%" asp-controller="Message" asp-action="Index" asp-all-route-data='new Dictionary<string,string> { { "ContainerType", "Institution" }, {"ContainerId", Model.InstitutionId }, { "SenderEmail", User.Identity.Name } }'>Массовая рассылка</a>
     }
+
+
     <table class="table">
         <tr><td><b>Кафедра</b></td><td><b>Заведующий</b></td>@*<td><b>Управление</b></td*@</tr>
         @foreach (var dep in Model.Departments)

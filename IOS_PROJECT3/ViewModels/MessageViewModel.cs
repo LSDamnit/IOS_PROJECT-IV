@@ -15,6 +15,7 @@ namespace IOS_PROJECT3.ViewModels
         public string SenderEmail { get; set; }
        // public string SenderRole { get; set; }
         public bool SendToStaff { get; set; }
+        public bool SendToStudents { get; set; }
         public IList<EUser> Receivers { get; set; }
     }
 }

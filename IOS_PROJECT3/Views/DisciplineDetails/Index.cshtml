@@ -215,6 +215,7 @@
                 }
             </script>
             <a class="btn btn-sm btn-primary" style="position:absolute; top:10%;right:3%" asp-controller="Disciplines" asp-action="Edit" asp-route-DiscId="@Model.DisciplineId">Изменить</a>
+            <a class="btn btn-secondary btn-sm" style="position:absolute; top:15%; right:3%" asp-controller="Message" asp-action="Index" asp-all-route-data='new Dictionary<string,string> { { "ContainerType", "Discipline" }, {"ContainerId", Model.DisciplineId }, { "SenderEmail", User.Identity.Name } }'>Массовая рассылка</a>
         }
     </div>
     <div class="d-info">
