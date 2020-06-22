@@ -20,25 +20,26 @@ namespace IOS_PROJECT3.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             if(!User.Identity.IsAuthenticated)
             {
-                UserPageViewModel model = new UserPageViewModel()
-                {
-                    Institutions = DBContext.Institutions.ToList()
-                };
+                UserPageViewModel model = new UserPageViewModel(DBContext);
+                
                 return View(model);
             }
             else
             {
-                UserPageViewModel model = new UserPageViewModel()
+                UserPageViewModel model = new UserPageViewModel(DBContext)
                 {
                     UserFIO = (from usr in DBContext.Users
                                where usr.Email == User.Identity.Name
                                select usr.FIO).FirstOrDefault(),
-                    Institutions = DBContext.Institutions.ToList()
+                    UserId = (from usr in DBContext.Users
+                               where usr.Email == User.Identity.Name
+                               select usr.Id).FirstOrDefault()
                 };
+                await model.CheckAblesAsync();
                 return View(model);
             }
             

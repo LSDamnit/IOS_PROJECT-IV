@@ -216,8 +216,8 @@ namespace IOS_PROJECT3.Controllers
                     List<string> Remails = new List<string>();
                     foreach (var r in model.Receivers)
                         Remails.Add(r.Email);
-                    model.Message += "\n" +
-                        "<Отправлено из системы ИОС СГТУ. Не отвечайте на это сообщение, ответ не дойдет до отправителя>";
+                    model.Message += "<br>" +
+                        "<b><Отправлено из системы ИОС СГТУ. Не отвечайте на это сообщение, ответ не дойдет до отправителя></b>";
                     await ES.SendEmailAsync(Remails.ToArray(), model.Subject, model.Message);
                     Remails.Clear();
                     foreach (var r in model.Receivers)

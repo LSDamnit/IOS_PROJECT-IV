@@ -4,42 +4,114 @@
 @model IOS_PROJECT3.ViewModels.UserPageViewModel
 @if (User.Identity.IsAuthenticated)
 {
+    
     <div class="grid-container container-fluid">
         <div class="institutes">
             @foreach (var inst in Model.Institutions)
             {
-                
-            <a style="display:block; margin-bottom:10px"asp-controller="Departments" asp-action="Index" asp-route-InstId="@inst.Id">@inst.Name</a>
+
+                <a style="display:block; margin-bottom:10px" asp-controller="Departments" asp-action="Index" asp-route-InstId="@inst.Id">@inst.Name</a>
             }
         </div>
         <div class="p-info">
-      <p style="position:absolute; right:3%">Добро пожаловать, @Model.UserFIO</p>
+            <p style="position:absolute; right:3%">Добро пожаловать, @Model.UserFIO</p>
         </div>
         <div class="personal-panel">
             @if (User.Identity.IsAuthenticated)
             {
-                if (!User.IsInRole("Student"))
+                <h5 style="position:relative; margin-right:3%">Вам доступны действия:</h5>
+
+                if (User.IsInRole("Student"))
                 {
-                    if (User.IsInRole("Admin"))
-                    {
-                        <h5 style="position:relative; margin-right:3%">Вам доступны действия:</h5>
+                    <div id="RoleBlock" style="margin-top:10px;margin-bottom:10px">
+                        <h6 style="position:relative; margin-right:3%">Как студенту:</h6>
+                        @if (Model.OwnSpeciality_S != null)
+                        {
+                            <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Disciplines" asp-action="Index" asp-route-SpecId="@Model.OwnSpeciality_S.Id">К специальности @Model.OwnSpeciality_S.Name</a>
+                        }
+                    </div>
+                }
+
+                if (User.IsInRole("Admin"))
+                {
+                    <div id="RoleBlock" style="margin-top:10px;margin-bottom:10px">
+                        <h6 style="position:relative; margin-right:3%">Как администратору:</h6>
                         <a class="btn btn-secondary" style="margin-top:5px" asp-controller="UsersAdmin" asp-action="Index" value="Список пользователей">Список пользователей</a>
                         <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Roles" asp-action="Index" value="Список ролей">Список ролей</a>
                         <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Institutions" asp-action="Index" value="Список институтов">Управление институтами</a>
                         <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Message" asp-action="Index" asp-all-route-data='new Dictionary<string,string> { { "ContainerType", "All" }, {"ContainerId", "None" }, { "SenderEmail", User.Identity.Name } }'>Массовая рассылка</a>
-                    };
-                    if (User.IsInRole("Teacher"))
-                    {
+                        <br>
+                    </div>
+                };
 
-                    };
-                    if (User.IsInRole("Manager"))
-                    {
 
-                    };
-                }
+                if (User.IsInRole("Teacher"))
+                {
+                    <div id="RoleBlock" style="margin-top:10px;margin-bottom:10px">
+                        <h6 style="position:relative; margin-right:3%">Как учителю:</h6>
+                        @if (Model.OwnDiscilpines_T.Count > 0)
+                        {
+                            <script>
+                                var isHidden = true;
+                                function ShowHide() {
+                                    document.getElementById('DiscList').hidden = !isHidden;
+                                    document.getElementById('DiscBtn').hidden = isHidden;
+                                    isHidden = !isHidden;
+                                }
+                            </script>
+                            <button style="margin-bottom:10px;" id="DiscBtn" class="btn btn-secondary btn-sm" onclick="ShowHide()">Преподаваемые вами дисциплины</button>
+                            <br>
+                            <div id="DiscList" hidden="hidden" class="alert alert-info" role="alert">
+                                <button style="margin-bottom:10px;" class="btn btn-outline-secondary btn-sm" onclick="ShowHide()">Скрыть список</button>
+                                @foreach (var di in Model.OwnDiscilpines_T)
+                                {
+                                    <p><a asp-controller="DisciplineDetails" asp-action="Index" asp-route-DiscId="@di.Id">@di.Name</a></p>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p>Вы не преподаете ни одной дисциплины</p>
+                        }
+                    </div>
+                };
+
+                if (User.IsInRole("Manager"))
+                {
+        <div id="RoleBlock" style="margin-top:10px;margin-bottom:10px">
+            <h6 style="position:relative; margin-right:3%">Как менеджеру:</h6>
+            @if (Model.OwnInstitutions_M.Count > 0)
+            {
+                <script>
+                    var isBlockHidden = true;
+                    function ShowHideInstList() {
+                        document.getElementById('InstList').hidden = !isBlockHidden;
+                        document.getElementById('InstBtn').hidden = isBlockHidden;
+                        isBlockHidden = !isBlockHidden;
+                    }
+                </script>
+                <button style="margin-bottom:10px;" id="InstBtn" class="btn btn-secondary btn-sm" onclick="ShowHideInstList()">Институты под вашим управлением</button>
+                <br>
+                <div id="InstList" hidden="hidden" class="alert alert-info" role="alert">
+                    <button style="margin-bottom:10px;" class="btn btn-outline-secondary btn-sm" onclick="ShowHideInstList()">Скрыть список</button>
+                    @foreach (var di in Model.OwnInstitutions_M)
+                    {
+                        <p><a asp-controller="Departments" asp-action="Index" asp-route-InstId="@di.Id">@di.Name</a></p>
+                    }
+                </div>
+            }
+            else
+            {
+                <p>Вы управляете ни одним институтом</p>
             }
         </div>
-    </div>
+
+                };
+
+
+                        }
+                    </div>
+                </div>
 }
 else
 {
