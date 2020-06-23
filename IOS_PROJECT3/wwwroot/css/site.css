@@ -72,22 +72,3 @@ body {
   height:30px;/* Vertically center the text there */
 }
 
-.grid-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-    gap: 1px 1px;
-    grid-template-areas: "institutes institutes institutes p-info" "institutes institutes institutes personal-panel" "institutes institutes institutes personal-panel";
-}
-
-.institutes {
-    grid-area: institutes;
-}
-
-.p-info {
-    grid-area: p-info;
-}
-
-.personal-panel {
-    grid-area: personal-panel;
-}
