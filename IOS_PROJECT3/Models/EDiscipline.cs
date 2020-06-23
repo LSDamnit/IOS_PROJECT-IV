@@ -15,5 +15,6 @@ namespace IOS_PROJECT3.Models
         public int PracticeH { get; set; }
         public string About { get; set; }
         public virtual List<EFile> Files { get; set; }
+        public ESpeciality Speciality { get; set; }
     }
 }

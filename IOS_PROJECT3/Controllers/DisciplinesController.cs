@@ -17,12 +17,12 @@ namespace IOS_PROJECT3.Controllers
     {
         private DBMergedContext DBContext;
         UserManager<EUser> userManager;
-        IWebHostEnvironment enviroment;
-        public DisciplinesController(DBMergedContext context, UserManager<EUser> userManager, IWebHostEnvironment enviroment)
+        IWebHostEnvironment environment;
+        public DisciplinesController(DBMergedContext context, UserManager<EUser> userManager, IWebHostEnvironment environment)
         {
             DBContext = context;
             this.userManager = userManager;
-            this.enviroment = enviroment;
+            this.environment = environment;
         }
         public async Task<IActionResult> Index(string SpecId)
         {
@@ -172,6 +172,9 @@ namespace IOS_PROJECT3.Controllers
                                   select i).FirstOrDefaultAsync();
                 DBContext.Remove(disc);
                 await DBContext.SaveChangesAsync();
+                DisciplineFilesChecker checker = new DisciplineFilesChecker();
+                checker.Check(environment, DBContext);
+
                 return RedirectToAction("Index", new { SpecId = spec.Id });
             }
             return RedirectToAction("Index", "Home");
@@ -351,12 +354,12 @@ namespace IOS_PROJECT3.Controllers
                     if (!path.EndsWith(".xlsx"))
                         throw new Exception("File is not .xlsx file");
 
-                    using (var fileStream = new FileStream(enviroment.WebRootPath + path, FileMode.Create))
+                    using (var fileStream = new FileStream(environment.WebRootPath + path, FileMode.Create))
                     {
                         await uploadedFile.CopyToAsync(fileStream);
                     }
                     // RegFile filereg = new RegFile { Name = uploadedFile.FileName, Path = enviroment.WebRootPath + path };
-                    return RedirectToAction("MassRegistration", new { Path = (enviroment.WebRootPath + path), Id=SpecId });
+                    return RedirectToAction("MassRegistration", new { Path = (environment.WebRootPath + path), Id=SpecId });
                 }
             }
             catch (Exception e)

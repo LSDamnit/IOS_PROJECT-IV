@@ -15,7 +15,7 @@ namespace IOS_PROJECT3.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.4")
+                .HasAnnotation("ProductVersion", "3.1.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -26,20 +26,20 @@ namespace IOS_PROJECT3.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("EInstitutionId")
-                        .HasColumnType("int");
-
                     b.Property<string>("HeadTeacherId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("InstitutionId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EInstitutionId");
-
                     b.HasIndex("HeadTeacherId");
+
+                    b.HasIndex("InstitutionId");
 
                     b.ToTable("Departments");
                 });
@@ -54,9 +54,6 @@ namespace IOS_PROJECT3.Migrations
                     b.Property<string>("About")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ESpecialityId")
-                        .HasColumnType("int");
-
                     b.Property<string>("ExamType")
                         .HasColumnType("nvarchar(max)");
 
@@ -69,12 +66,15 @@ namespace IOS_PROJECT3.Migrations
                     b.Property<int>("PracticeH")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SpecialityId")
+                        .HasColumnType("int");
+
                     b.Property<string>("TeacherId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ESpecialityId");
+                    b.HasIndex("SpecialityId");
 
                     b.HasIndex("TeacherId");
 
@@ -91,7 +91,7 @@ namespace IOS_PROJECT3.Migrations
                     b.Property<string>("DateLoad")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("EDisciplineId")
+                    b.Property<int?>("DisciplineId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -108,7 +108,7 @@ namespace IOS_PROJECT3.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EDisciplineId");
+                    b.HasIndex("DisciplineId");
 
                     b.HasIndex("UserLoadId");
 
@@ -142,7 +142,7 @@ namespace IOS_PROJECT3.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("EDepartmentId")
+                    b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -150,7 +150,7 @@ namespace IOS_PROJECT3.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EDepartmentId");
+                    b.HasIndex("DepartmentId");
 
                     b.ToTable("Specialities");
                 });
@@ -166,9 +166,6 @@ namespace IOS_PROJECT3.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ESpecialityId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(256)")
@@ -206,6 +203,9 @@ namespace IOS_PROJECT3.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("SpecialityId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -215,8 +215,6 @@ namespace IOS_PROJECT3.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ESpecialityId");
-
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
 
@@ -224,6 +222,8 @@ namespace IOS_PROJECT3.Migrations
                         .IsUnique()
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("SpecialityId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -361,20 +361,22 @@ namespace IOS_PROJECT3.Migrations
 
             modelBuilder.Entity("IOS_PROJECT3.Models.EDepartment", b =>
                 {
-                    b.HasOne("IOS_PROJECT3.Models.EInstitution", null)
-                        .WithMany("Departments")
-                        .HasForeignKey("EInstitutionId");
-
                     b.HasOne("IOS_PROJECT3.Models.EUser", "HeadTeacher")
                         .WithMany()
                         .HasForeignKey("HeadTeacherId");
+
+                    b.HasOne("IOS_PROJECT3.Models.EInstitution", "Institution")
+                        .WithMany("Departments")
+                        .HasForeignKey("InstitutionId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("IOS_PROJECT3.Models.EDiscipline", b =>
                 {
-                    b.HasOne("IOS_PROJECT3.Models.ESpeciality", null)
+                    b.HasOne("IOS_PROJECT3.Models.ESpeciality", "Speciality")
                         .WithMany("Disciplines")
-                        .HasForeignKey("ESpecialityId");
+                        .HasForeignKey("SpecialityId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("IOS_PROJECT3.Models.EUser", "Teacher")
                         .WithMany()
@@ -383,9 +385,10 @@ namespace IOS_PROJECT3.Migrations
 
             modelBuilder.Entity("IOS_PROJECT3.Models.EFile", b =>
                 {
-                    b.HasOne("IOS_PROJECT3.Models.EDiscipline", null)
+                    b.HasOne("IOS_PROJECT3.Models.EDiscipline", "Discipline")
                         .WithMany("Files")
-                        .HasForeignKey("EDisciplineId");
+                        .HasForeignKey("DisciplineId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("IOS_PROJECT3.Models.EUser", "UserLoad")
                         .WithMany()
@@ -401,16 +404,18 @@ namespace IOS_PROJECT3.Migrations
 
             modelBuilder.Entity("IOS_PROJECT3.Models.ESpeciality", b =>
                 {
-                    b.HasOne("IOS_PROJECT3.Models.EDepartment", null)
+                    b.HasOne("IOS_PROJECT3.Models.EDepartment", "Department")
                         .WithMany("Specialities")
-                        .HasForeignKey("EDepartmentId");
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("IOS_PROJECT3.Models.EUser", b =>
                 {
-                    b.HasOne("IOS_PROJECT3.Models.ESpeciality", null)
+                    b.HasOne("IOS_PROJECT3.Models.ESpeciality", "Speciality")
                         .WithMany("Students")
-                        .HasForeignKey("ESpecialityId");
+                        .HasForeignKey("SpecialityId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

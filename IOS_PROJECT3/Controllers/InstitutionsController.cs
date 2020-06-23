@@ -7,6 +7,7 @@ using IOS_PROJECT3.Models;
 using IOS_PROJECT3.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Hosting;
 
 namespace IOS_PROJECT3.Controllers
 {
@@ -14,10 +15,12 @@ namespace IOS_PROJECT3.Controllers
     {
         private DBMergedContext DBContext;
         private UserManager<EUser> UserManager;
-        public InstitutionsController(DBMergedContext context, UserManager<EUser> manager)
+        IWebHostEnvironment environment;
+        public InstitutionsController(DBMergedContext context, UserManager<EUser> manager, IWebHostEnvironment environment)
         {
             DBContext = context;
             UserManager = manager;
+            this.environment = environment;
         }
         public  IActionResult Index()
         {
@@ -85,6 +88,8 @@ namespace IOS_PROJECT3.Controllers
             DBContext.Remove(inst);
            // DBContext.Institutions.Find(inst).En
             await DBContext.SaveChangesAsync();
+            DisciplineFilesChecker checker = new DisciplineFilesChecker();
+            checker.Check(environment, DBContext);
             return RedirectToAction("Index");
         }
 

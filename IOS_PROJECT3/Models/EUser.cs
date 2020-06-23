@@ -8,5 +8,6 @@ namespace IOS_PROJECT3.Models
     public class EUser:IdentityUser
     {
         public string FIO { get; set; }
+        public ESpeciality Speciality { get; set; }
     }
 }

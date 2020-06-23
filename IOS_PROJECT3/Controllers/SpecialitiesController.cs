@@ -7,16 +7,19 @@ using IOS_PROJECT3.Models;
 using IOS_PROJECT3.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Hosting;
 
 namespace IOS_PROJECT3.Controllers
 {
     public class SpecialitiesController : Controller
     {
         private DBMergedContext DBContext;
+        IWebHostEnvironment environment;
        // private UserManager<EUser> UserManager;
-        public SpecialitiesController(DBMergedContext context)
+        public SpecialitiesController(DBMergedContext context, IWebHostEnvironment environment)
         {
             DBContext = context;
+            this.environment = environment;
            // UserManager = manager;
         }
         public async Task<IActionResult> Index(string DepId)
@@ -134,7 +137,9 @@ namespace IOS_PROJECT3.Controllers
                                   where i.Specialities.Contains(spec)
                                   select i).FirstOrDefaultAsync();
                 DBContext.Remove(spec);
-                await DBContext.SaveChangesAsync(); 
+                await DBContext.SaveChangesAsync();
+                DisciplineFilesChecker checker = new DisciplineFilesChecker();
+                checker.Check(environment, DBContext);
                 return RedirectToAction("Index", new { DepId = dep.Id });
             }
             return RedirectToAction("Index", "Home");

@@ -11,5 +11,6 @@ namespace IOS_PROJECT3.Models
         public string Name { get; set; }
         public virtual EUser HeadTeacher { get; set; }
         public virtual List<ESpeciality> Specialities { get; set; }
+        public EInstitution Institution { get; set; }
     }
 }

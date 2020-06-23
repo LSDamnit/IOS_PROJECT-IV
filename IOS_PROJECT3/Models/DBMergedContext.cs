@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace IOS_PROJECT3.Models
 {
@@ -20,6 +21,35 @@ namespace IOS_PROJECT3.Models
            : base(options)
         {
             Database.EnsureCreated();
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<EInstitution>()
+                .HasMany(d => d.Departments)
+                .WithOne(i=>i.Institution)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<EDepartment>()
+                .HasMany(d => d.Specialities)
+                .WithOne(d=>d.Department)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ESpeciality>()
+                .HasMany(d => d.Disciplines)
+                .WithOne(d=>d.Speciality)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ESpeciality>()
+                .HasMany(s => s.Students)
+                .WithOne(s=>s.Speciality)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<EDiscipline>()
+                .HasMany(d => d.Files)
+                .WithOne(d=>d.Discipline)
+                .OnDelete(DeleteBehavior.Cascade);
+            
         }
     }
 }

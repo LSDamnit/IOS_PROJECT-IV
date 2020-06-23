@@ -13,5 +13,6 @@ namespace IOS_PROJECT3.Models
         public string Tag { get; set; }//lections/practice
         public virtual EUser UserLoad { get; set; }
         public  string DateLoad { get; set; }
+        public EDiscipline Discipline { get; set; }
     }
 }

@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\DisciplineFiles\id1\lection\" />
     <Folder Include="wwwroot\RegFiles\" />
     <Folder Include="wwwroot\RegToSpecialityFiles\" />
     <Folder Include="wwwroot\DisciplineFiles\" />

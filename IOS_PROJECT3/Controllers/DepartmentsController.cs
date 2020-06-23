@@ -7,6 +7,7 @@ using IOS_PROJECT3.Models;
 using IOS_PROJECT3.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Hosting;
 
 namespace IOS_PROJECT3.Controllers
 {
@@ -14,10 +15,12 @@ namespace IOS_PROJECT3.Controllers
     {
         private DBMergedContext DBContext;
         private UserManager<EUser> UserManager;
-        public DepartmentsController(DBMergedContext context, UserManager<EUser> manager)
+        IWebHostEnvironment environment;
+        public DepartmentsController(DBMergedContext context, UserManager<EUser> manager, IWebHostEnvironment environment)
         {
             DBContext = context;
             UserManager = manager;
+            this.environment = environment;
         }
         public async Task<IActionResult> Index(string InstId)
         {
@@ -143,6 +146,8 @@ namespace IOS_PROJECT3.Controllers
                                   select i).FirstOrDefaultAsync();
                 DBContext.Remove(dep);
                 await DBContext.SaveChangesAsync();
+                DisciplineFilesChecker checker = new DisciplineFilesChecker();
+                checker.Check(environment, DBContext);
                 return RedirectToAction("Index", new { InstId = inst.Id });
             }
             return RedirectToAction("Index", "Home");

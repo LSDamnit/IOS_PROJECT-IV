@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IOS_PROJECT3.Migrations
 {
-    public partial class ReInitF2 : Migration
+    public partial class CascadeAndSetNullAdded : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -111,7 +111,7 @@ namespace IOS_PROJECT3.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
                     HeadTeacherId = table.Column<string>(nullable: true),
-                    EInstitutionId = table.Column<int>(nullable: true)
+                    InstitutionId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -125,17 +125,17 @@ namespace IOS_PROJECT3.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
-                    EDepartmentId = table.Column<int>(nullable: true)
+                    DepartmentId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Specialities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Specialities_Departments_EDepartmentId",
-                        column: x => x.EDepartmentId,
+                        name: "FK_Specialities_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
                         principalTable: "Departments",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -158,17 +158,17 @@ namespace IOS_PROJECT3.Migrations
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
                     FIO = table.Column<string>(nullable: true),
-                    ESpecialityId = table.Column<int>(nullable: true)
+                    SpecialityId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_Specialities_ESpecialityId",
-                        column: x => x.ESpecialityId,
+                        name: "FK_AspNetUsers_Specialities_SpecialityId",
+                        column: x => x.SpecialityId,
                         principalTable: "Specialities",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -183,17 +183,17 @@ namespace IOS_PROJECT3.Migrations
                     LectionH = table.Column<int>(nullable: false),
                     PracticeH = table.Column<int>(nullable: false),
                     About = table.Column<string>(nullable: true),
-                    ESpecialityId = table.Column<int>(nullable: true)
+                    SpecialityId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Disciplines", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Disciplines_Specialities_ESpecialityId",
-                        column: x => x.ESpecialityId,
+                        name: "FK_Disciplines_Specialities_SpecialityId",
+                        column: x => x.SpecialityId,
                         principalTable: "Specialities",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Disciplines_AspNetUsers_TeacherId",
                         column: x => x.TeacherId,
@@ -233,17 +233,17 @@ namespace IOS_PROJECT3.Migrations
                     Tag = table.Column<string>(nullable: true),
                     UserLoadId = table.Column<string>(nullable: true),
                     DateLoad = table.Column<string>(nullable: true),
-                    EDisciplineId = table.Column<int>(nullable: true)
+                    DisciplineId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Files", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Files_Disciplines_EDisciplineId",
-                        column: x => x.EDisciplineId,
+                        name: "FK_Files_Disciplines_DisciplineId",
+                        column: x => x.DisciplineId,
                         principalTable: "Disciplines",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Files_AspNetUsers_UserLoadId",
                         column: x => x.UserLoadId,
@@ -280,11 +280,6 @@ namespace IOS_PROJECT3.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_ESpecialityId",
-                table: "AspNetUsers",
-                column: "ESpecialityId");
-
-            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "AspNetUsers",
                 column: "NormalizedEmail");
@@ -297,9 +292,9 @@ namespace IOS_PROJECT3.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Departments_EInstitutionId",
-                table: "Departments",
-                column: "EInstitutionId");
+                name: "IX_AspNetUsers_SpecialityId",
+                table: "AspNetUsers",
+                column: "SpecialityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Departments_HeadTeacherId",
@@ -307,9 +302,14 @@ namespace IOS_PROJECT3.Migrations
                 column: "HeadTeacherId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Disciplines_ESpecialityId",
+                name: "IX_Departments_InstitutionId",
+                table: "Departments",
+                column: "InstitutionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Disciplines_SpecialityId",
                 table: "Disciplines",
-                column: "ESpecialityId");
+                column: "SpecialityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Disciplines_TeacherId",
@@ -317,9 +317,9 @@ namespace IOS_PROJECT3.Migrations
                 column: "TeacherId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Files_EDisciplineId",
+                name: "IX_Files_DisciplineId",
                 table: "Files",
-                column: "EDisciplineId");
+                column: "DisciplineId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Files_UserLoadId",
@@ -332,9 +332,9 @@ namespace IOS_PROJECT3.Migrations
                 column: "ManagerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Specialities_EDepartmentId",
+                name: "IX_Specialities_DepartmentId",
                 table: "Specialities",
-                column: "EDepartmentId");
+                column: "DepartmentId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AspNetUserRoles_AspNetUsers_UserId",
@@ -377,12 +377,12 @@ namespace IOS_PROJECT3.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Departments_Institutions_EInstitutionId",
+                name: "FK_Departments_Institutions_InstitutionId",
                 table: "Departments",
-                column: "EInstitutionId",
+                column: "InstitutionId",
                 principalTable: "Institutions",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
