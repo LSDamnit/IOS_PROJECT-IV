@@ -194,32 +194,74 @@ namespace IOS_PROJECT3.Controllers
 
             return RedirectToAction("Index", new { SpecId = spec.Id });
         }
-        public async Task<IActionResult> AddStudent(string SpecId)
+        public IActionResult AddStudentUNF(string SpecId)
         {
-            AddStudentViewModel model = new AddStudentViewModel()
-            {
-                AvailableStudents = await userManager.GetUsersInRoleAsync("Student"),
-                context=DBContext,
-                TargetSpecId=SpecId
-            };
-            return View(model);
+           
+            return RedirectToAction("AddStudent", new { Filled = false, TSpecId=SpecId});
         }
-        [HttpPost]
-        public async Task<IActionResult> AddStudentFillData(AddStudentViewModel model)
+        public async Task<IActionResult> AddStudent(bool Filled, string TSpecId, string CSpecId, string CSpecName,
+            string uEmail, string uFIO)
         {
-            model.context = DBContext;
-            await model.FillDataAsync();
-            var user = await (from u in DBContext.Users where u.NormalizedEmail == model.Email.ToUpper() select u).FirstOrDefaultAsync();
-            if (user==null||!(await userManager.IsInRoleAsync(user, "Student")))
+            if(!Filled)
             {
-                ModelState.AddModelError("Not student", "User isn't in role 'Student'");
-                return RedirectToAction("AddStudent", new { SpecId = model.TargetSpecId });
+                ViewBag.Mode = "Unfilled";
+                AddStudentViewModel model1 = new AddStudentViewModel()
+                {
+                    AvailableStudents = await userManager.GetUsersInRoleAsync("Student"),
+                    context = DBContext,
+                    TargetSpecId = TSpecId
+                };
+                return View(model1);
             }
-            return View(model);
+            
+                ViewBag.Mode = "Filled";
+                AddStudentViewModel model2 = new AddStudentViewModel()
+                {
+                    AvailableStudents = await userManager.GetUsersInRoleAsync("Student"),
+                    context = DBContext,
+                    TargetSpecId = TSpecId,
+                    CurrentSpecId=CSpecId,
+                    CurrentSpec=CSpecName,
+                    FIO=uFIO,
+                    Email=uEmail
+                };
+                return View(model2);
+            
+            
+        }
+        /* public async Task<IActionResult> AddStudent(string SpecId)
+         {
+             AddStudentViewModel model = new AddStudentViewModel()
+             {
+                 AvailableStudents = await userManager.GetUsersInRoleAsync("Student"),
+                 context=DBContext,
+                 TargetSpecId=SpecId
+             };
+             ViewBag.Mode = "Unfilled";
+             return View(model);
+         }*/
+
+        [HttpPost]
+         public async Task<IActionResult> FillData(AddStudentViewModel model)
+         {
+             model.context = DBContext;
+             await model.FillDataAsync();
+             var user = await (from u in DBContext.Users where u.NormalizedEmail == model.Email.ToUpper() select u).FirstOrDefaultAsync();
+             if (user==null||!(await userManager.IsInRoleAsync(user, "Student")))
+             {
+                 ModelState.AddModelError("Not student", "User isn't in role 'Student'");
+                 return RedirectToAction("AddStudentUNF", new { SpecId = model.TargetSpecId });
+             }
+            //string TSpecId, string CSpecId, string CSpecName,
+           // string uEmail, string uFIO)
+           
+            return RedirectToAction("AddStudent", new { Filled = true, TSpecId=model.TargetSpecId,
+                CSpecId=model.CurrentSpecId, CSpecName=model.CurrentSpec, uEmail=model.Email, uFIO=model.FIO});
         }
         [HttpPost]
         public async Task<IActionResult> AddStudent(AddStudentViewModel model)
         {
+            var md = model;
             var student = await (from s in DBContext.Users
                                  where s.Email.ToLower() == model.Email.ToLower()
                                  select s).FirstOrDefaultAsync();

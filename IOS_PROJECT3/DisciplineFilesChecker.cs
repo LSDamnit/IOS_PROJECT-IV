@@ -13,23 +13,26 @@ namespace IOS_PROJECT3
 
         public void Check(IWebHostEnvironment env, DBMergedContext dbc)
         {
+            
             string checkpath = env.WebRootPath + "/DisciplineFiles/";
             string[] subdirs = Directory.GetDirectories(checkpath);
-
-            foreach(var dir in subdirs)
+            if (Directory.Exists(checkpath))
             {
-                if(dir.Replace(checkpath, "").StartsWith("id"))
-                {  
-                 var id = dir.Replace(checkpath,"").Remove(0, 2);
-                    EDiscipline disc = (from di in dbc.Disciplines
-                                              where di.Id.ToString() == id
-                                              select di).FirstOrDefault();
-                   if(disc==null)
+                foreach (var dir in subdirs)
+                {
+                    if (dir.Replace(checkpath, "").StartsWith("id"))
                     {
-                        Directory.Delete(dir, true);
+                        var id = dir.Replace(checkpath, "").Remove(0, 2);
+                        EDiscipline disc = (from di in dbc.Disciplines
+                                            where di.Id.ToString() == id
+                                            select di).FirstOrDefault();
+                        if (disc == null)
+                        {
+                            Directory.Delete(dir, true);
+                        }
                     }
                 }
-            }
+            }               
         }
     }
 }

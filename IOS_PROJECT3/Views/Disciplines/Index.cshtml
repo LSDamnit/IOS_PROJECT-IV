@@ -69,7 +69,7 @@
             <div style="margin-bottom:10px; margin-top:10px">
                 <label margin-right:5px;>Зачислить студентов из Excel файла </label><input type="checkbox" id="massRegCheck" name="Зачислить студентов из Excel файла" value="Зачислить студентов из Excel файла" />
             </div>
-            <a style="margin-bottom: 15px" asp-controller="Disciplines" id="singleReg" asp-route-SpecId="@Model.SpecialityId" asp-action="AddStudent">Зачислить студента</a>
+            <a style="margin-bottom: 15px" asp-controller="Disciplines" id="singleReg" asp-route-SpecId="@Model.SpecialityId" asp-action="AddStudentUNF">Зачислить студента</a>
             <div hidden="hidden" id="massReg" class="alert alert-primary">
                 <form style="font-size:70%" asp-action="AddFile" asp-route-SpecId="@Model.SpecialityId" asp-controller="Disciplines" method="post" enctype="multipart/form-data">
                     <input type="file" style="margin-bottom:5px; display:block;" name="uploadedFile" />

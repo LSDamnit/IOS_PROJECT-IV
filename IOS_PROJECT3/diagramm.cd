@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="IOS_PROJECT3.Controllers.AccountController">
+    <Position X="1" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAIAIAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Controllers\AccountController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IOS_PROJECT3.Controllers.DisciplinesController" Collapsed="true">
+    <Position X="5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAABAEAAAAAAgIAAAAAAAAAAAEAAEACAQMBAAIAAAA=</HashCode>
+      <FileName>Controllers\DisciplinesController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IOS_PROJECT3.ViewModels.AddStudentViewModel" Collapsed="true">
+    <Position X="6.5" Y="1" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AgACAAAAACAAAAAAAAAACAAAAAQEAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>ViewModels\AddStudentViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IOS_PROJECT3.ViewModels.UsersAdminViewModel" Collapsed="true">
+    <Position X="9.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAABA=</HashCode>
+      <FileName>ViewModels\UsersAdminViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

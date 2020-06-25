@@ -16,6 +16,7 @@ namespace IOS_PROJECT3.ViewModels
         }
         public IEnumerable<EUser> Users {get;set;}
         public IDictionary<EUser, string> WhyTitles { get; set; }
+
         public bool IsDeletable(EUser u)
         {
             var ins = (from i in DBC.Institutions.Include(m => m.Manager) where i.Manager.Id == u.Id select i.Id).Any();
