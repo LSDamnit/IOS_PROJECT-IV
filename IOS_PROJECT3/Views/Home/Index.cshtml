@@ -5,39 +5,37 @@
 @if (User.Identity.IsAuthenticated)
 {
     <style>
-        .table
-        {
-            font-size:85%!important; 
+        .table {
+            font-size: 85% !important;
         }
+
         .grid-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 2.5fr 2.5fr;
-    grid-gap: 1px 1px;
-    grid-template-areas: "institutes institutes institutes p-info" "institutes institutes institutes personal-panel" "institutes institutes institutes personal-panel";
-}
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-rows: 1fr 2.5fr 2.5fr;
+            grid-gap: 1px 1px;
+            grid-template-areas: "institutes institutes institutes p-info" "institutes institutes institutes personal-panel" "institutes institutes institutes personal-panel";
+        }
 
-.institutes {
-    grid-area: institutes;
-}
+        .institutes {
+            grid-area: institutes;
+        }
 
-.p-info {
-    grid-area: p-info;
-}
+        .p-info {
+            grid-area: p-info;
+        }
 
-.personal-panel {
-    grid-area: personal-panel;
-}
-
-        </style>
+        .personal-panel {
+            grid-area: personal-panel;
+        }
+    </style>
     <div class="grid-container container-fluid">
         <div class="institutes">
+            <h3>Институты университета СГТУ</h3>
             @foreach (var inst in Model.Institutions)
             {
 
-                <a style="        display: block;
-        margin-bottom: 10px
-" asp-controller="Departments" asp-action="Index" asp-route-InstId="@inst.Id">@inst.Name</a>
+                <a style="display: block;margin-bottom: 10px" asp-controller="Departments" asp-action="Index" asp-route-InstId="@inst.Id">@inst.Name</a>
             }
         </div>
         <div class="p-info">
@@ -90,13 +88,13 @@
                             <br>
                             <div id="DiscList" hidden="hidden" class="alert alert-info" role="alert">
                                 <button style="margin-bottom:10px;" class="btn btn-outline-secondary btn-sm" onclick="ShowHide()">Скрыть список</button>
-                                <table  class="table table-bordered">
+                                <table class="table table-bordered">
                                     <tr><th>Преподаваемые дисциплины</th></tr>
                                     @foreach (var di in Model.OwnDiscilpines_T)
                                     {
                                         <tr><td><a asp-controller="DisciplineDetails" asp-action="Index" asp-route-DiscId="@di.Id">@di.Name</a></td></tr>
                                     }
-                                    </table>
+                                </table>
                             </div>
                         }
                         else
@@ -108,52 +106,51 @@
 
                 if (User.IsInRole("Manager"))
                 {
-        <div id="RoleBlock" style="margin-top:10px;margin-bottom:10px">
-            <h6 style="position:relative; margin-right:3%">Как менеджеру:</h6>
-            @if (Model.OwnInstitutions_M.Count > 0)
-            {
-                <script>
-                    var isBlockHidden = true;
-                    function ShowHideInstList() {
-                        document.getElementById('InstList').hidden = !isBlockHidden;
-                        document.getElementById('InstBtn').hidden = isBlockHidden;
-                        isBlockHidden = !isBlockHidden;
-                    }
-                </script>
-                <button style="margin-bottom:10px;" id="InstBtn" class="btn btn-secondary btn-sm" onclick="ShowHideInstList()">Институты под вашим управлением</button>
-                <br>
-                <div id="InstList" hidden="hidden" class="alert alert-info" role="alert">
-                    <button style="margin-bottom:10px;" class="btn btn-outline-secondary btn-sm" onclick="ShowHideInstList()">Скрыть список</button>
-                    <table  class="table table-bordered">
-                        <tr><th>Управляемые институты</th></tr>
-                    @foreach (var di in Model.OwnInstitutions_M)
-                    {
-                        <tr><td><a asp-controller="Departments" asp-action="Index" asp-route-InstId="@di.Id">@di.Name</a></td></tr>
-                    }
-                        </table>
-                </div>
-            }
-            else
-            {
-                <p>Вы управляете ни одним институтом</p>
-            }
-        </div>
+                    <div id="RoleBlock" style="margin-top:10px;margin-bottom:10px">
+                        <h6 style="position:relative; margin-right:3%">Как менеджеру:</h6>
+                        @if (Model.OwnInstitutions_M.Count > 0)
+                        {
+                            <script>
+                                var isBlockHidden = true;
+                                function ShowHideInstList() {
+                                    document.getElementById('InstList').hidden = !isBlockHidden;
+                                    document.getElementById('InstBtn').hidden = isBlockHidden;
+                                    isBlockHidden = !isBlockHidden;
+                                }
+                            </script>
+                            <button style="margin-bottom:10px;" id="InstBtn" class="btn btn-secondary btn-sm" onclick="ShowHideInstList()">Институты под вашим управлением</button>
+                            <br>
+                            <div id="InstList" hidden="hidden" class="alert alert-info" role="alert">
+                                <button style="margin-bottom:10px;" class="btn btn-outline-secondary btn-sm" onclick="ShowHideInstList()">Скрыть список</button>
+                                <table class="table table-bordered">
+                                    <tr><th>Управляемые институты</th></tr>
+                                    @foreach (var di in Model.OwnInstitutions_M)
+                                    {
+                                        <tr><td><a asp-controller="Departments" asp-action="Index" asp-route-InstId="@di.Id">@di.Name</a></td></tr>
+                                    }
+                                </table>
+                            </div>
+                        }
+                        else
+                        {
+                            <p>Вы управляете ни одним институтом</p>
+                        }
+                    </div>
 
                 };
 
 
-                        }
-                    </div>
-                </div>
+            }
+        </div>
+    </div>
 }
 else
 {
+    <h3>Институты университета СГТУ</h3>
     foreach (var inst in Model.Institutions)
     {
-        <p>@inst.Name</p>
+        <a style="display: block;margin-bottom: 10px" asp-controller="Departments" asp-action="Index" asp-route-InstId="@inst.Id">@inst.Name</a>
+        @*<p>@inst.Name</p>*@
     }
 
-    //<a asp-controller="Account" asp-action="Login">Вход</a>
-    //<a asp-controller="UsersAdmin" asp-action="Index">Users</a>
-    // <a asp-controller="Roles" asp-action="Index">Roles</a>
 }

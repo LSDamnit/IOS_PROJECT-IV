@@ -1,25 +1,28 @@
-﻿@{ 
+﻿@{
     ViewBag.Title = "Успех";
 }
-@model List<string>
+@if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Teacher") || User.IsInRole("Manager")))
+{
+    @model List<string>
     <div class="alert alert-success" role="alert">
         <h3 style="margin-bottom:10px">Сообщения отправлены!</h3>
         <button class="btn btn-outline-info" onclick="ShowHideDetails()">Показать список получателей</button>
 
         <button class="btn btn-outline-primary" onClick="history.go(-2); return false;">Вернуться назад</button>
     </div>
-<div class="alert alert-info" role="alert" id="ReceiversList" hidden="hidden">
-    <button style="margin-bottom:5px" class="btn btn-outline-primary btn-sm" onclick="ShowHideDetails()">Скрыть</button>
-    <br>
-    @foreach(var u in Model)
-    {
-        <p>@u</p>
-    }
+    <div class="alert alert-info" role="alert" id="ReceiversList" hidden="hidden">
+        <button style="margin-bottom:5px" class="btn btn-outline-primary btn-sm" onclick="ShowHideDetails()">Скрыть</button>
+        <br>
+        @foreach (var u in Model)
+        {
+            <p>@u</p>
+        }
     </div>
-<script>
-    var isHidden = true;
-    function ShowHideDetails() {
-        document.getElementById('ReceiversList').hidden = !isHidden;
-        isHidden = !isHidden;
-    }
+    <script>
+        var isHidden = true;
+        function ShowHideDetails() {
+            document.getElementById('ReceiversList').hidden = !isHidden;
+            isHidden = !isHidden;
+        }
     </script>
+}

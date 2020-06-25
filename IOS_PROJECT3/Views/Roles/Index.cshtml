@@ -1,24 +1,27 @@
 ﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+{
+    <h2>Список ролей</h2>
+    <table class="table">
+        @foreach (var role in Model)
+        {
+            <tr>
+                <td>@role.Name</td>
+                <td>
+                    @if (role.Name != "Admin" && role.Name != "Student" && role.Name != "Teacher" && role.Name != "Manager")
+                    {
+                        <form asp-action="Delete" asp-route-roleId="@role.Id" method="post">
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                Удалить
+                            </button>
+                        </form>
+                    }
 
-<h2>Список ролей</h2>
-<table class="table">
-    @foreach (var role in Model)
-    {
-        <tr>
-            <td>@role.Name</td>
-            <td>
-                @if (role.Name != "Admin" && role.Name != "Student" && role.Name != "Teacher" && role.Name != "Manager") 
-                { 
-                <form asp-action="Delete" asp-route-roleId="@role.Id" method="post">
-                    <button type="submit" class="btn btn-sm btn-danger">
-                        Удалить
-                    </button>
-                </form>
-                }
-                
-            </td>
-        </tr>
-    }
-</table>
-<a asp-action="Create">Добавить роль</a>
+                </td>
+            </tr>
+        }
+    </table>
+    <a asp-action="Create">Добавить роль</a>
+}
+
 @*<a asp-action="UserList">Список пользователей</a>*@

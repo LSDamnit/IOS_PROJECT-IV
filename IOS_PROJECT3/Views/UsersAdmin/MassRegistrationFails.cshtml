@@ -2,21 +2,24 @@
 @{
     ViewBag.Title = "Ошибки массовой регистрации";
 }
-<h3>Не удалось зарегистрировать следующих пользователей:</h3>
-<div class="alert alert-warning" role="alert">
-    <table>
-        @foreach (var s in Model.FailedUsers)
-        {
-            <tr><td><p>@s</p><td></tr>
-        }
-    </table>
-</div>
-<div class="alert alert-info" role="alert">
-    <p>
-        Данные представлены в виде "ФИО | Email | Пароль | Роль - Причина". Обратите внимание, что точная причина ошибки регистрации может некардинально отличаться от указанной.
-    </p>
-</div>
-<div class="alert alert-primary" role="alert">
-    <p>Проверьте их данные и попробуйте еще раз, загрузив новый Excel файл. Либо проведите индивидуальную регистрацию каждого из них.</p>
-</div>
-<a class="btn btn-secondary" style="margin-top:5px" asp-controller="UsersAdmin" asp-action="Index" value="Список пользователей">Назад к списку пользователей</a>
+@if (User.Identity.IsAuthenticated && User.IsInRole("Manager") && User.IsInRole("Admin"))
+{
+    <h3>Не удалось зарегистрировать следующих пользователей:</h3>
+    <div class="alert alert-warning" role="alert">
+        <table>
+            @foreach (var s in Model.FailedUsers)
+            {
+                <tr><td><p>@s</p><td></tr>
+            }
+        </table>
+    </div>
+    <div class="alert alert-info" role="alert">
+        <p>
+            Данные представлены в виде "ФИО | Email | Пароль | Роль - Причина". Обратите внимание, что точная причина ошибки регистрации может некардинально отличаться от указанной.
+        </p>
+    </div>
+    <div class="alert alert-primary" role="alert">
+        <p>Проверьте их данные и попробуйте еще раз, загрузив новый Excel файл. Либо проведите индивидуальную регистрацию каждого из них.</p>
+    </div>
+    <a class="btn btn-secondary" style="margin-top:5px" asp-controller="UsersAdmin" asp-action="Index" value="Список пользователей">Назад к списку пользователей</a>
+}

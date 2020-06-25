@@ -1,9 +1,13 @@
 ﻿@{
     ViewBag.Title = "Неудачно";
 }
-<div class="alert alert-danger" role="alert">
-    <h3 style="margin-bottom:10px">Сообщения не отправлены!</h3>
-    <p><b>Причина: </b>@ViewBag.Reason<p>
+@if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Teacher") || User.IsInRole("Manager")))
+{
+    <div class="alert alert-danger" role="alert">
+        <h3 style="margin-bottom:10px">Сообщения не отправлены!</h3>
+        <p><b>Причина: </b>@ViewBag.Reason<p>
 
-    <button class="btn btn-outline-primary" onClick="history.go(-2); return false;">Вернуться назад</button>
-</div>
+            <button class="btn btn-outline-primary" onClick="history.go(-2); return false;">Вернуться назад</button>
+    </div>
+}
+

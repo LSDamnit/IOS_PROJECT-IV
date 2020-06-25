@@ -2,17 +2,20 @@
 @{
     ViewBag.Title = "Список для массовой регистрации";
 }
-<h3>Заготовка данных для регистрации</h3>
-<br>
-<p>Всего: <b>@Model.Count</b> пользователей</p>
-<form method="post" asp-controller="UsersAdmin" asp-action="MassRegistration">
-    <input type="hidden" asp-for="Count" value="@Model.Count" />
-    <table style="border-spacing:30px 10px;border-collapse:separate">
-        <tr><th>ФИО</th><th>Email</th><th>Пароль</th><th>Роль</th></tr>
-        @for (int i = 0; i < Model.Count; i++)
-        {
-            <tr> <td><input type="text" asp-for="FIOs[i]" value="@Model.FIOs[i]" /></td><td><input type="text" asp-for="Emails[i]" value="@Model.Emails[i]" /></td><td><input type="text" asp-for="Passwords[i]" value="@Model.Passwords[i]" /></td><td><input type="text" asp-for="Roles[i]" value="@Model.Roles[i]" /></td></tr>
-        }
-    </table>
-    <button class="btn btn-primary" type="submit">Регистрация</button>
-</form>
+@if (User.Identity.IsAuthenticated && User.IsInRole("Manager") && User.IsInRole("Admin"))
+{
+    <h3>Заготовка данных для регистрации</h3>
+    <br>
+    <p>Всего: <b>@Model.Count</b> пользователей</p>
+    <form method="post" asp-controller="UsersAdmin" asp-action="MassRegistration">
+        <input type="hidden" asp-for="Count" value="@Model.Count" />
+        <table style="border-spacing:30px 10px;border-collapse:separate">
+            <tr><th>ФИО</th><th>Email</th><th>Пароль</th><th>Роль</th></tr>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <tr> <td><input type="text" asp-for="FIOs[i]" value="@Model.FIOs[i]" /></td><td><input type="text" asp-for="Emails[i]" value="@Model.Emails[i]" /></td><td><input type="text" asp-for="Passwords[i]" value="@Model.Passwords[i]" /></td><td><input type="text" asp-for="Roles[i]" value="@Model.Roles[i]" /></td></tr>
+            }
+        </table>
+        <button class="btn btn-primary" type="submit">Регистрация</button>
+    </form>
+}

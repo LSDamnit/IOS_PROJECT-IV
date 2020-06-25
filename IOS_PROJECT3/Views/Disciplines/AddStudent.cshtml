@@ -3,56 +3,60 @@
     ViewBag.Title = "Зачисление студента на специальность";
 }
 @{
-    if (ViewBag.Mode == "Unfilled")
+    if (User.Identity.IsAuthenticated && (User.IsInRole("Manager") || User.IsInRole("Admin")))
     {
-        <div id="Unfilled">
-            <h3>Введите email студента для поиска</h3>
-            <form method="post" asp-action="FillData" asp-controller="Disciplines">
-                <div asp-validation-summary="All" class="text-danger"></div>
-                <div class="form-group">
-                    <input type="hidden" asp-for="TargetSpecId" class="form-control" />
-                    <label asp-for="Email" class="control-label">Email:</label>
-                    <input type="email" asp-for="Email" class="form-control" />
+        if (ViewBag.Mode == "Unfilled")
+        {
+            <div id="Unfilled">
+                <h3>Введите email студента для поиска</h3>
+                <form method="post" asp-action="FillData" asp-controller="Disciplines">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="form-group">
+                        <input type="hidden" asp-for="TargetSpecId" class="form-control" />
+                        <label asp-for="Email" class="control-label">Email:</label>
+                        <input type="email" asp-for="Email" class="form-control" />
 
-                </div>
+                    </div>
 
-                <div class="form-group">
-                    <input type="submit" value="Поиск" class="btn btn-outline-secondary" />
-                </div>
-            </form>
-        </div>
+                    <div class="form-group">
+                        <input type="submit" value="Поиск" class="btn btn-outline-secondary" />
+                    </div>
+                </form>
+            </div>
+        }
+        else if (ViewBag.Mode == "Filled")
+        {
+            <div id="Filled">
+                <h3>Проверьте данные студента и подтвердите действие</h3>
+                <form method="post" asp-action="AddStudent" asp-controller="Disciplines">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="form-group">
+                        <input type="hidden" asp-for="TargetSpecId" class="form-control" />
+                        <input type="hidden" asp-for="CurrentSpecId" class="form-control" />
+                        @*<input type="hidden" asp-for="context" class="form-control" />*@
+
+                        <label asp-for="Email" class="control-label">Email:</label>
+                        <input type="email" readonly="readonly" asp-for="Email" class="form-control" />
+
+                        <label asp-for="FIO" class="control-label">ФИО:</label>
+                        <input type="text" asp-for="FIO" readonly="readonly" class="form-control" />
+                        @if (Model.CurrentSpecId != null)
+                        {
+                            <label asp-for="CurrentSpec" class="control-label">Текущая специальность:</label>
+                            <input type="text" readonly="readonly" asp-for="CurrentSpec" class="form-control" />
+                        }
+
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Подтвердить" class="btn btn-outline-secondary" />
+                    </div>
+                </form>
+
+            </div>
+        }
     }
-    else if(ViewBag.Mode=="Filled")
-    {
-        <div id="Filled">
-            <h3>Проверьте данные студента и подтвердите действие</h3>
-            <form method="post" asp-action="AddStudent" asp-controller="Disciplines">
-                <div asp-validation-summary="All" class="text-danger"></div>
-                <div class="form-group">
-                    <input type="hidden" asp-for="TargetSpecId" class="form-control" />
-                    <input type="hidden" asp-for="CurrentSpecId" class="form-control" />
-                    @*<input type="hidden" asp-for="context" class="form-control" />*@
 
-                    <label asp-for="Email" class="control-label">Email:</label>
-                    <input type="email" readonly="readonly" asp-for="Email" class="form-control" />
-
-                    <label asp-for="FIO" class="control-label">ФИО:</label>
-                    <input type="text" asp-for="FIO" readonly="readonly" class="form-control" />
-                    @if (Model.CurrentSpecId != null)
-                    {
-                        <label asp-for="CurrentSpec" class="control-label">Текущая специальность:</label>
-                        <input type="text" readonly="readonly" asp-for="CurrentSpec" class="form-control" />
-                    }
-
-                </div>
-
-                <div class="form-group">
-                    <input type="submit" value="Подтвердить" class="btn btn-outline-secondary" />
-                </div>
-            </form>
-
-        </div>
-    }
 }
 
 

@@ -2,31 +2,34 @@
 @{
     ViewBag.Title = "Добавление учебной дисциплины";
 }
-<form method="post" asp-action="Create" asp-controller="Disciplines">
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="form-group">
-        <input type="hidden" asp-for="SpecialityId" class="form-control" />
-        <label asp-for="Name" class="control-label">Введите название:</label>
-        <input type="text" asp-for="Name" class="form-control" />
-        <label asp-for="LectionH" class="control-label">Введите количество часов лекций:</label>
-        <input type="number" asp-for="LectionH" class="form-control" />
-        <label asp-for="PracticeH" class="control-label">Введите количество часов практики:</label>
-        <input type="number" asp-for="PracticeH" class="form-control" />
-        <label asp-for="ExamType" class="control-label">Введите тип зачета:</label>
-        <input type="text" asp-for="ExamType" class="form-control" />
-        <label asp-for="Info" class="control-label">Введите отображаемую информацию о дисциплине:</label>
-        <textarea type="text" asp-for="Info" class="form-control"></textarea>
-    </div>
-    <div class="form-group">
-        <label asp-for="TeacherId" class="control-label">Выберите преподавателя:</label>
-        <select asp-for="TeacherId" class="form-control">
-            @foreach (var man in Model.AvailableTeachers)
-            {
-                <option value="@man.Id">@man.FIO</option>
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Добавить" class="btn btn-outline-secondary" />
-    </div>
-</form>
+@if (User.Identity.IsAuthenticated && (User.IsInRole("Manager") || User.IsInRole("Admin")))
+{
+    <form method="post" asp-action="Create" asp-controller="Disciplines">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group">
+            <input type="hidden" asp-for="SpecialityId" class="form-control" />
+            <label asp-for="Name" class="control-label">Введите название:</label>
+            <input type="text" asp-for="Name" class="form-control" />
+            <label asp-for="LectionH" class="control-label">Введите количество часов лекций:</label>
+            <input type="number" asp-for="LectionH" class="form-control" />
+            <label asp-for="PracticeH" class="control-label">Введите количество часов практики:</label>
+            <input type="number" asp-for="PracticeH" class="form-control" />
+            <label asp-for="ExamType" class="control-label">Введите тип зачета:</label>
+            <input type="text" asp-for="ExamType" class="form-control" />
+            <label asp-for="Info" class="control-label">Введите отображаемую информацию о дисциплине:</label>
+            <textarea type="text" asp-for="Info" class="form-control"></textarea>
+        </div>
+        <div class="form-group">
+            <label asp-for="TeacherId" class="control-label">Выберите преподавателя:</label>
+            <select asp-for="TeacherId" class="form-control">
+                @foreach (var man in Model.AvailableTeachers)
+                {
+                    <option value="@man.Id">@man.FIO</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Добавить" class="btn btn-outline-secondary" />
+        </div>
+    </form>
+}

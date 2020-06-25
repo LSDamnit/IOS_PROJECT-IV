@@ -2,7 +2,9 @@
     ViewBag.Title = "Рассылка сообщений";
 
 }
-@model IOS_PROJECT3.ViewModels.MessageViewModel
+@if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Teacher") || User.IsInRole("Manager")))
+{
+    @model IOS_PROJECT3.ViewModels.MessageViewModel
     <form method="post" asp-controller="Message" asp-action="SendMessage">
         <input type="hidden" asp-for="ContainerId" />
         <input type="hidden" asp-for="ContainerType" />
@@ -10,7 +12,7 @@
         <label asp-for="Message" class="control-label">Введите тему сообщения:</label>
         <input type="text" asp-for="Subject" class="form-control" />
         <label asp-for="Message" class="control-label">Введите сообщение:</label>
-        <textarea  asp-for="Message" class="form-control" ></textarea>
+        <textarea asp-for="Message" class="form-control"></textarea>
         <label asp-for="SendToStudents" class="control-label">Включить студентов в рассылку:</label>
         <input type="checkbox" asp-for="SendToStudents" class="form-check-inline" />
         <br>
@@ -20,3 +22,4 @@
 
         <input type="submit" value="Отправить" class="btn btn-primary" />
     </form>
+}

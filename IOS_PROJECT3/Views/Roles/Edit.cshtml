@@ -1,24 +1,26 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @model IOS_PROJECT3.ViewModels.ChangeRoleViewModel
+@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+{
+    <h2>Изменение ролей для пользователя @Model.UserEmail</h2>
 
-<h2>Изменение ролей для пользователя @Model.UserEmail</h2>
-
-<form asp-action="Edit" method="post">
-    <input type="hidden" name="userId" value="@Model.UserId" />
-    <div class="form-group">
-        @foreach (IdentityRole role in Model.AllRoles)
-        {
-            @if (Model.UserRoles.Contains(role.Name))
+    <form asp-action="Edit" method="post">
+        <input type="hidden" name="userId" value="@Model.UserId" />
+        <div class="form-group">
+            @foreach (IdentityRole role in Model.AllRoles)
             {
-                <input type="checkbox" name="roles" value="@role.Name" checked /> @role.Name<br />
+                @if (Model.UserRoles.Contains(role.Name))
+                {
+                    <input type="checkbox" name="roles" value="@role.Name" checked /> @role.Name<br />
+                }
+                else
+                {
+                    <input type="checkbox" name="roles" value="@role.Name" /> @role.Name<br />
+                }
+                //  <input type="checkbox" name="roles" value="@role.Name"
+                // @(Model.UserRoles.Contains(role.Name) ? "checked=\"checked\"" : "") />@role.Name <br />
             }
-            else
-            {
-                <input type="checkbox" name="roles" value="@role.Name" /> @role.Name<br />
-            }
-            //  <input type="checkbox" name="roles" value="@role.Name"
-            // @(Model.UserRoles.Contains(role.Name) ? "checked=\"checked\"" : "") />@role.Name <br />
-        }
-    </div>
-    <button type="submit" class="btn btn-primary">Сохранить</button>
-</form>
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+}
