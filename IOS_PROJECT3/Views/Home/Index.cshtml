@@ -35,7 +35,15 @@
             @foreach (var inst in Model.Institutions)
             {
 
-                <a style="display: block;margin-bottom: 10px" asp-controller="Departments" asp-action="Index" asp-route-InstId="@inst.Id">@inst.Name</a>
+                <a style="display: block;margin-bottom: 10px" asp-controller="Departments" asp-action="Index" asp-route-InstId="@inst.Id"><b>@inst.Name</b></a>
+                @foreach (var dep in Model.Departments)
+                {
+                    if (dep.Institution.Id == inst.Id)
+                    {
+
+                        <a style="display: block;margin-bottom: 2px;margin-left: 30px" asp-controller="Specialities" asp-action="Index" asp-route-DepId="@dep.Id">@dep.Name</a>
+                    }
+                }
             }
         </div>
         <div class="p-info">
@@ -147,10 +155,18 @@
 else
 {
     <h3>Институты университета СГТУ</h3>
-    foreach (var inst in Model.Institutions)
+    @foreach (var inst in Model.Institutions)
     {
-        <a style="display: block;margin-bottom: 10px" asp-controller="Departments" asp-action="Index" asp-route-InstId="@inst.Id">@inst.Name</a>
-        @*<p>@inst.Name</p>*@
+
+        <a style="display: block;margin-bottom: 10px" asp-controller="Departments" asp-action="Index" asp-route-InstId="@inst.Id"><b>@inst.Name</b></a>
+        @foreach (var dep in Model.Departments)
+        {
+            if (dep.Institution.Id == inst.Id)
+            {
+
+                <a style="display: block;margin-bottom: 2px;margin-left: 30px" asp-controller="Specialities" asp-action="Index" asp-route-DepId="@dep.Id">@dep.Name</a>
+            }
+        }
     }
 
 }

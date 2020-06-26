@@ -13,8 +13,8 @@
                     <td>@inst.Manager.FIO</td>
                     <td>
                         <form asp-action="Delete" asp-route-Id="@inst.Id" method="post">
-                            <a class="btn btn-sm btn-primary" asp-controller="Institutions" asp-action="Edit" asp-route-Id="@inst.Id">Изменить</a>
-                            <button type="submit" class="btn btn-sm btn-danger">
+                            <a style="margin-top:5px" class="btn btn-sm btn-primary" asp-controller="Institutions" asp-action="Edit" asp-route-Id="@inst.Id">Изменить</a>
+                            <button type="submit" style="margin-top:5px" class="btn btn-sm btn-danger">
                                 Удалить
                             </button>
                         </form>

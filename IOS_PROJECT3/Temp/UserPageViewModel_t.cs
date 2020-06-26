@@ -8,13 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IOS_PROJECT3.ViewModels
 {
-    public class UserPageViewModel
+    public class UserPageViewModel_t
     {
         public string UserFIO { get; set; }
         public string UserId { get; set; }
         public IList<EInstitution> Institutions { get; }
-        public IList<EDepartment> Departments { get; }
-        public IList<EInstitution> OwnInstitutions_M { get; set; }
+		public IList<EDepartment> Departments { get; }
+		public IList<EInstitution> OwnInstitutions_M { get; set; }
         public IList<EDiscipline> OwnDiscilpines_T { get; set; }
         public ESpeciality OwnSpeciality_S { get; set; }
 
@@ -54,12 +54,11 @@ namespace IOS_PROJECT3.ViewModels
             }
             
         }
-        public UserPageViewModel(DBMergedContext context)
+        public UserPageViewModel_t(DBMergedContext context)
         {
             DBContext = context;
             Institutions = DBContext.Institutions.ToList();
-            Departments = DBContext.Departments.ToList();
-           
+			Departments = DBContext.Departments.ToList();
         }
     }
 }

@@ -71,4 +71,10 @@ body {
   line-height: 30px;
   height:30px;/* Vertically center the text there */
 }
-
+.btn btn-sm btn-primary
+{
+    margin-top:5px!important;
+}
+.btn btn-sm btn-danger {
+    margin-top: 5px!important;
+}
