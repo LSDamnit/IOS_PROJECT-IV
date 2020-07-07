@@ -52,11 +52,13 @@ namespace IOS_PROJECT3.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(EditInstitutionViewModel model)
         {
+            if (ModelState.IsValid) 
+            { 
             var manager = await UserManager.FindByIdAsync(model.ManagerId);
             string name = model.Name;
             
-            if(manager != null && !String.IsNullOrWhiteSpace(name))
-            {              
+            
+                         
                 var inst = (from i in DBContext.Institutions.Include(m => m.Manager)
                             where i.Id.ToString() == model.Idinst
                             select i).FirstOrDefaultAsync().Result;
@@ -67,7 +69,8 @@ namespace IOS_PROJECT3.Controllers
                 await DBContext.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ModelState.AddModelError("Edit", "Error in inst edit");
+            else
+                model.AvailableManagers = await UserManager.GetUsersInRoleAsync("Manager");
             return View(model);
         }
         public async Task<IActionResult> Create()
@@ -96,11 +99,11 @@ namespace IOS_PROJECT3.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateInstitutionViewModel model)
         {
-            
+            if (ModelState.IsValid) { 
             var manager = await UserManager.FindByIdAsync(model.ManagerId);
             string name = model.Name;
-            if(manager!=null && !String.IsNullOrWhiteSpace(name))
-            {
+           
+            
                 EInstitution inst = new EInstitution()
                 {
                     Name = name,
@@ -111,7 +114,8 @@ namespace IOS_PROJECT3.Controllers
                 await DBContext.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ModelState.AddModelError("Create", "Error in inst create");
+            else
+            model.AvailableManagers = await UserManager.GetUsersInRoleAsync("Manager");
             return View(model);
         }
     }

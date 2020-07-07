@@ -70,29 +70,34 @@ namespace IOS_PROJECT3.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateDepartmentViewModel model)
         {
-            var headt = await UserManager.FindByIdAsync(model.HeadTeacherId);
-            var name = model.Name;
-            var inst = await (from i in DBContext.Institutions.Include(d=>d.Departments) where i.Id.ToString() == model.InstId select i).FirstOrDefaultAsync();
-            if(headt!=null && !String.IsNullOrWhiteSpace(name))
+            if (ModelState.IsValid)
             {
-                EDepartment dep = new EDepartment()
+                var headt = await UserManager.FindByIdAsync(model.HeadTeacherId);
+                var name = model.Name;
+                var inst = await (from i in DBContext.Institutions.Include(d => d.Departments) where i.Id.ToString() == model.InstId select i).FirstOrDefaultAsync();
+                if (headt != null && !String.IsNullOrWhiteSpace(name))
                 {
-                    Name = name,
-                    HeadTeacher = headt                   
-                };
-                
-                inst.Departments.Add(dep);
-                DBContext.Departments.Add(dep);
-                await DBContext.SaveChangesAsync();
-                
-                return RedirectToAction("Index", new { InstId = model.InstId });
+                    EDepartment dep = new EDepartment()
+                    {
+                        Name = name,
+                        HeadTeacher = headt
+                    };
+
+                    inst.Departments.Add(dep);
+                    DBContext.Departments.Add(dep);
+                    await DBContext.SaveChangesAsync();
+
+                    return RedirectToAction("Index", new { InstId = model.InstId });
+                }
             }
-            ModelState.AddModelError("Create", "Error in dep create");
+            else
+                model.AvailableTeachers = await UserManager.GetUsersInRoleAsync("Teacher");
             return View(model);
         }
 
         public async Task<IActionResult> Edit(string Id)
         {
+           
             var dep = await (from d in DBContext.Departments.Include(h=>h.HeadTeacher) where d.Id.ToString() == Id select d).FirstOrDefaultAsync();
             if(dep!=null)
             {
@@ -117,11 +122,12 @@ namespace IOS_PROJECT3.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(EditDepartmentViewModel model)
         {
+            if (ModelState.IsValid) { 
             var teacher = await UserManager.FindByIdAsync(model.HeadTeacherId);
             string name = model.Name;
 
-            if (teacher != null && !String.IsNullOrWhiteSpace(name))
-            {
+            
+            
                 var dep = await (from d in DBContext.Departments.Include(h => h.HeadTeacher)
                            where d.Id.ToString() == model.DepartmentId
                            select d).FirstOrDefaultAsync();
@@ -132,7 +138,7 @@ namespace IOS_PROJECT3.Controllers
                 await DBContext.SaveChangesAsync();
                 return RedirectToAction("Index", new { InstId = model.InstitutionId });
             }
-            ModelState.AddModelError("Edit", "Error in department edit");
+            model.AvailableTeachers = await UserManager.GetUsersInRoleAsync("Teacher");
             return View(model);
         }
         [HttpPost]

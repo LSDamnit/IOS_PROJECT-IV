@@ -71,13 +71,14 @@ namespace IOS_PROJECT3.Controllers
                 };
                 return View(model);
             }
-            ModelState.AddModelError("Create", "No such speciality");
             return RedirectToAction("Index");//untested
         }
 
         [HttpPost]
         public async Task<IActionResult> Create(CreateDisciplineViewModel model)
         {
+            if(ModelState.IsValid)
+            { 
             var teacher = await userManager.FindByIdAsync(model.TeacherId);
             var spec = await (from s in DBContext.Specialities.Include(d => d.Disciplines)
                               where s.Id.ToString() == model.SpecialityId
@@ -86,8 +87,8 @@ namespace IOS_PROJECT3.Controllers
             var info = "";
             if (!String.IsNullOrWhiteSpace(model.Info))
                 info = model.Info;
-            if (!String.IsNullOrWhiteSpace(name) && teacher != null && !String.IsNullOrWhiteSpace(model.ExamType))
-            {
+            
+            
                 EDiscipline disc = new EDiscipline()
                 {
                     Name = name,
@@ -103,7 +104,7 @@ namespace IOS_PROJECT3.Controllers
                 await DBContext.SaveChangesAsync();
                 return RedirectToAction("Index", new { SpecId = spec.Id });
             }
-            ModelState.AddModelError("Create", "Error in disc create");
+            model.AvailableTeachers = await userManager.GetUsersInRoleAsync("Teacher");
             return View(model);
         }
 
@@ -128,6 +129,7 @@ namespace IOS_PROJECT3.Controllers
                     AvailableTeachers = await userManager.GetUsersInRoleAsync("Teacher")
 
                 };
+
                 return View(model);
             }
             return View();//сделать редирект на ошибку
@@ -136,13 +138,13 @@ namespace IOS_PROJECT3.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(EditDisciplineViewModel model)
         {
+            if (ModelState.IsValid) { 
             var teacher = await userManager.FindByIdAsync(model.TeacherId);
             string name = model.Name;
             var info = "";
             if (!String.IsNullOrWhiteSpace(model.Info))
                 info = model.Info;
-            if (teacher != null && !String.IsNullOrWhiteSpace(name)&& !String.IsNullOrWhiteSpace(model.ExamType))
-            {
+            
                 var disc = await (from d in DBContext.Disciplines.Include(h => h.Teacher)
                                  where d.Id.ToString() == model.DisciplineId
                                  select d).FirstOrDefaultAsync();
@@ -156,7 +158,7 @@ namespace IOS_PROJECT3.Controllers
                 await DBContext.SaveChangesAsync();
                 return RedirectToAction("Index", new { SpecId = model.SpecialityId });
             }
-            ModelState.AddModelError("Edit", "Error in discipline edit");
+            model.AvailableTeachers = await userManager.GetUsersInRoleAsync("Teacher");
             return View(model);
         }
 
@@ -194,9 +196,10 @@ namespace IOS_PROJECT3.Controllers
 
             return RedirectToAction("Index", new { SpecId = spec.Id });
         }
-        public IActionResult AddStudentUNF(string SpecId)
+        public IActionResult AddStudentUNF(string SpecId, string ErrorText)
         {
-           
+            if (ErrorText != null)
+                TempData["ErrorText"] = ErrorText;
             return RedirectToAction("AddStudent", new { Filled = false, TSpecId=SpecId});
         }
         public async Task<IActionResult> AddStudent(bool Filled, string TSpecId, string CSpecId, string CSpecName,
@@ -229,34 +232,34 @@ namespace IOS_PROJECT3.Controllers
             
             
         }
-        /* public async Task<IActionResult> AddStudent(string SpecId)
-         {
-             AddStudentViewModel model = new AddStudentViewModel()
-             {
-                 AvailableStudents = await userManager.GetUsersInRoleAsync("Student"),
-                 context=DBContext,
-                 TargetSpecId=SpecId
-             };
-             ViewBag.Mode = "Unfilled";
-             return View(model);
-         }*/
 
         [HttpPost]
-         public async Task<IActionResult> FillData(AddStudentViewModel model)
-         {
-             model.context = DBContext;
-             await model.FillDataAsync();
-             var user = await (from u in DBContext.Users where u.NormalizedEmail == model.Email.ToUpper() select u).FirstOrDefaultAsync();
-             if (user==null||!(await userManager.IsInRoleAsync(user, "Student")))
-             {
-                 ModelState.AddModelError("Not student", "User isn't in role 'Student'");
-                 return RedirectToAction("AddStudentUNF", new { SpecId = model.TargetSpecId });
-             }
-            //string TSpecId, string CSpecId, string CSpecName,
-           // string uEmail, string uFIO)
-           
-            return RedirectToAction("AddStudent", new { Filled = true, TSpecId=model.TargetSpecId,
-                CSpecId=model.CurrentSpecId, CSpecName=model.CurrentSpec, uEmail=model.Email, uFIO=model.FIO});
+        public async Task<IActionResult> FillData(AddStudentViewModel model)
+        {
+            if (ModelState.IsValid) { 
+            model.context = DBContext;
+            await model.FillDataAsync();
+            var user = await (from u in DBContext.Users where u.NormalizedEmail == model.Email.ToUpper() select u).FirstOrDefaultAsync();
+            if (user == null || !(await userManager.IsInRoleAsync(user, "Student")))
+            {
+                string err = "Пользователь не является студентом";//костыль ебаный
+                return RedirectToAction("AddStudentUNF", new { SpecId = model.TargetSpecId, ErrorText = err });
+            }
+            return RedirectToAction("AddStudent", new
+            {
+                Filled = true,
+                TSpecId = model.TargetSpecId,
+                CSpecId = model.CurrentSpecId,
+                CSpecName = model.CurrentSpec,
+                uEmail = model.Email,
+                uFIO = model.FIO
+            });
+        }
+            else
+            {
+                string err = "Не указан Email";//костыль ебаный
+                return RedirectToAction("AddStudentUNF", new { SpecId = model.TargetSpecId, ErrorText = err });
+            }
         }
         [HttpPost]
         public async Task<IActionResult> AddStudent(AddStudentViewModel model)

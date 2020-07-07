@@ -71,12 +71,11 @@ namespace IOS_PROJECT3.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateSpecialityViewModel model)
         {
-           // var headt = await UserManager.FindByIdAsync(model.HeadTeacherId);
+            if (ModelState.IsValid) { 
             var name = model.Name;
             var dep = await (from i in DBContext.Departments.Include(s => s.Specialities) where i.Id.ToString() == model.DepId select i).FirstOrDefaultAsync();
-            //var dep = DBContext.Departments.Find(model.DepId);
-            if (!String.IsNullOrEmpty(name))
-            {
+     
+            
                 var spec = new ESpeciality()
                 {
                     Name = name
@@ -89,8 +88,8 @@ namespace IOS_PROJECT3.Controllers
 
                 return RedirectToAction("Index", new { DepId = model.DepId });
             }
-            ModelState.AddModelError("Create", "Error in dep create");
-            return RedirectToAction("Index");
+
+            return View(model);
         }
 
         public async Task<IActionResult> Edit(string Id)
@@ -115,16 +114,16 @@ namespace IOS_PROJECT3.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(EditSpecialityViewModel model)
         {
+            if (ModelState.IsValid) { 
             var spec = await (from s in DBContext.Specialities where s.Id.ToString() == model.SpecId select s).FirstOrDefaultAsync();
             var name = model.Name;
-            if(spec!=null && !String.IsNullOrWhiteSpace(name))
-            {
+            
                 DBContext.Update(spec).Entity.Name = name;
                 await DBContext.SaveChangesAsync();
                 return RedirectToAction("Index", new { DepId = model.DepId });
             }
-            ModelState.AddModelError("Edit", "Error in spec edit");
-            return RedirectToAction("Index");
+
+            return View(model);
         }
 
         [HttpPost]

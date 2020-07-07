@@ -11,8 +11,8 @@ namespace IOS_PROJECT3.ViewModels
     public class AddStudentViewModel
     {
 
-        
-        [Required]
+
+        [Required(ErrorMessage = "Не указан Email")]
         public string Email { get; set; }
         public string FIO { get; set; }
         public string CurrentSpec { get; set; }

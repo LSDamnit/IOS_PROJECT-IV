@@ -10,7 +10,12 @@
             <div id="Unfilled">
                 <h3>Введите email студента для поиска</h3>
                 <form method="post" asp-action="FillData" asp-controller="Disciplines">
-                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="text-danger">
+                        @if (TempData["ErrorText"] != null)
+                        {
+                        <ul><li>@TempData["ErrorText"]</li></ul>
+                        }
+                        </div>
                     <div class="form-group">
                         <input type="hidden" asp-for="TargetSpecId" class="form-control" />
                         <label asp-for="Email" class="control-label">Email:</label>

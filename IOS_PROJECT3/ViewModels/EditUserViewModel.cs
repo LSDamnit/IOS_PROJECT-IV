@@ -9,15 +9,15 @@ namespace IOS_PROJECT3.ViewModels
     public class EditUserViewModel
     {
         public string Id { get; set; }
-        [Required]
-        [Display(Name = "Email")]
+        [Required(ErrorMessage ="Не указан Email")]
+        
         public string Email { get; set; }
      /*   [Required]
         [Display(Name = "Пароль")]
         [DataType(DataType.Password)]*/
         public string Password { get; set; }
-        [Required]
-        [Display(Name = "ФИО")]
+
+        [Required(ErrorMessage = "Не указано ФИО")]
         public string FIO { get; set; }
     }
 }

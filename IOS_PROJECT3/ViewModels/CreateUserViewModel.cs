@@ -8,15 +8,14 @@ namespace IOS_PROJECT3.ViewModels
 {
     public class CreateUserViewModel
     {
-        [Required]
-        [Display(Name = "Email")]
+        [Required(ErrorMessage = "Не указан Email")]
         public string Email { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Не указан Пароль")]
         [DataType(DataType.Password)]
-        [Display(Name = "Пароль")]
         public string Password { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Не указано ФИО")]
         [Display(Name = "ФИО")]
         public string FIO { get; set; }
     }
