@@ -1,71 +1,116 @@
 ﻿@model IOS_PROJECT3.ViewModels.UsersAdminViewModel
 @{
-    ViewBag.Title = "Список пользователей";
+	ViewBag.Title = "Список пользователей";
 }
 @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
 {
-    <a asp-action="Create" id="singleRed">Зарегистрировать одного пользователя</a>
-    <div style="margin-bottom:10px; margin-top:10px">
-        <label margin-right:5px;>Массовая регистрация </label><input type="checkbox" id="massRegCheck" name="Массовая регистрация" value="Массовая регистрация" />
-    </div>
-    <div hidden="hidden" id="massReg" class="alert alert-primary">
-        <form asp-action="AddFile" asp-controller="UsersAdmin" method="post" enctype="multipart/form-data">
-            <input type="file" style="margin-bottom:5px; display:inline;" name="uploadedFile" />
+	<style>
+		td, th {
+			min-width: 180px;
+		}
+	</style>
+	<a asp-action="Create" id="singleRed">Зарегистрировать одного пользователя</a>
+	<div style="margin-bottom:10px; margin-top:10px">
+		<label margin-right:5px;>Массовая регистрация </label><input type="checkbox" id="massRegCheck" name="Массовая регистрация" value="Массовая регистрация" />
+	</div>
+	<div hidden="hidden" id="massReg" class="alert alert-primary">
+		<form asp-action="AddFile" asp-controller="UsersAdmin" method="post" enctype="multipart/form-data">
+			<input type="file" style="margin-bottom:5px; display:inline;" name="uploadedFile" />
 
-            <input type="submit" style="display:inline;margin-left:15px" class="btn btn-sm btn-primary" value="Загрузить" />
-        </form>
-    </div>
-    <div class="alert alert-info" role="alert" id="InfoReg" hidden="hidden">
-        <h6>Требования к данным для массовой регистрации</h6>
-        <p>
-            Загруженный файл должен иметь формат <b>.xlsx</b>, данные пользователей должны располагаться в <b>первых четырех</b>  столбцах на <b>первом</b> листе в порядке: ФИО|Email|Пароль|Роль.
-            Присваеваемые роли на момент регистрации должны существовать, Email и пароль должны соответствовать всем требованиям регистрации.
-        <p>
-    </div>
-    <script>
-        $('#massRegCheck').on('click', function () {
-            if ($(this).is(':checked')) {
-                document.getElementById('massReg').hidden = false;
-                document.getElementById('InfoReg').hidden = false;
-                document.getElementById('singleRed').hidden = true;
-            } else {
-                document.getElementById('massReg').hidden = true;
-                document.getElementById('InfoReg').hidden = true;
-                document.getElementById('singleRed').hidden = false;
-            }
-        })</script>
-    <table class="table">
-        <tr><th>Email</th><th>ФИО</th><th></th></tr>
-        @foreach (var user in Model.Users)
-        {
-            <tr style="max-width:150px;word-wrap:break-word">
-                <td>@user.Email</td>
-                <td>@user.FIO</td>
-                <td>
-                    @if (@user.Email != "firstadmin@admin.adm")
-                    {
-                        <form asp-action="Delete" asp-route-id="@user.Id" method="post">
-                            <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@user.Id">Изменить</a>
-                            <a class="btn btn-sm btn-primary" asp-action="ResetPassword" asp-route-id="@user.Id">Сброс пароля</a>
-                            <a class="btn btn-sm btn-primary" asp-controller="Roles" asp-action="Edit" asp-route-userid="@user.Id">Роли пользователя</a>
+			<input type="submit" style="display:inline;margin-left:15px" class="btn btn-sm btn-primary" value="Загрузить" />
+		</form>
+	</div>
+	<div class="alert alert-info" role="alert" id="InfoReg" hidden="hidden">
+		<h6>Требования к данным для массовой регистрации</h6>
+		<p>
+			Загруженный файл должен иметь формат <b>.xlsx</b>, данные пользователей должны располагаться в <b>первых четырех</b>  столбцах на <b>первом</b> листе в порядке: ФИО|Email|Пароль|Роль.
+			Присваеваемые роли на момент регистрации должны существовать, Email и пароль должны соответствовать всем требованиям регистрации.
+		<p>
+	</div>
+	<script>
+		$('#massRegCheck').on('click', function () {
+			if ($(this).is(':checked')) {
+				document.getElementById('massReg').hidden = false;
+				document.getElementById('InfoReg').hidden = false;
+				document.getElementById('singleRed').hidden = true;
+			} else {
+				document.getElementById('massReg').hidden = true;
+				document.getElementById('InfoReg').hidden = true;
+				document.getElementById('singleRed').hidden = false;
+			}
+		})</script>
+	<table id="table" class="table">
+		<tr>
+			<th>
+				<label style="margin:auto">
+					Поиск
+				</label>
+			</th>
+			<td>
+				<input type="text" class="form-control" id="emailSearch" placeholder="Email" oninput='search(@Json.Serialize(Model.Users));'>
+			</td>
+			<td style="max-width:280px;word-wrap:break-word">
+				<input type="text" class="form-control" id="fioSearch" placeholder="ФИО" oninput='search(@Json.Serialize(Model.Users));'>
+			</td>
+		</tr>
+		<tr><th>Email</th><th style="max-width:280px;word-wrap:break-word">ФИО</th><th></th></tr>
+		@foreach (var user in Model.Users)
+		{
+			<tr class="tr-user" id="@user.Id">
+				<td>@user.Email</td>
+				<td style="max-width:280px;word-wrap:break-word">@user.FIO</td>
+				<td>
+					@if (@user.Email != "firstadmin@admin.adm")
+					{
+						<form asp-action="Delete" asp-route-id="@user.Id" method="post">
+							<a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@user.Id">Изменить</a>
+							<a class="btn btn-sm btn-primary" asp-action="ResetPassword" asp-route-id="@user.Id">Сброс пароля</a>
+							<a class="btn btn-sm btn-primary" asp-controller="Roles" asp-action="Edit" asp-route-userid="@user.Id">Роли пользователя</a>
 
-                            @if (Model.IsDeletable(user))
-                            {
-                                <button type="submit" class="btn btn-sm btn-danger replacable">
-                                    Удалить
-                                </button>
-                            }
-                            else
-                            {
+							@if (Model.IsDeletable(user))
+							{
+								<button type="submit" class="btn btn-sm btn-danger replacable">
+									Удалить
+								</button>
+							}
+							else
+							{
 
-                                <a href="#" title="" style="margin-top:5px" data-default-text="Удаление заблокировано" class="btn btn-danger btn-sm disabled" role="button" aria-disabled="true">Удаление заблокировано</a> <p title="@Model.WhyTitles[user]" class="badge badge-pill badge-light" style="display:inline; margin-left:10px; margin-top:5px; cursor: help ">?</p>
-                            }
+								<a href="#" title="" data-default-text="Удаление заблокировано" class="btn btn-danger btn-sm disabled" role="button" aria-disabled="true">Удаление заблокировано</a> <p title="@Model.WhyTitles[user]" class="badge badge-pill badge-light" style="display:inline; margin-left:10px; margin-top:5px; cursor: help ">?</p>
+							}
 
 
-                        </form>
-                    }
-                </td>
-            </tr>
-        }
-    </table>
+						</form>
+					}
+				</td>
+			</tr>
+		}
+	</table>
+	<script>
+		function search(allUsers) {
+			//Выкидываем ненужных пользователей
+			let printUsers = [];
+			if (document.getElementById('fioSearch').value == "" && document.getElementById('emailSearch').value == "")
+				printUsers = allUsers;
+			else {
+				for (let i = 0; i < allUsers.length; ++i) {
+					if ((document.getElementById('fioSearch').value != ""
+						&& allUsers[i].fio.toLowerCase().startsWith(document.getElementById('fioSearch').value.toLowerCase()))
+						|| (document.getElementById('emailSearch').value != ""
+							&& allUsers[i].email.toLowerCase().startsWith(document.getElementById('emailSearch').value.toLowerCase()))) {
+						printUsers.push(allUsers[i]);
+					}
+				}
+			}
+			//Скрываем уже выведенных пользователей, чтобы они не повторялись
+			let delTable = document.getElementsByClassName('tr-user');
+			for (let i = 0; i < delTable.length; ++i) delTable[i].hidden = true;
+			//Выводим новый список пользователей
+
+			for (let i = 0; i < printUsers.length; ++i) {
+				document.getElementById(printUsers[i].id).hidden = false;
+			}
+		}
+
+	</script>
 }
