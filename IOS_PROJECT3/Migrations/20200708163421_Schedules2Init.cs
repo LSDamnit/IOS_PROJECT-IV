@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IOS_PROJECT3.Migrations
 {
-    public partial class CascadeAndSetNullAdded : Migration
+    public partial class Schedules2Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -172,6 +172,26 @@ namespace IOS_PROJECT3.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "WeekSchedules",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: true),
+                    SpecialityId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WeekSchedules", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_WeekSchedules_Specialities_SpecialityId",
+                        column: x => x.SpecialityId,
+                        principalTable: "Specialities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Disciplines",
                 columns: table => new
                 {
@@ -223,6 +243,26 @@ namespace IOS_PROJECT3.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DaySchedules",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    WeekScheduleid = table.Column<int>(nullable: true),
+                    DayNumber = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DaySchedules", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_DaySchedules_WeekSchedules_WeekScheduleid",
+                        column: x => x.WeekScheduleid,
+                        principalTable: "WeekSchedules",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Files",
                 columns: table => new
                 {
@@ -250,6 +290,30 @@ namespace IOS_PROJECT3.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ScheduleItems",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DisciplineId = table.Column<int>(nullable: false),
+                    DayScheduleid = table.Column<int>(nullable: true),
+                    TeacherFIO = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    Classroom = table.Column<string>(nullable: true),
+                    Type = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ScheduleItems", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_ScheduleItems_DaySchedules_DayScheduleid",
+                        column: x => x.DayScheduleid,
+                        principalTable: "DaySchedules",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -297,6 +361,11 @@ namespace IOS_PROJECT3.Migrations
                 column: "SpecialityId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DaySchedules_WeekScheduleid",
+                table: "DaySchedules",
+                column: "WeekScheduleid");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Departments_HeadTeacherId",
                 table: "Departments",
                 column: "HeadTeacherId");
@@ -332,9 +401,19 @@ namespace IOS_PROJECT3.Migrations
                 column: "ManagerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ScheduleItems_DayScheduleid",
+                table: "ScheduleItems",
+                column: "DayScheduleid");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Specialities_DepartmentId",
                 table: "Specialities",
                 column: "DepartmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WeekSchedules_SpecialityId",
+                table: "WeekSchedules",
+                column: "SpecialityId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AspNetUserRoles_AspNetUsers_UserId",
@@ -414,10 +493,19 @@ namespace IOS_PROJECT3.Migrations
                 name: "Files");
 
             migrationBuilder.DropTable(
+                name: "ScheduleItems");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Disciplines");
+
+            migrationBuilder.DropTable(
+                name: "DaySchedules");
+
+            migrationBuilder.DropTable(
+                name: "WeekSchedules");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

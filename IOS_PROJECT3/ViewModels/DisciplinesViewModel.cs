@@ -13,9 +13,8 @@ namespace IOS_PROJECT3.ViewModels
         public string InstId { get; set; }
         public string InstManagerId { get; set; }
         public string InstManagerEmail { get; set; }
-        //public string HeadTeacherId { get; set; }
-       // public string HeadTeacherEmail { get; set; }
-       public IList<EUser> Students { get; set; }
+        public IList<EWeekSchedule> Schedules { get; set; }
+        public IList<EUser> Students { get; set; }
         public IList<EDiscipline> Disciplines { get; set; }
     }
 }

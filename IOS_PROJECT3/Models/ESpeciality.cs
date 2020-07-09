@@ -12,5 +12,7 @@ namespace IOS_PROJECT3.Models
         public virtual List<EDiscipline> Disciplines { get; set; }
         public virtual List<EUser> Students { get; set; }
         public EDepartment Department { get; set; }
+        public List<EWeekSchedule> Schedules { get; set; }
+        
     }
 }

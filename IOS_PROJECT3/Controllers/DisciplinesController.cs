@@ -26,11 +26,16 @@ namespace IOS_PROJECT3.Controllers
         }
         public async Task<IActionResult> Index(string SpecId)
         {
-            var spec = await (from sp in DBContext.Specialities.Include(d => d.Disciplines).Include(s => s.Students)
+            var spec = await (from sp in DBContext.Specialities.Include(d => d.Disciplines).Include(s => s.Students).Include(s=>s.Schedules)
                               where sp.Id.ToString() == SpecId
                               select sp).FirstOrDefaultAsync();
+            
             if (spec != null)
             {
+                //var sched = await (from s in DBContext.WeekSchedules.Include(w => w.Schedule)
+                  //                 where s.Speciality.Id == spec.Id
+                    //               select s).FirstOrDefaultAsync();
+
                 var dis = await (from d in DBContext.Disciplines.Include(t => t.Teacher)
                                  where spec.Disciplines.Contains(d)
                                  select d).ToListAsync();
@@ -49,29 +54,508 @@ namespace IOS_PROJECT3.Controllers
                     InstManagerId = inst.Manager.Id,
                     InstManagerEmail = inst.Manager.Email,
                     Disciplines = dis,
-                    Students = spec.Students
+                    Students = spec.Students,
+                    Schedules = spec.Schedules.OrderBy(s => s.Name).ToList<EWeekSchedule>()
                 };
                 return View(model);
 
             }
             return View();//сделать редирект на страницу с ошибкой
         }
+        public async Task<IActionResult> WeekSchedule(string WeekScheduleId)
+        {
+            var wsched = await (from s in DBContext.WeekSchedules.Include(s => s.Schedule)
+                                where s.id.ToString() == WeekScheduleId
+                                select s).FirstOrDefaultAsync();
+            var dscheds = await (from s in DBContext.DaySchedules.Include(s => s.DisciplinesForDay)
+                                 where s.WeekSchedule.id.ToString() == WeekScheduleId
+                                 select s).ToListAsync();
+            var model = new ScheduleViewModel()
+            {
+                WeekScheduleId = wsched.id.ToString(),
+                WeekScheduleName = wsched.Name,
+                ScheduleForDays=new Dictionary<string, List<EScheduleItem>>()
+                {
+                    {"mon",(from d in dscheds where d.DayNumber==0 select d.DisciplinesForDay).FirstOrDefault() },
+                    {"tue",(from d in dscheds where d.DayNumber==1 select d.DisciplinesForDay).FirstOrDefault() },
+                    {"wed",(from d in dscheds where d.DayNumber==2 select d.DisciplinesForDay).FirstOrDefault() },
+                    {"thu",(from d in dscheds where d.DayNumber==3 select d.DisciplinesForDay).FirstOrDefault() },
+                    {"fri",(from d in dscheds where d.DayNumber==4 select d.DisciplinesForDay).FirstOrDefault() },
+                    {"sat",(from d in dscheds where d.DayNumber==5 select d.DisciplinesForDay).FirstOrDefault() },
+                }
+            };
+            return View(model);
+        }
 
+        public async Task<IActionResult> CreateSchedule(string SpecId)
+        {
+            var spec = await (from sp in DBContext.Specialities.Include(d => d.Disciplines)
+                              where sp.Id.ToString() == SpecId
+                              select sp).FirstOrDefaultAsync();
+            var discs = await (from di in DBContext.Disciplines.Include(t => t.Teacher)
+                               where spec.Disciplines.Contains(di)
+                               select di).ToListAsync();
+            var model = new CreateScheduleViewModel()
+            {
+                SpecialityId = SpecId,
+                AvailableDisciplines = discs
+            };
+            model.init();
+            return View(model);
+        }
+        public async Task<IActionResult> EditSchedule(string WeekScheduleId)
+        {
+            var Sched = await (from s in DBContext.WeekSchedules.Include(s => s.Speciality).ThenInclude(di=>di.Disciplines)
+                               .Include(s => s.Schedule)                               
+                               where s.id.ToString()==WeekScheduleId select s).FirstOrDefaultAsync();
+            var dScheds = await (from d in DBContext.DaySchedules.Include(d => d.DisciplinesForDay)
+                                 where Sched.Schedule.Contains(d)
+                                 select d).ToListAsync();
+            Sched.Schedule = dScheds;
+            var availablediscs = await (from di in DBContext.Disciplines.Include(t => t.Teacher)
+                                        where Sched.Speciality.Disciplines.Contains(di) select di).ToListAsync();
+            var model = new EditScheduleViewModel()
+            {
+                AvailableDisciplines = availablediscs
+            };
+            model.init(Sched);
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditSchedule(EditScheduleViewModel model)
+        {
+            var spec = await (from sp in DBContext.Specialities.Include(s => s.Schedules)
+                              where sp.Id.ToString() == model.SpecialityId
+                              select sp).FirstOrDefaultAsync();
+            var oldShedule = await (from sc in DBContext.WeekSchedules
+                                    where sc.id == model.WeekScheduleId
+                                    select sc).FirstOrDefaultAsync();
+            spec.Schedules.Remove(oldShedule);
+           
+            DBContext.Remove(oldShedule);
+            if (model.WeekScheduleName == null)
+                model.WeekScheduleName = "Без названия";
+
+            var NewWeekSchedule = new EWeekSchedule()
+            {
+                Name = model.WeekScheduleName,
+                Speciality = spec,
+                Schedule = new List<EDaySchedule>(6)
+            };
+            // DBContext.WeekSchedules.Add(NewWeekSchedule);
+
+            NewWeekSchedule.Schedule.Add(new EDaySchedule()//mon
+            {
+                WeekSchedule = NewWeekSchedule,
+                DayNumber = 0,
+                DisciplinesForDay = new List<EScheduleItem>(8)
+            });
+            //DBContext.DaySchedules.Add(NewWeekSchedule.Schedule[0]);
+            for (int i = 0; i < 8; i++)
+            {
+                var discipline = model.mon[i];
+                discipline.DaySchedule = NewWeekSchedule.Schedule[0];
+                if (discipline.DisciplineId.ToString() == "-1")
+                {
+                    discipline.Name = "Нет пары";
+                    discipline.TeacherFIO = "";
+                    discipline.Type = "";
+                }
+                else
+                {
+                    var disc = await (from di in DBContext.Disciplines.Include(t => t.Teacher)
+                                      where di.Id == discipline.DisciplineId
+                                      select di).FirstOrDefaultAsync();
+                    discipline.Name = disc.Name;
+                    discipline.TeacherFIO = disc.Teacher.FIO;
+                }
+                if (discipline.Classroom == null)
+                    discipline.Classroom = "";
+
+                NewWeekSchedule.Schedule[0].DisciplinesForDay.Add(discipline);
+            }
+
+            NewWeekSchedule.Schedule.Add(new EDaySchedule()//tue
+            {
+                WeekSchedule = NewWeekSchedule,
+                DayNumber = 1,
+                DisciplinesForDay = new List<EScheduleItem>(8)
+            });
+            //DBContext.DaySchedules.Add(NewWeekSchedule.Schedule[0]);
+            for (int i = 0; i < 8; i++)
+            {
+                var discipline = model.tue[i];
+                discipline.DaySchedule = NewWeekSchedule.Schedule[1];
+                if (discipline.DisciplineId.ToString() == "-1")
+                {
+                    discipline.Name = "Нет пары";
+                    discipline.TeacherFIO = "";
+                    discipline.Type = "";
+                }
+                else
+                {
+                    var disc = await (from di in DBContext.Disciplines.Include(t => t.Teacher)
+                                      where di.Id == discipline.DisciplineId
+                                      select di).FirstOrDefaultAsync();
+                    discipline.Name = disc.Name;
+                    discipline.TeacherFIO = disc.Teacher.FIO;
+                }
+                if (discipline.Classroom == null)
+                    discipline.Classroom = "";
+                NewWeekSchedule.Schedule[1].DisciplinesForDay.Add(discipline);
+            }
+
+            NewWeekSchedule.Schedule.Add(new EDaySchedule()//wed
+            {
+                WeekSchedule = NewWeekSchedule,
+                DayNumber = 2,
+                DisciplinesForDay = new List<EScheduleItem>(8)
+            });
+            //DBContext.DaySchedules.Add(NewWeekSchedule.Schedule[0]);
+            for (int i = 0; i < 8; i++)
+            {
+                var discipline = model.wed[i];
+                discipline.DaySchedule = NewWeekSchedule.Schedule[2];
+                if (discipline.DisciplineId.ToString() == "-1")
+                {
+                    discipline.Name = "Нет пары";
+                    discipline.TeacherFIO = "";
+                    discipline.Type = "";
+                }
+                else
+                {
+                    var disc = await (from di in DBContext.Disciplines.Include(t => t.Teacher)
+                                      where di.Id == discipline.DisciplineId
+                                      select di).FirstOrDefaultAsync();
+                    discipline.Name = disc.Name;
+                    discipline.TeacherFIO = disc.Teacher.FIO;
+                }
+                if (discipline.Classroom == null)
+                    discipline.Classroom = "";
+                NewWeekSchedule.Schedule[2].DisciplinesForDay.Add(discipline);
+            }
+
+            NewWeekSchedule.Schedule.Add(new EDaySchedule()//thu
+            {
+                WeekSchedule = NewWeekSchedule,
+                DayNumber = 3,
+                DisciplinesForDay = new List<EScheduleItem>(8)
+            });
+            //DBContext.DaySchedules.Add(NewWeekSchedule.Schedule[0]);
+            for (int i = 0; i < 8; i++)
+            {
+                var discipline = model.thu[i];
+                discipline.DaySchedule = NewWeekSchedule.Schedule[3];
+                if (discipline.DisciplineId.ToString() == "-1")
+                {
+                    discipline.Name = "Нет пары";
+                    discipline.TeacherFIO = "";
+                    discipline.Type = "";
+                }
+                else
+                {
+                    var disc = await (from di in DBContext.Disciplines.Include(t => t.Teacher)
+                                      where di.Id == discipline.DisciplineId
+                                      select di).FirstOrDefaultAsync();
+                    discipline.Name = disc.Name;
+                    discipline.TeacherFIO = disc.Teacher.FIO;
+                }
+                if (discipline.Classroom == null)
+                    discipline.Classroom = "";
+                NewWeekSchedule.Schedule[3].DisciplinesForDay.Add(discipline);
+            }
+
+            NewWeekSchedule.Schedule.Add(new EDaySchedule()//fri
+            {
+                WeekSchedule = NewWeekSchedule,
+                DayNumber = 4,
+                DisciplinesForDay = new List<EScheduleItem>(8)
+            });
+            //DBContext.DaySchedules.Add(NewWeekSchedule.Schedule[0]);
+            for (int i = 0; i < 8; i++)
+            {
+                var discipline = model.fri[i];
+                discipline.DaySchedule = NewWeekSchedule.Schedule[4];
+                if (discipline.DisciplineId.ToString() == "-1")
+                {
+                    discipline.Name = "Нет пары";
+                    discipline.TeacherFIO = "";
+                    discipline.Type = "";
+                }
+                else
+                {
+                    var disc = await (from di in DBContext.Disciplines.Include(t => t.Teacher)
+                                      where di.Id == discipline.DisciplineId
+                                      select di).FirstOrDefaultAsync();
+                    discipline.Name = disc.Name;
+                    discipline.TeacherFIO = disc.Teacher.FIO;
+                }
+                if (discipline.Classroom == null)
+                    discipline.Classroom = "";
+                NewWeekSchedule.Schedule[4].DisciplinesForDay.Add(discipline);
+            }
+
+            NewWeekSchedule.Schedule.Add(new EDaySchedule()//sat
+            {
+                WeekSchedule = NewWeekSchedule,
+                DayNumber = 5,
+                DisciplinesForDay = new List<EScheduleItem>(8)
+            });
+            //DBContext.DaySchedules.Add(NewWeekSchedule.Schedule[0]);
+            for (int i = 0; i < 8; i++)
+            {
+                var discipline = model.sat[i];
+                discipline.DaySchedule = NewWeekSchedule.Schedule[5];
+                if (discipline.DisciplineId.ToString() == "-1")
+                {
+                    discipline.Name = "Нет пары";
+                    discipline.TeacherFIO = "";
+                    discipline.Type = "";
+                }
+                else
+                {
+                    var disc = await (from di in DBContext.Disciplines.Include(t => t.Teacher)
+                                      where di.Id == discipline.DisciplineId
+                                      select di).FirstOrDefaultAsync();
+                    discipline.Name = disc.Name;
+                    discipline.TeacherFIO = disc.Teacher.FIO;
+                }
+                if (discipline.Classroom == null)
+                    discipline.Classroom = "";
+                NewWeekSchedule.Schedule[5].DisciplinesForDay.Add(discipline);
+            }
+            spec.Schedules.Add(NewWeekSchedule);            
+            DBContext.Add(NewWeekSchedule);
+            await DBContext.SaveChangesAsync();
+            return RedirectToAction("Index", new { SpecId = spec.Id });
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateSchedule(CreateScheduleViewModel model)
+        {
+            var spec = await (from sp in DBContext.Specialities.Include(s=>s.Schedules)
+                              where sp.Id.ToString() == model.SpecialityId select sp).FirstOrDefaultAsync();
+            if (model.WeekScheduleName == null)
+                model.WeekScheduleName = "Без названия";
+            var NewWeekSchedule = new EWeekSchedule()
+            {
+                Name = model.WeekScheduleName,
+                Speciality = spec,
+                Schedule = new List<EDaySchedule>(6)
+            };
+            // DBContext.WeekSchedules.Add(NewWeekSchedule);
+
+            NewWeekSchedule.Schedule.Add(new EDaySchedule()//mon
+            {
+                WeekSchedule = NewWeekSchedule,
+                DayNumber = 0,
+                DisciplinesForDay = new List<EScheduleItem>(8)
+            });
+            //DBContext.DaySchedules.Add(NewWeekSchedule.Schedule[0]);
+            for(int i=0;i<8;i++)
+            {
+                var discipline = model.mon[i];
+                discipline.DaySchedule = NewWeekSchedule.Schedule[0];
+                if(discipline.DisciplineId.ToString()=="-1")
+                {
+                    discipline.Name = "Нет пары";
+                    discipline.TeacherFIO = "";
+                    discipline.Type = "";
+                }
+                else
+                {
+                    var disc = await (from di in DBContext.Disciplines.Include(t => t.Teacher)
+                                      where di.Id == discipline.DisciplineId
+                                      select di).FirstOrDefaultAsync();
+                    discipline.Name = disc.Name;
+                    discipline.TeacherFIO = disc.Teacher.FIO;
+                }
+                if (discipline.Classroom == null)
+                    discipline.Classroom = "";
+
+                NewWeekSchedule.Schedule[0].DisciplinesForDay.Add(discipline);
+            }
+
+            NewWeekSchedule.Schedule.Add( new EDaySchedule()//tue
+            {
+                WeekSchedule = NewWeekSchedule,
+                DayNumber = 1,
+                DisciplinesForDay = new List<EScheduleItem>(8)
+            });
+            //DBContext.DaySchedules.Add(NewWeekSchedule.Schedule[0]);
+            for (int i = 0; i < 8; i++)
+            {
+                var discipline = model.tue[i];
+                discipline.DaySchedule = NewWeekSchedule.Schedule[1];
+                if (discipline.DisciplineId.ToString() == "-1")
+                {
+                    discipline.Name = "Нет пары";
+                    discipline.TeacherFIO = "";
+                    discipline.Type = "";
+                }
+                else
+                {
+                    var disc = await (from di in DBContext.Disciplines.Include(t => t.Teacher)
+                                      where di.Id == discipline.DisciplineId
+                                      select di).FirstOrDefaultAsync();
+                    discipline.Name = disc.Name;
+                    discipline.TeacherFIO = disc.Teacher.FIO;
+                }
+                if (discipline.Classroom == null)
+                    discipline.Classroom = "";
+                NewWeekSchedule.Schedule[1].DisciplinesForDay.Add(discipline);
+            }
+
+            NewWeekSchedule.Schedule.Add(  new EDaySchedule()//wed
+            {
+                WeekSchedule = NewWeekSchedule,
+                DayNumber = 2,
+                DisciplinesForDay = new List<EScheduleItem>(8)
+            });
+            //DBContext.DaySchedules.Add(NewWeekSchedule.Schedule[0]);
+            for (int i = 0; i < 8; i++)
+            {
+                var discipline = model.wed[i];
+                discipline.DaySchedule = NewWeekSchedule.Schedule[2];
+                if (discipline.DisciplineId.ToString() == "-1")
+                {
+                    discipline.Name = "Нет пары";
+                    discipline.TeacherFIO = "";
+                    discipline.Type = "";
+                }
+                else
+                {
+                    var disc = await (from di in DBContext.Disciplines.Include(t => t.Teacher)
+                                      where di.Id == discipline.DisciplineId
+                                      select di).FirstOrDefaultAsync();
+                    discipline.Name = disc.Name;
+                    discipline.TeacherFIO = disc.Teacher.FIO;
+                }
+                if (discipline.Classroom == null)
+                    discipline.Classroom = "";
+                NewWeekSchedule.Schedule[2].DisciplinesForDay.Add(discipline);
+            }
+
+            NewWeekSchedule.Schedule.Add( new EDaySchedule()//thu
+            {
+                WeekSchedule = NewWeekSchedule,
+                DayNumber = 3,
+                DisciplinesForDay = new List<EScheduleItem>(8)
+            });
+            //DBContext.DaySchedules.Add(NewWeekSchedule.Schedule[0]);
+            for (int i = 0; i < 8; i++)
+            {
+                var discipline = model.thu[i];
+                discipline.DaySchedule = NewWeekSchedule.Schedule[3];
+                if (discipline.DisciplineId.ToString() == "-1")
+                {
+                    discipline.Name = "Нет пары";
+                    discipline.TeacherFIO = "";
+                    discipline.Type = "";
+                }
+                else
+                {
+                    var disc = await (from di in DBContext.Disciplines.Include(t => t.Teacher)
+                                      where di.Id == discipline.DisciplineId
+                                      select di).FirstOrDefaultAsync();
+                    discipline.Name = disc.Name;
+                    discipline.TeacherFIO = disc.Teacher.FIO;
+                }
+                if (discipline.Classroom == null)
+                    discipline.Classroom = "";
+                NewWeekSchedule.Schedule[3].DisciplinesForDay.Add(discipline);
+            }
+
+            NewWeekSchedule.Schedule.Add( new EDaySchedule()//fri
+            {
+                WeekSchedule = NewWeekSchedule,
+                DayNumber = 4,
+                DisciplinesForDay = new List<EScheduleItem>(8)
+            });
+            //DBContext.DaySchedules.Add(NewWeekSchedule.Schedule[0]);
+            for (int i = 0; i < 8; i++)
+            {
+                var discipline = model.fri[i];
+                discipline.DaySchedule = NewWeekSchedule.Schedule[4];
+                if (discipline.DisciplineId.ToString() == "-1")
+                {
+                    discipline.Name = "Нет пары";
+                    discipline.TeacherFIO = "";
+                    discipline.Type = "";
+                }
+                else
+                {
+                    var disc = await (from di in DBContext.Disciplines.Include(t => t.Teacher)
+                                      where di.Id == discipline.DisciplineId
+                                      select di).FirstOrDefaultAsync();
+                    discipline.Name = disc.Name;
+                    discipline.TeacherFIO = disc.Teacher.FIO;
+                }
+                if (discipline.Classroom == null)
+                    discipline.Classroom = "";
+                NewWeekSchedule.Schedule[4].DisciplinesForDay.Add(discipline);
+            }
+
+            NewWeekSchedule.Schedule.Add( new EDaySchedule()//sat
+            {
+                WeekSchedule = NewWeekSchedule,
+                DayNumber = 5,
+                DisciplinesForDay = new List<EScheduleItem>(8)
+            });
+            //DBContext.DaySchedules.Add(NewWeekSchedule.Schedule[0]);
+            for (int i = 0; i < 8; i++)
+            {
+                var discipline = model.sat[i];
+                discipline.DaySchedule = NewWeekSchedule.Schedule[5];
+                if (discipline.DisciplineId.ToString() == "-1")
+                {
+                    discipline.Name = "Нет пары";
+                    discipline.TeacherFIO = "";
+                    discipline.Type = "";
+                }
+                else
+                {
+                    var disc = await (from di in DBContext.Disciplines.Include(t => t.Teacher)
+                                      where di.Id == discipline.DisciplineId
+                                      select di).FirstOrDefaultAsync();
+                    discipline.Name = disc.Name;
+                    discipline.TeacherFIO = disc.Teacher.FIO;
+                }
+                if (discipline.Classroom == null)
+                    discipline.Classroom = "";
+                NewWeekSchedule.Schedule[5].DisciplinesForDay.Add(discipline);
+            }
+            spec.Schedules.Add(NewWeekSchedule);
+            DBContext.Add(NewWeekSchedule);
+            await DBContext.SaveChangesAsync();
+            return RedirectToAction("Index", new { SpecId = spec.Id });
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteSchedule(string WeekScheduleId)
+        {
+            var sched = await (from s in DBContext.WeekSchedules.Include(s=>s.Speciality)
+                               where s.id.ToString() == WeekScheduleId
+                               select s).FirstOrDefaultAsync();
+            var spec = await (from s in DBContext.Specialities.Include(s => s.Schedules)
+                              where s.Id == sched.Speciality.Id
+                              select s).FirstOrDefaultAsync();
+            
+            DBContext.Remove(sched);
+            spec.Schedules.Remove(sched);
+            await DBContext.SaveChangesAsync();
+            return RedirectToAction("Index", new { SpecId = spec.Id });
+        }
         public async Task<IActionResult> Create(string SpecId)
         {
             var spec = await (from sp in DBContext.Specialities.Include(d => d.Disciplines)
                               where sp.Id.ToString() == SpecId
                               select sp).FirstOrDefaultAsync();
-            if (spec != null)
-            {
+           
                 var model = new CreateDisciplineViewModel()
                 {
                     SpecialityId = spec.Id.ToString(),
                     AvailableTeachers = await userManager.GetUsersInRoleAsync("Teacher")
                 };
                 return View(model);
-            }
-            return RedirectToAction("Index");//untested
         }
 
         [HttpPost]

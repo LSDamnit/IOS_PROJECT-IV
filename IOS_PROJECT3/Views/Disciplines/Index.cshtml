@@ -1,5 +1,4 @@
 ﻿@model IOS_PROJECT3.ViewModels.DisciplinesViewModel
-@using IOS_PROJECT3.Models;
 <style>
     .grid-container-spec {
         display: grid;
@@ -18,6 +17,35 @@
 
 </style>
 <h3 style="align-self:center; margin-bottom:25px">Специальность @Model.SpecialityName</h3>
+<div id="schedules">
+    <h5>Расписания для этой специальности</h5>
+    @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || User.IsInRole("Admin"))
+    {
+        <a style="margin-bottom:15px" asp-controller="Disciplines" asp-route-SpecId="@Model.SpecialityId" asp-action="CreateSchedule">Добавить расписание</a>
+    }
+    @foreach (var s in Model.Schedules)
+    {
+        <table>
+            <tr>
+                <td>
+                    <a asp-controller="Disciplines" asp-route-WeekScheduleId="@s.id" asp-action="WeekSchedule">Расписание @s.Name</a>
+                </td>
+                @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || User.IsInRole("Admin"))
+                {
+                    <td>
+                        <a class="btn btn-primary btn-sm"  asp-controller="Disciplines" asp-route-WeekScheduleId="@s.id" asp-action="EditSchedule">Изменить</a>
+                    </td>
+                <td>
+                    <form method="post" asp-action="DeleteSchedule" asp-route-WeekScheduleId="@s.id">
+                    
+                        <button type="submit" class="btn btn-danger btn-sm" >Удалить</button>
+                        </form>
+                </td>
+                }
+            </tr>
+        </table>
+    }
+</div>
 <div class="grid-container-spec" style="width:100%">
     <div class="disciplines-spec">
         <h5 style="align-self:center; margin-bottom:25px">Список дисциплин</h5>

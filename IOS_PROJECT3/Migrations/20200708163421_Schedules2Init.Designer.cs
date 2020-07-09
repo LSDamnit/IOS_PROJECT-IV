@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IOS_PROJECT3.Migrations
 {
     [DbContext(typeof(DBMergedContext))]
-    [Migration("20200623094018_CascadeAndSetNullAdded")]
-    partial class CascadeAndSetNullAdded
+    [Migration("20200708163421_Schedules2Init")]
+    partial class Schedules2Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,26 @@ namespace IOS_PROJECT3.Migrations
                 .HasAnnotation("ProductVersion", "3.1.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("IOS_PROJECT3.Models.EDaySchedule", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("DayNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("WeekScheduleid")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("WeekScheduleid");
+
+                    b.ToTable("DaySchedules");
+                });
 
             modelBuilder.Entity("IOS_PROJECT3.Models.EDepartment", b =>
                 {
@@ -137,6 +157,38 @@ namespace IOS_PROJECT3.Migrations
                     b.ToTable("Institutions");
                 });
 
+            modelBuilder.Entity("IOS_PROJECT3.Models.EScheduleItem", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Classroom")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("DayScheduleid")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DisciplineId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TeacherFIO")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("DayScheduleid");
+
+                    b.ToTable("ScheduleItems");
+                });
+
             modelBuilder.Entity("IOS_PROJECT3.Models.ESpeciality", b =>
                 {
                     b.Property<int>("Id")
@@ -228,6 +280,26 @@ namespace IOS_PROJECT3.Migrations
                     b.HasIndex("SpecialityId");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("IOS_PROJECT3.Models.EWeekSchedule", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("SpecialityId")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("SpecialityId");
+
+                    b.ToTable("WeekSchedules");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -361,6 +433,14 @@ namespace IOS_PROJECT3.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("IOS_PROJECT3.Models.EDaySchedule", b =>
+                {
+                    b.HasOne("IOS_PROJECT3.Models.EWeekSchedule", "WeekSchedule")
+                        .WithMany("Schedule")
+                        .HasForeignKey("WeekScheduleid")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("IOS_PROJECT3.Models.EDepartment", b =>
                 {
                     b.HasOne("IOS_PROJECT3.Models.EUser", "HeadTeacher")
@@ -404,6 +484,14 @@ namespace IOS_PROJECT3.Migrations
                         .HasForeignKey("ManagerId");
                 });
 
+            modelBuilder.Entity("IOS_PROJECT3.Models.EScheduleItem", b =>
+                {
+                    b.HasOne("IOS_PROJECT3.Models.EDaySchedule", "DaySchedule")
+                        .WithMany("DisciplinesForDay")
+                        .HasForeignKey("DayScheduleid")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("IOS_PROJECT3.Models.ESpeciality", b =>
                 {
                     b.HasOne("IOS_PROJECT3.Models.EDepartment", "Department")
@@ -418,6 +506,14 @@ namespace IOS_PROJECT3.Migrations
                         .WithMany("Students")
                         .HasForeignKey("SpecialityId")
                         .OnDelete(DeleteBehavior.SetNull);
+                });
+
+            modelBuilder.Entity("IOS_PROJECT3.Models.EWeekSchedule", b =>
+                {
+                    b.HasOne("IOS_PROJECT3.Models.ESpeciality", "Speciality")
+                        .WithMany("Schedules")
+                        .HasForeignKey("SpecialityId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

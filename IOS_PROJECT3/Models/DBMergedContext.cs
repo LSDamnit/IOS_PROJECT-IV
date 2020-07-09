@@ -14,8 +14,10 @@ namespace IOS_PROJECT3.Models
         public DbSet<EDepartment> Departments { get; set; }
         public DbSet<ESpeciality> Specialities { get; set; }
         public DbSet<EDiscipline> Disciplines { get; set; }
-        public DbSet<EFile> Files { get; set; }       
-        //public DbSet<RegFile> RegistrationFiles { get; set; }
+        public DbSet<EFile> Files { get; set; }
+        public DbSet<EWeekSchedule> WeekSchedules { get; set; }
+        public DbSet<EDaySchedule> DaySchedules { get; set; }
+        public DbSet<EScheduleItem> ScheduleItems { get; set; }
 
         public DBMergedContext(DbContextOptions<DBMergedContext> options)
            : base(options)
@@ -49,7 +51,23 @@ namespace IOS_PROJECT3.Models
                 .HasMany(d => d.Files)
                 .WithOne(d=>d.Discipline)
                 .OnDelete(DeleteBehavior.Cascade);
-            
+
+            //----Schedule-----
+            modelBuilder.Entity<EWeekSchedule>()
+                .HasMany(d => d.Schedule)
+                .WithOne(d => d.WeekSchedule)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<EDaySchedule>()
+                .HasMany(d => d.DisciplinesForDay)
+                .WithOne(d => d.DaySchedule)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ESpeciality>()
+                .HasMany(s => s.Schedules)
+                .WithOne(s => s.Speciality)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }
