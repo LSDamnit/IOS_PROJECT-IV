@@ -4,11 +4,6 @@
 }
 @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
 {
-	<style>
-		td, th {
-			min-width: 180px;
-		}
-	</style>
 	<a asp-action="Create" id="singleRed">Зарегистрировать одного пользователя</a>
 	<div style="margin-bottom:10px; margin-top:10px">
 		<label margin-right:5px;>Массовая регистрация </label><input type="checkbox" id="massRegCheck" name="Массовая регистрация" value="Массовая регистрация" />
@@ -41,19 +36,27 @@
 		})</script>
 	<table id="table" class="table">
 		<tr>
-			<th>
-				<label style="margin:auto">
-					Поиск
-				</label>
-			</th>
+			<th>Поиск:</th>
 			<td>
-				<input type="text" class="form-control" id="emailSearch" placeholder="Email" oninput='search(@Json.Serialize(Model.Users));'>
+				<input type="text" class="form-control" id="emailSearch" placeholder="Email" oninput='search(this, @Json.Serialize(Model.Users));'>
 			</td>
 			<td style="max-width:280px;word-wrap:break-word">
-				<input type="text" class="form-control" id="fioSearch" placeholder="ФИО" oninput='search(@Json.Serialize(Model.Users));'>
+				<input type="text" class="form-control" id="fioSearch" placeholder="ФИО" oninput='search(this, @Json.Serialize(Model.Users));'>
 			</td>
 		</tr>
-		<tr><th>Email</th><th style="max-width:280px;word-wrap:break-word">ФИО</th><th></th></tr>
+		<tr>
+			<th>
+				Email
+				<label class="badge badge-secondary" id="labelEmailSort" onclick='setSortedUsers(this, @Json.Serialize(Model.Users))'>▼</label>
+				<input type="radio" name="sortbtn" id="sortByEmail" style="display:none" autocomplete="off">
+			</th>
+			<th style="max-width:280px;word-wrap:break-word">
+				ФИО
+				<label class="badge badge-info" for="sortByFIO" id="labelFIOSort" onclick='setSortedUsers(this, @Json.Serialize(Model.Users))'>▼</label>
+				<input type="radio" name="sortbtn" id="sortByFIO" style="display:none" autocomplete="off" checked>
+			</th>
+			<th></th>
+		</tr>
 		@foreach (var user in Model.Users)
 		{
 			<tr class="tr-user" id="@user.Id">
@@ -87,30 +90,114 @@
 		}
 	</table>
 	<script>
-		function search(allUsers) {
-			//Выкидываем ненужных пользователей
+		function search(elem, allUsers) {
+			if (elem == document.getElementById('fioSearch') || elem == document.getElementById('emailSearch')) {
+				document.getElementById('labelFIOSort').className = "badge badge-info";
+				document.getElementById('labelEmailSort').className = "badge badge-secondary";
+				document.getElementById('labelEmailSort').innerHTML = '▼';
+				document.getElementById('labelFIOSort').innerHTML = '▼';
+			}
+			updateUsers(getSearchUsers(allUsers));
+		}
+
+		function getSearchUsers(allUsers) {
+			//Формируем массив отоброжаемых пользователей
 			let printUsers = [];
 			if (document.getElementById('fioSearch').value == "" && document.getElementById('emailSearch').value == "")
 				printUsers = allUsers;
 			else {
 				for (let i = 0; i < allUsers.length; ++i) {
 					if ((document.getElementById('fioSearch').value != ""
-						&& allUsers[i].fio.toLowerCase().startsWith(document.getElementById('fioSearch').value.toLowerCase()))
-						|| (document.getElementById('emailSearch').value != ""
-							&& allUsers[i].email.toLowerCase().startsWith(document.getElementById('emailSearch').value.toLowerCase()))) {
+							&& allUsers[i].fio.toLowerCase().startsWith(document.getElementById('fioSearch').value.toLowerCase()))
+							|| (document.getElementById('emailSearch').value != ""
+							&& allUsers[i].email.toLowerCase().startsWith(document.getElementById('emailSearch').value.toLowerCase())))
+					{
 						printUsers.push(allUsers[i]);
 					}
 				}
 			}
+			return printUsers;
+		}
+
+		function updateUsers(printUsers) {
 			//Скрываем уже выведенных пользователей, чтобы они не повторялись
 			let delTable = document.getElementsByClassName('tr-user');
 			for (let i = 0; i < delTable.length; ++i) delTable[i].hidden = true;
 			//Выводим новый список пользователей
-
 			for (let i = 0; i < printUsers.length; ++i) {
 				document.getElementById(printUsers[i].id).hidden = false;
+				$('#table').append(document.getElementById(printUsers[i].id));
 			}
 		}
 
+		function getSortedUsers(sortType, users) {
+			if (sortType == 'Email') {
+				users.sort(function (obj1, obj2) {
+					if (obj1.email < obj2.email) return -1;
+					if (obj1.email > obj2.email) return 1;
+					return 0;
+				});
+				return users;
+			}
+			else if (sortType == 'EmailReverse') {
+				users.sort(function (obj1, obj2) {
+					if (obj2.email < obj1.email) return -1;
+					if (obj2.email > obj1.email) return 1;
+					return 0;
+				});
+				return users;
+			}
+			else if (sortType == 'FIOReverse') {
+				users.sort(function (obj1, obj2) {
+					if (obj2.fio < obj1.fio) return -1;
+					if (obj2.fio > obj1.fio) return 1;
+					return 0;
+				});
+				return users;
+			}
+			else {
+				users.sort(function (obj1, obj2) {
+					if (obj1.fio < obj2.fio) return -1;
+					if (obj1.fio > obj2.fio) return 1;
+					return 0;
+				});
+				return users;
+			}
+		}
+
+		function setSortedUsers(elem, users) {
+			if (elem == document.getElementById('labelEmailSort') && document.getElementById('labelEmailSort').className == "badge badge-secondary") {
+				document.getElementById('labelEmailSort').className = "badge badge-info";
+				document.getElementById('labelFIOSort').className = "badge badge-secondary";
+
+				search('pizdec', getSortedUsers('Email', users));
+			}
+			else if (elem == document.getElementById('labelEmailSort') && document.getElementById('labelEmailSort').className != "badge badge-secondary") {
+				if (document.getElementById('labelEmailSort').innerHTML == '▲') {
+					document.getElementById('labelEmailSort').innerHTML = '▼';
+					search('pizdec', getSortedUsers('Email', users));
+				}
+				else {
+					document.getElementById('labelEmailSort').innerHTML = '▲';
+					search('pizdec', getSortedUsers('EmailReverse', users));
+				}
+			}
+			else if (elem == document.getElementById('labelFIOSort') && document.getElementById('labelFIOSort').className == "badge badge-secondary") {
+				document.getElementById('labelFIOSort').className = "badge badge-info";
+				document.getElementById('labelEmailSort').className = "badge badge-secondary";
+
+				search('pizdec', getSortedUsers('FIO', users));
+			}
+			else {
+				if (document.getElementById('labelFIOSort').innerHTML == '▲') {
+					document.getElementById('labelFIOSort').innerHTML = '▼';
+					search('pizdec', getSortedUsers('FIO', users));
+				}
+				else {
+					document.getElementById('labelFIOSort').innerHTML = '▲';
+					search('pizdec', getSortedUsers('FIOReverse', users));
+				}
+			}
+		}
 	</script>
 }

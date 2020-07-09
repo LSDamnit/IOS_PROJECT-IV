@@ -35,7 +35,7 @@
             @foreach (var inst in Model.Institutions)
             {
 
-                <a style="display: block;margin-bottom: 10px" asp-controller="Departments" asp-action="Index" asp-route-InstId="@inst.Id"><b>@inst.Name</b></a>
+                <a style="display: block;margin-top: 10px" asp-controller="Departments" asp-action="Index" asp-route-InstId="@inst.Id"><b>@inst.Name</b></a>
                 @foreach (var dep in Model.Departments)
                 {
                     if (dep.Institution.Id == inst.Id)
