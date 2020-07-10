@@ -29,7 +29,6 @@ namespace IOS_PROJECT3.Controllers
             var spec = await (from sp in DBContext.Specialities.Include(d => d.Disciplines).Include(s => s.Students).Include(s=>s.Schedules)
                               where sp.Id.ToString() == SpecId
                               select sp).FirstOrDefaultAsync();
-            
             if (spec != null)
             {
                 //var sched = await (from s in DBContext.WeekSchedules.Include(w => w.Schedule)

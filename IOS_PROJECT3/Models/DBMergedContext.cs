@@ -18,6 +18,12 @@ namespace IOS_PROJECT3.Models
         public DbSet<EWeekSchedule> WeekSchedules { get; set; }
         public DbSet<EDaySchedule> DaySchedules { get; set; }
         public DbSet<EScheduleItem> ScheduleItems { get; set; }
+        public DbSet<EForumNode> ForumNodes { get; set; }
+        public DbSet<EForumEndopoint> ForumEndpoints { get; set; }
+        public DbSet<EForumFile> ForumFiles { get; set; }
+        public DbSet<EGrant> Grants { get; set; }
+        public DbSet<ERolesToGrants> RolesToGrants { get; set; }
+
 
         public DBMergedContext(DbContextOptions<DBMergedContext> options)
            : base(options)
@@ -67,7 +73,18 @@ namespace IOS_PROJECT3.Models
                 .HasMany(s => s.Schedules)
                 .WithOne(s => s.Speciality)
                 .OnDelete(DeleteBehavior.Cascade);
-
+            //-----Forum------
+            modelBuilder.Entity<EForumNode>()
+                .HasMany(s => s.ChildNodes)
+                .WithOne(p => p.ParentNode)
+                .OnDelete(DeleteBehavior.NoAction);//<---реализовать собственное каскадное удаление
+            modelBuilder.Entity<EForumEndopoint>()
+                .HasMany(f => f.PinnedFiles)
+                .WithOne(e => e.ForumEndpoint)
+                .OnDelete(DeleteBehavior.Cascade);
+            //-------Grants----
+            modelBuilder.Entity<ERolesToGrants>()
+                .HasNoKey();
         }
     }
 }

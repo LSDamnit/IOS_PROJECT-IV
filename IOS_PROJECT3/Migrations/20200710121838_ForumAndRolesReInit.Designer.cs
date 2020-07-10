@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IOS_PROJECT3.Migrations
 {
     [DbContext(typeof(DBMergedContext))]
-    [Migration("20200708163421_Schedules2Init")]
-    partial class Schedules2Init
+    [Migration("20200710121838_ForumAndRolesReInit")]
+    partial class ForumAndRolesReInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -137,6 +137,96 @@ namespace IOS_PROJECT3.Migrations
                     b.ToTable("Files");
                 });
 
+            modelBuilder.Entity("IOS_PROJECT3.Models.EForumEndopoint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CreatorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentNodeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentNodeId");
+
+                    b.ToTable("ForumEndpoints");
+                });
+
+            modelBuilder.Entity("IOS_PROJECT3.Models.EForumFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("ForumEndpointId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ForumEndpointId");
+
+                    b.ToTable("ForumFiles");
+                });
+
+            modelBuilder.Entity("IOS_PROJECT3.Models.EForumNode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CreatorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentNodeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentNodeId");
+
+                    b.ToTable("ForumNodes");
+                });
+
+            modelBuilder.Entity("IOS_PROJECT3.Models.EGrant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Grants");
+                });
+
             modelBuilder.Entity("IOS_PROJECT3.Models.EInstitution", b =>
                 {
                     b.Property<int>("Id")
@@ -155,6 +245,17 @@ namespace IOS_PROJECT3.Migrations
                     b.HasIndex("ManagerId");
 
                     b.ToTable("Institutions");
+                });
+
+            modelBuilder.Entity("IOS_PROJECT3.Models.ERolesToGrants", b =>
+                {
+                    b.Property<int>("GrantId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.ToTable("RolesToGrants");
                 });
 
             modelBuilder.Entity("IOS_PROJECT3.Models.EScheduleItem", b =>
@@ -475,6 +576,29 @@ namespace IOS_PROJECT3.Migrations
                     b.HasOne("IOS_PROJECT3.Models.EUser", "UserLoad")
                         .WithMany()
                         .HasForeignKey("UserLoadId");
+                });
+
+            modelBuilder.Entity("IOS_PROJECT3.Models.EForumEndopoint", b =>
+                {
+                    b.HasOne("IOS_PROJECT3.Models.EForumNode", "ParentNode")
+                        .WithMany("ChildEndpoints")
+                        .HasForeignKey("ParentNodeId");
+                });
+
+            modelBuilder.Entity("IOS_PROJECT3.Models.EForumFile", b =>
+                {
+                    b.HasOne("IOS_PROJECT3.Models.EForumEndopoint", "ForumEndpoint")
+                        .WithMany("PinnedFiles")
+                        .HasForeignKey("ForumEndpointId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("IOS_PROJECT3.Models.EForumNode", b =>
+                {
+                    b.HasOne("IOS_PROJECT3.Models.EForumNode", "ParentNode")
+                        .WithMany("ChildNodes")
+                        .HasForeignKey("ParentNodeId")
+                        .OnDelete(DeleteBehavior.NoAction);
                 });
 
             modelBuilder.Entity("IOS_PROJECT3.Models.EInstitution", b =>

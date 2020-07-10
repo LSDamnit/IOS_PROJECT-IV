@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IOS_PROJECT3.Migrations
 {
-    public partial class Schedules2Init : Migration
+    public partial class ForumAndRolesReInit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -19,6 +19,51 @@ namespace IOS_PROJECT3.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ForumNodes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatorId = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    ParentNodeId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ForumNodes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ForumNodes_ForumNodes_ParentNodeId",
+                        column: x => x.ParentNodeId,
+                        principalTable: "ForumNodes",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Grants",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Grants", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RolesToGrants",
+                columns: table => new
+                {
+                    RoleId = table.Column<int>(nullable: false),
+                    GrantId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
                 });
 
             migrationBuilder.CreateTable(
@@ -38,6 +83,49 @@ namespace IOS_PROJECT3.Migrations
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ForumEndpoints",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatorId = table.Column<int>(nullable: false),
+                    ParentNodeId = table.Column<int>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    Text = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ForumEndpoints", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ForumEndpoints_ForumNodes_ParentNodeId",
+                        column: x => x.ParentNodeId,
+                        principalTable: "ForumNodes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ForumFiles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: true),
+                    Path = table.Column<string>(nullable: true),
+                    ForumEndpointId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ForumFiles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ForumFiles_ForumEndpoints_ForumEndpointId",
+                        column: x => x.ForumEndpointId,
+                        principalTable: "ForumEndpoints",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -396,6 +484,21 @@ namespace IOS_PROJECT3.Migrations
                 column: "UserLoadId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ForumEndpoints_ParentNodeId",
+                table: "ForumEndpoints",
+                column: "ParentNodeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ForumFiles_ForumEndpointId",
+                table: "ForumFiles",
+                column: "ForumEndpointId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ForumNodes_ParentNodeId",
+                table: "ForumNodes",
+                column: "ParentNodeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Institutions_ManagerId",
                 table: "Institutions",
                 column: "ManagerId");
@@ -493,6 +596,15 @@ namespace IOS_PROJECT3.Migrations
                 name: "Files");
 
             migrationBuilder.DropTable(
+                name: "ForumFiles");
+
+            migrationBuilder.DropTable(
+                name: "Grants");
+
+            migrationBuilder.DropTable(
+                name: "RolesToGrants");
+
+            migrationBuilder.DropTable(
                 name: "ScheduleItems");
 
             migrationBuilder.DropTable(
@@ -502,7 +614,13 @@ namespace IOS_PROJECT3.Migrations
                 name: "Disciplines");
 
             migrationBuilder.DropTable(
+                name: "ForumEndpoints");
+
+            migrationBuilder.DropTable(
                 name: "DaySchedules");
+
+            migrationBuilder.DropTable(
+                name: "ForumNodes");
 
             migrationBuilder.DropTable(
                 name: "WeekSchedules");
