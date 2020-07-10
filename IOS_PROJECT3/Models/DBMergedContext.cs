@@ -19,7 +19,8 @@ namespace IOS_PROJECT3.Models
         public DbSet<EDaySchedule> DaySchedules { get; set; }
         public DbSet<EScheduleItem> ScheduleItems { get; set; }
         public DbSet<EForumNode> ForumNodes { get; set; }
-        public DbSet<EForumEndopoint> ForumEndpoints { get; set; }
+        public DbSet<EForumEndpoint> ForumEndpoints { get; set; }
+        public DbSet<EForumComment> ForumComments { get; set; }
         public DbSet<EForumFile> ForumFiles { get; set; }
         public DbSet<EGrant> Grants { get; set; }
         public DbSet<ERolesToGrants> RolesToGrants { get; set; }
@@ -78,10 +79,27 @@ namespace IOS_PROJECT3.Models
                 .HasMany(s => s.ChildNodes)
                 .WithOne(p => p.ParentNode)
                 .OnDelete(DeleteBehavior.NoAction);//<---реализовать собственное каскадное удаление
-            modelBuilder.Entity<EForumEndopoint>()
+            modelBuilder.Entity<EForumNode>()
+                .HasMany(e => e.ChildEndpoints)
+                .WithOne(p => p.ParentNode)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<EForumEndpoint>()
                 .HasMany(f => f.PinnedFiles)
                 .WithOne(e => e.ForumEndpoint)
                 .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<EForumEndpoint>()
+                .HasMany(f => f.Comments)
+                .WithOne(e => e.ParentEndpoint)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<EForumNode>()
+                .Property(d => d.CreationDate)
+                .HasColumnType("datetime2");
+            modelBuilder.Entity<EForumEndpoint>()
+                .Property(d => d.CreationDate)
+                .HasColumnType("datetime2");
+            modelBuilder.Entity<EForumComment>()
+                .Property(d => d.CreationDate)
+                .HasColumnType("datetime2");
             //-------Grants----
             modelBuilder.Entity<ERolesToGrants>()
                 .HasNoKey();

@@ -1,0 +1,34 @@
+﻿@model IOS_PROJECT3.ViewModels.ForumNodeViewModel
+@{
+    ViewData["Title"] = "Форум";
+}
+@if (Model.CreatorId == "-1")
+{
+    <h3>Форум</h3>
+}
+else
+{
+<h3>@Model.NodeName</h3>
+}
+<div id="Nodes">
+    <h5>Ветки</h5>
+    <a asp-controller="Forum" asp-action="CreateForumNode" asp-route-ParentNodeId="@Model.NodeId" asp-route-CreatorEmail="@User.Identity.Name">Добавить ветку</a>
+    <table>
+        <tr><th>Название</th><th>Создатель</th><th>Дата создания</th></tr>
+        @foreach (var node in Model.Nodes)
+        {
+            <tr>
+                <td><a asp-controller="Forum" asp-action="ForumNode" asp-route-NodeId="@node.Id.ToString()">@node.Name</a></td>
+                <td>@node.CreatorFio</td>
+                <td>@node.CreationDate.ToString("d")</td>
+            </tr>
+        }
+    </table>
+</div>
+<div id="Endpoints">
+    <h5>Статьи</h5>
+    <table>
+        <tr><th>Название</th><th>Создатель</th><th>Дата создания</th></tr>
+    </table>
+</div>
+

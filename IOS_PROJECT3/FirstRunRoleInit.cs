@@ -1,12 +1,13 @@
 ﻿using IOS_PROJECT3.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
-
+using System.Linq;
 namespace IOS_PROJECT3
 {
     public class FirstRunRoleInit
     {
-        public static async Task InitializeAsync(UserManager<EUser> userManager, RoleManager<IdentityRole> roleManager)
+        
+        public static async Task InitializeAsync(UserManager<EUser> userManager, RoleManager<IdentityRole> roleManager,DBMergedContext context)
         {
             string adminEmail = "firstadmin@admin.adm";
             string password = "@FirstAccess000";
@@ -43,7 +44,21 @@ namespace IOS_PROJECT3
                 await userManager.AddToRoleAsync(firstAdmin, "Admin");
    
             }
-            if (await roleManager.FindByNameAsync("Manager") != null&& await userManager.IsInRoleAsync(firstAdmin, "Manager"))
+            if((from f in context.ForumNodes where f.CreatorId=="-1" select f).FirstOrDefault()==null)
+            {
+                var MainForum = new EForumNode()
+                {
+                    CreatorId="-1",
+                    Name="Main",
+                    ParentNode=null,
+                    CreationDate=System.DateTime.Now,
+                    CreatorEmail="System",
+                    CreatorFio="System"
+                };
+                context.ForumNodes.Add(MainForum);
+                await context.SaveChangesAsync();
+            }
+           /* if (await roleManager.FindByNameAsync("Manager") != null&& await userManager.IsInRoleAsync(firstAdmin, "Manager"))
             {
                 await userManager.RemoveFromRoleAsync(firstAdmin, "Manager");
             }
@@ -54,7 +69,8 @@ namespace IOS_PROJECT3
             if (await roleManager.FindByNameAsync("Student") != null && await userManager.IsInRoleAsync(firstAdmin, "Student"))
             {
                 await userManager.RemoveFromRoleAsync(firstAdmin, "Student");
-            }
+            }*/
+
         }
     }
 }

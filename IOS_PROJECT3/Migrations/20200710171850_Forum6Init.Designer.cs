@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IOS_PROJECT3.Migrations
 {
     [DbContext(typeof(DBMergedContext))]
-    [Migration("20200710121838_ForumAndRolesReInit")]
-    partial class ForumAndRolesReInit
+    [Migration("20200710171850_Forum6Init")]
+    partial class Forum6Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -137,15 +137,59 @@ namespace IOS_PROJECT3.Migrations
                     b.ToTable("Files");
                 });
 
-            modelBuilder.Entity("IOS_PROJECT3.Models.EForumEndopoint", b =>
+            modelBuilder.Entity("IOS_PROJECT3.Models.EForumComment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CreatorId")
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatorFio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatorId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentEndpointId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentEndpointId");
+
+                    b.ToTable("ForumComments");
+                });
+
+            modelBuilder.Entity("IOS_PROJECT3.Models.EForumEndpoint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatorFio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatorId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -170,6 +214,9 @@ namespace IOS_PROJECT3.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("ForumCommentId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("ForumEndpointId")
                         .HasColumnType("int");
 
@@ -179,7 +226,12 @@ namespace IOS_PROJECT3.Migrations
                     b.Property<string>("Path")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TypeOfParent")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ForumCommentId");
 
                     b.HasIndex("ForumEndpointId");
 
@@ -193,8 +245,17 @@ namespace IOS_PROJECT3.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CreatorId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatorFio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatorId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -578,16 +639,29 @@ namespace IOS_PROJECT3.Migrations
                         .HasForeignKey("UserLoadId");
                 });
 
-            modelBuilder.Entity("IOS_PROJECT3.Models.EForumEndopoint", b =>
+            modelBuilder.Entity("IOS_PROJECT3.Models.EForumComment", b =>
+                {
+                    b.HasOne("IOS_PROJECT3.Models.EForumEndpoint", "ParentEndpoint")
+                        .WithMany("Comments")
+                        .HasForeignKey("ParentEndpointId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("IOS_PROJECT3.Models.EForumEndpoint", b =>
                 {
                     b.HasOne("IOS_PROJECT3.Models.EForumNode", "ParentNode")
                         .WithMany("ChildEndpoints")
-                        .HasForeignKey("ParentNodeId");
+                        .HasForeignKey("ParentNodeId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("IOS_PROJECT3.Models.EForumFile", b =>
                 {
-                    b.HasOne("IOS_PROJECT3.Models.EForumEndopoint", "ForumEndpoint")
+                    b.HasOne("IOS_PROJECT3.Models.EForumComment", "ForumComment")
+                        .WithMany("PinnedFiles")
+                        .HasForeignKey("ForumCommentId");
+
+                    b.HasOne("IOS_PROJECT3.Models.EForumEndpoint", "ForumEndpoint")
                         .WithMany("PinnedFiles")
                         .HasForeignKey("ForumEndpointId")
                         .OnDelete(DeleteBehavior.Cascade);
