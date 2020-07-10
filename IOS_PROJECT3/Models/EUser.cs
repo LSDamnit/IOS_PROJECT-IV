@@ -9,5 +9,20 @@ namespace IOS_PROJECT3.Models
     {
         public string FIO { get; set; }
         public ESpeciality Speciality { get; set; }
+
+        public class CompareByFIO : IComparer<EUser>
+        {
+            public int Compare(EUser x, EUser y)
+            {
+                return String.Compare(x.FIO, y.FIO);
+            }
+        }
+        public class CompareByEmail : IComparer<EUser>
+        {
+            public int Compare(EUser x, EUser y)
+            {
+                return String.Compare(x.NormalizedEmail, y.NormalizedEmail);
+            }
+        }
     }
 }

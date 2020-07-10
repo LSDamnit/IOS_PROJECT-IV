@@ -34,9 +34,11 @@ namespace IOS_PROJECT3.Controllers
 
         public IActionResult Index()
         {
+            var users = userManager.Users.ToList();
+            users.Sort(new EUser.CompareByFIO());
             var model = new UsersAdminViewModel(database)
             {
-                Users = userManager.Users.ToList(),
+                Users = users,
                 WhyTitles = new Dictionary<EUser, string>()
             };
             return View(model);
