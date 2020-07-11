@@ -102,7 +102,7 @@ namespace IOS_PROJECT3.Models
                 .HasColumnType("datetime2");
             //-------Grants----
             modelBuilder.Entity<ERolesToGrants>()
-                .HasNoKey();
+                .HasKey(p=>new {p.RoleId, p.GrantId });
         }
     }
 }

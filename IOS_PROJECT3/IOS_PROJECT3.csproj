@@ -27,6 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\ForumFiles\EPFiles\" />
+    <Folder Include="wwwroot\ForumFiles\CFiles\" />
     <Folder Include="wwwroot\RegFiles\" />
     <Folder Include="wwwroot\RegToSpecialityFiles\" />
     <Folder Include="wwwroot\DisciplineFiles\" />

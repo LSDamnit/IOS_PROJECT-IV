@@ -13,7 +13,7 @@ namespace IOS_PROJECT3.Models
         public string CreatorFio { get; set; }
         public DateTime CreationDate { get; set; }
         public EForumEndpoint ParentEndpoint { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; }//<-----удалить за ненадобностью
         public string Text { get; set; }
         public List<EForumFile> PinnedFiles { get; set; }
     }

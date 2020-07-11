@@ -270,10 +270,8 @@ namespace IOS_PROJECT3.Migrations
 
             modelBuilder.Entity("IOS_PROJECT3.Models.EGrant", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -308,11 +306,13 @@ namespace IOS_PROJECT3.Migrations
 
             modelBuilder.Entity("IOS_PROJECT3.Models.ERolesToGrants", b =>
                 {
-                    b.Property<int>("GrantId")
-                        .HasColumnType("int");
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
+                    b.Property<string>("GrantId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("RoleId", "GrantId");
 
                     b.ToTable("RolesToGrants");
                 });

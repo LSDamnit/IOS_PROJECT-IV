@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IOS_PROJECT3.Migrations
 {
-    public partial class Forum6Init : Migration
+    public partial class rolesToGrantsUpd3 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -48,8 +48,7 @@ namespace IOS_PROJECT3.Migrations
                 name: "Grants",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true)
                 },
@@ -62,11 +61,12 @@ namespace IOS_PROJECT3.Migrations
                 name: "RolesToGrants",
                 columns: table => new
                 {
-                    RoleId = table.Column<int>(nullable: false),
-                    GrantId = table.Column<int>(nullable: false)
+                    RoleId = table.Column<string>(nullable: false),
+                    GrantId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_RolesToGrants", x => new { x.RoleId, x.GrantId });
                 });
 
             migrationBuilder.CreateTable(

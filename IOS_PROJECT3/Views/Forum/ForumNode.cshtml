@@ -13,7 +13,7 @@ else
 <div id="Nodes">
     <h5>Ветки</h5>
     <a asp-controller="Forum" asp-action="CreateForumNode" asp-route-ParentNodeId="@Model.NodeId" asp-route-CreatorEmail="@User.Identity.Name">Добавить ветку</a>
-    <table>
+    <table class="table table-primary">
         <tr><th>Название</th><th>Создатель</th><th>Дата создания</th></tr>
         @foreach (var node in Model.Nodes)
         {
@@ -27,8 +27,17 @@ else
 </div>
 <div id="Endpoints">
     <h5>Статьи</h5>
-    <table>
+    <a asp-controller="Forum" asp-action="CreateForumEndpoint" asp-route-ParentNodeId="@Model.NodeId" asp-route-CreatorEmail="@User.Identity.Name">Добавить статью</a>
+    <table class="table table-secondary">
         <tr><th>Название</th><th>Создатель</th><th>Дата создания</th></tr>
+        @foreach (var ep in Model.Endpoints)
+        {
+            <tr>
+                <td><a asp-controller="Forum" asp-action="ForumEndpoint" asp-route-EndpointId="@ep.Id.ToString()">@ep.Name</a></td>
+                <td>@ep.CreatorFio</td>
+                <td>@ep.CreationDate.ToString("d")</td>
+            </tr>
+        }
     </table>
 </div>
 
