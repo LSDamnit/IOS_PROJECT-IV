@@ -1,12 +1,15 @@
 ﻿using IOS_PROJECT3.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
+using System.Collections;
+using System.Linq;
+using System;
 
 namespace IOS_PROJECT3
 {
     public class FirstRunRoleInit
     {
-        public static async Task InitializeAsync(UserManager<EUser> userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task InitializeAsync(UserManager<EUser> userManager, RoleManager<IdentityRole> roleManager, DBMergedContext context)
         {
             string adminEmail = "firstadmin@admin.adm";
             string password = "@FirstAccess000";
@@ -16,7 +19,7 @@ namespace IOS_PROJECT3
             {
                 await roleManager.CreateAsync(new IdentityRole("Admin"));
             }
-           if (await roleManager.FindByNameAsync("Manager") == null)
+            if (await roleManager.FindByNameAsync("Manager") == null)
             {
                 await roleManager.CreateAsync(new IdentityRole("Manager"));
             }
@@ -55,6 +58,71 @@ namespace IOS_PROJECT3
             {
                 await userManager.RemoveFromRoleAsync(firstAdmin, "Student");
             }
+
+            var adminRole = await roleManager.FindByNameAsync("Admin");
+
+            if ((from g in context.Grants where g.Name == "viewUsersAdminIndex" select g).FirstOrDefault() == null)
+            {
+                var grant = context.Grants.Add(new EGrant()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "viewUsersAdminIndex",
+                    Description = "Позволяет пользователю просматривать страницу \"Список пользователей\""
+                });
+
+                context.RolesToGrants.Add(new ERolesToGrants()
+				{
+					RoleId = adminRole.Id,
+					GrantId = grant.Entity.Id.ToString()
+				});
+			}
+			if ((from g in context.Grants where g.Name == "viewRolesIndex" select g).FirstOrDefault() == null)
+            {
+                var grant = context.Grants.Add(new EGrant()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "viewRolesIndex",
+                    Description = "Позволяет пользователю просматривать страницу \"Список ролей\""
+                });
+
+                context.RolesToGrants.Add(new ERolesToGrants()
+                {
+                    RoleId = adminRole.Id,
+                    GrantId = grant.Entity.Id.ToString()
+                });
+            }
+            if ((from g in context.Grants where g.Name == "viewInstitutionsIndex" select g).FirstOrDefault() == null)
+            {
+                var grant = context.Grants.Add(new EGrant()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "viewInstitutionsIndex",
+                    Description = "Позволяет пользователю просматривать страницу \"Управление институтами\""
+                });
+
+                context.RolesToGrants.Add(new ERolesToGrants()
+                {
+                    RoleId = adminRole.Id,
+                    GrantId = grant.Entity.Id.ToString()
+                });
+            }
+            if ((from g in context.Grants where g.Name == "sendMessageToAll" select g).FirstOrDefault() == null)
+            {
+                var grant = context.Grants.Add(new EGrant()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "sendMessageToAll",
+                    Description = "Позволяет пользователю сделать рассылку для ВСЕХ пользователей системы"
+                });
+
+                context.RolesToGrants.Add(new ERolesToGrants()
+                {
+                    RoleId = adminRole.Id,
+                    GrantId = grant.Entity.Id.ToString()
+                });
+            }
+
+            await context.SaveChangesAsync();
         }
     }
 }

@@ -7,7 +7,7 @@ namespace IOS_PROJECT3.Models
 {
     public class ERolesToGrants
     {
-        public int RoleId { get; set; }
-        public int GrantId { get; set; }
+        public string RoleId { get; set; }
+        public string GrantId { get; set; }
     }
 }

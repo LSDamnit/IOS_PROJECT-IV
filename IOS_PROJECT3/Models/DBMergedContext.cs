@@ -84,7 +84,7 @@ namespace IOS_PROJECT3.Models
                 .OnDelete(DeleteBehavior.Cascade);
             //-------Grants----
             modelBuilder.Entity<ERolesToGrants>()
-                .HasNoKey();
+                .HasKey(p => new { p.RoleId, p.GrantId });
         }
     }
 }

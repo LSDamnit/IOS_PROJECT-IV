@@ -24,7 +24,8 @@ namespace IOS_PROJECT3
                 {
                     var userManager = services.GetRequiredService<UserManager<EUser>>();
                     var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                    await FirstRunRoleInit.InitializeAsync(userManager, rolesManager);
+                    var dbc = services.GetRequiredService<DBMergedContext>();
+                    await FirstRunRoleInit.InitializeAsync(userManager, rolesManager, dbc);
                 }
                 catch (Exception ex)
                 {

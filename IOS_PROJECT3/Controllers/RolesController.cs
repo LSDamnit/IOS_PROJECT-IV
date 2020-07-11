@@ -11,18 +11,24 @@ namespace IOS_PROJECT3.Controllers
 {
     public class RolesController : Controller
     {
+        private DBMergedContext DBContext;
         private RoleManager<IdentityRole> roleManager;
         private UserManager<EUser> userManager;
 
-        public RolesController(RoleManager<IdentityRole> roleManager, UserManager<EUser> userManager)
+        public RolesController(DBMergedContext DBContext, RoleManager<IdentityRole> roleManager, UserManager<EUser> userManager)
         {
+            this.DBContext = DBContext;
             this.roleManager = roleManager;
             this.userManager = userManager;
         }
 
         public IActionResult Index()
         {
-            return View(roleManager.Roles.ToList());
+            var model = new RolesViewModel(DBContext)
+            {
+                allRoles = roleManager.Roles.ToList()
+            };
+            return View(model);
         }
 
         public IActionResult Create()
