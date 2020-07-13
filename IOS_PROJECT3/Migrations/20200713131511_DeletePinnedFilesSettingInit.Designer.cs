@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IOS_PROJECT3.Migrations
 {
     [DbContext(typeof(DBMergedContext))]
-    [Migration("20200711142453_rolesToGrantsUpd3")]
-    partial class rolesToGrantsUpd3
+    [Migration("20200713131511_DeletePinnedFilesSettingInit")]
+    partial class DeletePinnedFilesSettingInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -659,12 +659,13 @@ namespace IOS_PROJECT3.Migrations
                 {
                     b.HasOne("IOS_PROJECT3.Models.EForumComment", "ForumComment")
                         .WithMany("PinnedFiles")
-                        .HasForeignKey("ForumCommentId");
+                        .HasForeignKey("ForumCommentId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("IOS_PROJECT3.Models.EForumEndpoint", "ForumEndpoint")
                         .WithMany("PinnedFiles")
                         .HasForeignKey("ForumEndpointId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.NoAction);
                 });
 
             modelBuilder.Entity("IOS_PROJECT3.Models.EForumNode", b =>

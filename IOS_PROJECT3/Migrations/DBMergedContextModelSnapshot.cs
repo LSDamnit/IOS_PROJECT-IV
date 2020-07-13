@@ -657,12 +657,13 @@ namespace IOS_PROJECT3.Migrations
                 {
                     b.HasOne("IOS_PROJECT3.Models.EForumComment", "ForumComment")
                         .WithMany("PinnedFiles")
-                        .HasForeignKey("ForumCommentId");
+                        .HasForeignKey("ForumCommentId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("IOS_PROJECT3.Models.EForumEndpoint", "ForumEndpoint")
                         .WithMany("PinnedFiles")
                         .HasForeignKey("ForumEndpointId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.NoAction);
                 });
 
             modelBuilder.Entity("IOS_PROJECT3.Models.EForumNode", b =>

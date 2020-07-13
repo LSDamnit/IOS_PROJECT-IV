@@ -9,6 +9,13 @@
 else
 {
 <h3>@Model.NodeName</h3>
+@if((Model.CreatorEmail==User.Identity.Name)||User.IsInRole("Admin"))
+{
+<a asp-controller="Forum" asp-action="EditForumNode" asp-route-NodeId="@Model.NodeId">Переименовать ветку</a>
+<form style="display:inline" method="post" asp-controller="Forum" asp-action="DeleteForumNode" asp-route-NodeId="@Model.NodeId">
+    <button type="submit" class="btn btn-outline-danger btn-sm">Удалить ветку</button>
+</form>
+}
 }
 <div id="Nodes">
     <h5>Ветки</h5>

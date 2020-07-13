@@ -1,10 +1,24 @@
 ﻿@model IOS_PROJECT3.ViewModels.ForumEndPointViewModel
 <meta charset="utf-8">
+<style>
+    #upd{
+        font-size:75%;
+        color:gray;
+    }
+    </style>
 <div id="Primary" class="alert alert-primary" role="main">
     <h3>@Model.EndpointName</h3>
+    @if ((Model.CreatorEmail == User.Identity.Name) || User.IsInRole("Admin"))
+    {
+        <a asp-controller="Forum" asp-action="EditForumEndpoint" asp-route-EndpointId="@Model.EndpointId">Редактировать статью</a>
+        <form style="display:inline" method="post" asp-controller="Forum" asp-action="DeleteForumEndpoint" asp-route-EndpointId="@Model.EndpointId">
+            <button type="submit" class="btn btn-outline-danger btn-sm">Удалить</button>
+        </form>
+
+    }
     <div style="word-wrap: break-word;">
-    @Html.Raw(Model.Text)
-        </div>
+        @Html.Raw(Model.Text)
+    </div>
     @if (Model.Files.Count > 0)
     {
         <div id="Files">
@@ -14,7 +28,7 @@
                 <a asp-action="DownloadFile" asp-route-FileId="@f.Id" style="display:inline; margin:5px 5px 5px 5px">@f.Name</a>
             }
         </div>
-    }   
+    }
 </div>
 <div id="AboutAuthor" class="alert alert-light">
     <p><i>@Model.CreatorName | @Model.CreationDateString</i></p>
@@ -32,6 +46,16 @@
                         @c.CreationDate.ToString("d")
                     </td>
                     <td id="CommentAndFiles">
+                        @if (c.CreatorEmail == User.Identity.Name)
+                        {
+                            <a style="display:inline; margin-right:10px" class="btn btn-outline-primary btn-sm" asp-controller="Forum" asp-action="EditForumComment" asp-route-CommentId="@c.Id">Редактировать</a>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <form style="display:inline" method="post" asp-controller="Forum" asp-action="DeleteForumComment" asp-route-CommentId="@c.Id">
+                            <button type="submit"  class="btn btn-outline-danger btn-sm">Удалить</button>
+                                </form>
+                        }
                         <table class="table table-borderless">
                             <tr id="Comment">
                                 <td>@Html.Raw(c.Text)</td>
@@ -39,7 +63,7 @@
                             @if (c.PinnedFiles.Count > 0)
                             {
                                 <tr>
-                                    <td >
+                                    <td>
 
                                         <div id="CommentFiles" style="">
                                             <b>Прикрепленные файлы: </b>
@@ -52,7 +76,7 @@
                                 </tr>
                             }
                         </table>
-                        
+
                     </td>
 
                 </tr>

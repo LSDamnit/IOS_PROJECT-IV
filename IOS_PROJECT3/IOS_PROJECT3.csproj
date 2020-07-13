@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\ForumFiles\EPFiles\FilesEDITED_2020-07-13T16-05-59\**" />
+    <Content Remove="wwwroot\ForumFiles\EPFiles\FilesEDITED_2020-07-13T16-05-59\**" />
+    <EmbeddedResource Remove="wwwroot\ForumFiles\EPFiles\FilesEDITED_2020-07-13T16-05-59\**" />
+    <None Remove="wwwroot\ForumFiles\EPFiles\FilesEDITED_2020-07-13T16-05-59\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="wwwroot\Images\sstuLogo.png" />
   </ItemGroup>
 

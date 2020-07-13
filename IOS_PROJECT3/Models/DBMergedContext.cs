@@ -86,7 +86,13 @@ namespace IOS_PROJECT3.Models
             modelBuilder.Entity<EForumEndpoint>()
                 .HasMany(f => f.PinnedFiles)
                 .WithOne(e => e.ForumEndpoint)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<EForumComment>()
+                .HasMany(f => f.PinnedFiles)
+                .WithOne(e => e.ForumComment)
+                .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<EForumEndpoint>()
                 .HasMany(f => f.Comments)
                 .WithOne(e => e.ParentEndpoint)

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IOS_PROJECT3.Migrations
 {
-    public partial class rolesToGrantsUpd3 : Migration
+    public partial class DeletePinnedFilesSettingInit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -159,14 +159,12 @@ namespace IOS_PROJECT3.Migrations
                         name: "FK_ForumFiles_ForumComments_ForumCommentId",
                         column: x => x.ForumCommentId,
                         principalTable: "ForumComments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ForumFiles_ForumEndpoints_ForumEndpointId",
                         column: x => x.ForumEndpointId,
                         principalTable: "ForumEndpoints",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
