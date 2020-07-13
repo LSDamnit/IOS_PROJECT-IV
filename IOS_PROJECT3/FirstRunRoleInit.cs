@@ -61,12 +61,12 @@ namespace IOS_PROJECT3
 
             var adminRole = await roleManager.FindByNameAsync("Admin");
 
-            if ((from g in context.Grants where g.Name == "viewUsersAdminIndex" select g).FirstOrDefault() == null)
+            if ((from g in context.Grants where g.Name == "Grant.UsersAdmin.View" select g).FirstOrDefault() == null)
             {
                 var grant = context.Grants.Add(new EGrant()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = "viewUsersAdminIndex",
+                    Name = "Grant.UsersAdmin.View",
                     Description = "Позволяет пользователю просматривать страницу \"Список пользователей\""
                 });
 
@@ -76,12 +76,12 @@ namespace IOS_PROJECT3
 					GrantId = grant.Entity.Id.ToString()
 				});
 			}
-			if ((from g in context.Grants where g.Name == "viewRolesIndex" select g).FirstOrDefault() == null)
+			if ((from g in context.Grants where g.Name == "Grant.Roles.View" select g).FirstOrDefault() == null)
             {
                 var grant = context.Grants.Add(new EGrant()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = "viewRolesIndex",
+                    Name = "Grant.Roles.View",
                     Description = "Позволяет пользователю просматривать страницу \"Список ролей\""
                 });
 

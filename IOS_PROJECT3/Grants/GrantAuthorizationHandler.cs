@@ -38,9 +38,10 @@ namespace IOS_PROJECT3.Grants
             foreach (var role in userRoles)
             {
                 var roleGrants = db.RolesToGrants.Where(rtg => rtg.RoleId == role.Id).Select(rtg => rtg.GrantId).ToList();
-                var grants = db.Grants.Where(g => roleGrants.Contains(g.Id)).FirstOrDefault();
+                var grants = db.Grants.Where(g => roleGrants.Contains(g.Id));
+                var access = grants.Where(g => g.Name == requirement.Grant).FirstOrDefault();
 
-                if (grants != null)
+                if (access != null)
                 {
                     context.Succeed(requirement);
                     return;

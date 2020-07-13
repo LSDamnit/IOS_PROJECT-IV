@@ -12,6 +12,7 @@ namespace IOS_PROJECT3.Grants
             public const string View = "Grant.Roles.View";
             public const string Create = "Grant.Roles.Create";
             public const string Edit = "Grant.Roles.Edit";
+            public const string EditRole = "Grant.Roles.EditRole";
             public const string Delete = "Grant.Roles.Delete";
         }
     }

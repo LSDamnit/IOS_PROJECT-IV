@@ -64,6 +64,17 @@ namespace IOS_PROJECT3.Controllers
             return View(roleName);
         }
 
+        [Authorize(Grants.Grants.Roles.EditRole)]
+        [HttpPost]
+        public async Task<IActionResult> EditRole(string roleId)
+        {
+            var role = await roleManager.FindByIdAsync(roleId);
+            if (role != null)
+                await roleManager.DeleteAsync(role);
+
+            return RedirectToAction("Index");
+        }
+
         [Authorize(Grants.Grants.Roles.Delete)]
         [HttpPost]
         public async Task<IActionResult> Delete(string roleId)
