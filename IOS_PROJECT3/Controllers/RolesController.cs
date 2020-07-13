@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using IOS_PROJECT3.Models;
 using IOS_PROJECT3.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IOS_PROJECT3.Controllers
 {
+    [Authorize]
     public class RolesController : Controller
     {
         private DBMergedContext DBContext;
@@ -22,6 +24,7 @@ namespace IOS_PROJECT3.Controllers
             this.userManager = userManager;
         }
 
+        [Authorize(Grants.Grants.Roles.View)]
         public IActionResult Index()
         {
             var model = new RolesViewModel(DBContext)
@@ -31,11 +34,13 @@ namespace IOS_PROJECT3.Controllers
             return View(model);
         }
 
+        [Authorize(Grants.Grants.Roles.Create)]
         public IActionResult Create()
         {
             return View();
         }
 
+        [Authorize(Grants.Grants.Roles.Create)]
         [HttpPost]
         public async Task<IActionResult> Create(string roleName)
         {
@@ -59,6 +64,7 @@ namespace IOS_PROJECT3.Controllers
             return View(roleName);
         }
 
+        [Authorize(Grants.Grants.Roles.Delete)]
         [HttpPost]
         public async Task<IActionResult> Delete(string roleId)
         {
@@ -74,6 +80,7 @@ namespace IOS_PROJECT3.Controllers
             return View(userManager.Users.ToList());
         }
 
+        [Authorize(Grants.Grants.Roles.Edit)]
         public async Task<IActionResult> Edit(string userId)
         {
             var user = await userManager.FindByIdAsync(userId);
@@ -93,6 +100,7 @@ namespace IOS_PROJECT3.Controllers
             return NotFound();
         }
 
+        [Authorize(Grants.Grants.Roles.Edit)]
         [HttpPost]
         public async Task<IActionResult> Edit(string userId, List<string> roles)
         {

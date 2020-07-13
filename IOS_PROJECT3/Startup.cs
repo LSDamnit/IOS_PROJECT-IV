@@ -9,8 +9,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using IOS_PROJECT3.Models;
+using IOS_PROJECT3.Grants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IOS_PROJECT3
 {
@@ -31,8 +33,12 @@ namespace IOS_PROJECT3
 
             services.AddIdentity<EUser, IdentityRole>()
                 .AddEntityFrameworkStores<DBMergedContext>().AddDefaultTokenProviders();//providers here <----
-            
+
             services.AddControllersWithViews();
+
+            services.AddScoped<IAuthorizationHandler, GrantAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationPolicyProvider, GrantPolicyProvider>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
