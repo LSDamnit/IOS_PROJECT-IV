@@ -124,7 +124,7 @@ namespace IOS_PROJECT3.Controllers
                 var parentNode = await (from n in DBContext.ForumNodes.Include(n => n.ChildEndpoints)
                                         where n.Id.ToString() == model.ParentNodeId
                                         select n).FirstOrDefaultAsync();
-                if (model.EndpointText.IndexOf("<script>") != -1)
+                if ((model.EndpointText.IndexOf("<script>") != -1)|| (model.EndpointText.IndexOf("</script>") != -1))
                 {
                     ModelState.AddModelError("scripts", "Теги <script> запрещены!");
                     return View(model);
@@ -189,7 +189,7 @@ namespace IOS_PROJECT3.Controllers
                                      where u.NormalizedEmail == model.CommentCreatorEmail.ToUpper()
                                      select u).FirstOrDefaultAsync();
 
-                if (model.CommentText.IndexOf("<script>") != -1)
+                if((model.CommentText.IndexOf("<script>") != -1)|| (model.CommentText.IndexOf("</script>") != -1))
                 {
                     errors.Add("Теги <script> запрещены!");
                     return RedirectToAction("ForumEndpoint", new { EndpointId = model.EndpointId, Errors=errors });//<---
@@ -263,7 +263,7 @@ namespace IOS_PROJECT3.Controllers
                 var endpoint = await (from e in DBContext.ForumEndpoints.Include(f => f.PinnedFiles)
                                       where e.Id.ToString() == model.EndpointId
                                       select e).FirstOrDefaultAsync();
-                if (model.EndpointText.IndexOf("<script>") != -1)
+                if ((model.EndpointText.IndexOf("<script>") != -1)|| (model.EndpointText.IndexOf("</script>") != -1))
                 {
                     ModelState.AddModelError("scripts", "Теги <script> запрещены!");
                     return View(model);
@@ -340,7 +340,7 @@ namespace IOS_PROJECT3.Controllers
                                       where e.Id.ToString() == model.EndpointId
                                       select e).FirstOrDefaultAsync();
                 
-                if (model.CommentText.IndexOf("<script>") != -1)
+                if ((model.CommentText.IndexOf("<script>") != -1)||(model.CommentText.IndexOf("</script>") != -1))
                 {
                     ModelState.AddModelError("scripts", "Теги <script> запрещены!");
                     return View(model);

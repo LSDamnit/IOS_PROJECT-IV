@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IOS_PROJECT3.Migrations
 {
     [DbContext(typeof(DBMergedContext))]
-    [Migration("20200713131511_DeletePinnedFilesSettingInit")]
-    partial class DeletePinnedFilesSettingInit
+    [Migration("20200714135033_Complains3Init")]
+    partial class Complains3Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,71 @@ namespace IOS_PROJECT3.Migrations
                 .HasAnnotation("ProductVersion", "3.1.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("IOS_PROJECT3.Models.EComplain", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Checked")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CheckedBy_Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CheckedBy_Fio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CheckedBy_Id")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatorFio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatorId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Complains");
+                });
+
+            modelBuilder.Entity("IOS_PROJECT3.Models.EComplainFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentComplainId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentComplainId");
+
+                    b.ToTable("ComplainFiles");
+                });
 
             modelBuilder.Entity("IOS_PROJECT3.Models.EDaySchedule", b =>
                 {
@@ -593,6 +658,14 @@ namespace IOS_PROJECT3.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("IOS_PROJECT3.Models.EComplainFile", b =>
+                {
+                    b.HasOne("IOS_PROJECT3.Models.EComplain", "ParentComplain")
+                        .WithMany("PinnedFiles")
+                        .HasForeignKey("ParentComplainId")
+                        .OnDelete(DeleteBehavior.NoAction);
                 });
 
             modelBuilder.Entity("IOS_PROJECT3.Models.EDaySchedule", b =>

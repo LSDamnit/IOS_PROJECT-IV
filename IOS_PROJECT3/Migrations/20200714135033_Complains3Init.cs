@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IOS_PROJECT3.Migrations
 {
-    public partial class DeletePinnedFilesSettingInit : Migration
+    public partial class Complains3Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -19,6 +19,28 @@ namespace IOS_PROJECT3.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Complains",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Subject = table.Column<string>(nullable: true),
+                    Text = table.Column<string>(nullable: true),
+                    CreatorId = table.Column<string>(nullable: true),
+                    CreatorEmail = table.Column<string>(nullable: true),
+                    CreatorFio = table.Column<string>(nullable: true),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Checked = table.Column<int>(nullable: false),
+                    CheckedBy_Id = table.Column<string>(nullable: true),
+                    CheckedBy_Email = table.Column<string>(nullable: true),
+                    CheckedBy_Fio = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Complains", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -88,6 +110,26 @@ namespace IOS_PROJECT3.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ComplainFiles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: true),
+                    Path = table.Column<string>(nullable: true),
+                    ParentComplainId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ComplainFiles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ComplainFiles_Complains_ParentComplainId",
+                        column: x => x.ParentComplainId,
+                        principalTable: "Complains",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -486,6 +528,11 @@ namespace IOS_PROJECT3.Migrations
                 column: "SpecialityId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ComplainFiles_ParentComplainId",
+                table: "ComplainFiles",
+                column: "ParentComplainId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DaySchedules_WeekScheduleid",
                 table: "DaySchedules",
                 column: "WeekScheduleid");
@@ -640,6 +687,9 @@ namespace IOS_PROJECT3.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "ComplainFiles");
+
+            migrationBuilder.DropTable(
                 name: "Files");
 
             migrationBuilder.DropTable(
@@ -656,6 +706,9 @@ namespace IOS_PROJECT3.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Complains");
 
             migrationBuilder.DropTable(
                 name: "Disciplines");

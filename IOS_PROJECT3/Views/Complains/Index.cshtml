@@ -1,0 +1,42 @@
+﻿@model List<EComplain>
+<h3>Жалобы пользователей</h3>
+<div id="main">
+    <table class="table table-danger">
+        <tr><th>Название</th><th>Пользователь</th><th>Дата создания</th><th>Рассмотрена</th></tr>
+        @foreach (var node in Model)
+        {
+            @if (node.Checked == 1)
+            {
+    <tr class="table-secondary">
+        <td><a asp-controller="Complains" asp-action="ComplainDetails" asp-route-ComplainId="@node.Id.ToString()">@node.Subject</a></td>
+        @if (node.CreatorId != "-1")
+        {
+            <td>@node.CreatorFio</td>
+        }
+        else
+        {
+            <td>Анонимно</td>
+        }
+        <td>@node.CreationDate.ToString("d")</td>
+        <td>Да</td>
+    </tr>
+            }
+            else
+            {
+    <tr>
+        <td><a asp-controller="Complains" asp-action="ComplainDetails" asp-route-ComplainId="@node.Id.ToString()">@node.Subject</a></td>
+        @if (node.CreatorId != "-1")
+        {
+            <td>@node.CreatorFio</td>
+        }
+        else
+        {
+            <td>Анонимно</td>
+        }
+        <td>@node.CreationDate.ToString("d")</td>
+        <td>Нет</td>
+    </tr>
+            }
+        }
+    </table>
+</div>

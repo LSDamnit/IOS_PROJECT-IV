@@ -39,6 +39,7 @@
     <Folder Include="wwwroot\RegFiles\" />
     <Folder Include="wwwroot\RegToSpecialityFiles\" />
     <Folder Include="wwwroot\DisciplineFiles\" />
+    <Folder Include="wwwroot\ComplainFiles\" />
   </ItemGroup>
 
 

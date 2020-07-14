@@ -1,0 +1,53 @@
+﻿@model IOS_PROJECT3.ViewModels.ComplainDetailsViewModel
+
+<div id="Primary" class="alert alert-danger" role="main">
+    <h3>@Model.Subject</h3>
+    <div style="word-wrap: break-word;">
+        @Html.Raw(Model.Text)
+        <br>
+        <div id="about">
+            @if (Model.CreatorId != "-1")
+            {
+                <p><b>Создатель: </b>@Model.CreatorName / @Model.CreatorEmail</p>
+            }
+            else
+            {
+                <p><b>Создатель: </b>Анонимно</p>
+            }
+            <p><b>Дата создания: </b>@Model.CreationDateString </p>
+            @if (Model.Checked == 1)
+            {
+                <p><b>Рассмотрена: </b>Да</p>
+                <p><b>Рассмотрел: </b>@Model.CheckedBy_Fio / @Model.CheckedBy_Email </p>
+            }
+            else
+            {
+                <p><b>Рассмотрена: </b>Нет</p>
+            }
+        </div>
+    </div>
+
+    @if ((Model.Files != null) && (Model.Files.Count > 0))
+    {
+        <div id="Files">
+            <h5>Прикрепленные файлы</h5>
+            @foreach (var f in Model.Files)
+            {
+                <a asp-action="DownloadFile" asp-route-FileId="@f.Id" style="display:inline; margin:5px 5px 5px 5px">@f.Name</a>
+            }
+        </div>
+    }
+</div>
+<div id="Controls">
+    <a id="MarkChecked" class="btn btn-outline-primary btn-block" style="margin-bottom:10px" asp-action="MarkComplainChecked" asp-route-ComplainId="@Model.ComplainId" asp-route-UserEmail="@User.Identity.Name">Пометить как рассмотренную</a>
+    <form method="post" asp-controller="Complains" asp-action="DeleteComplain" asp-route-ComplainId="@Model.ComplainId">
+        <button type="submit" class="btn btn-outline-danger btn-block">Удалить</button>
+    </form>
+</div>
+@if (Model.Checked == 1)
+{
+    <script>
+        document.getElementById('Primary').className = "alert alert-secondary";
+        document.getElementById('MarkChecked').hidden = true;
+    </script>
+}

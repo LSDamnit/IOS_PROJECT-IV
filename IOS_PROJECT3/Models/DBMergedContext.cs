@@ -24,6 +24,8 @@ namespace IOS_PROJECT3.Models
         public DbSet<EForumFile> ForumFiles { get; set; }
         public DbSet<EGrant> Grants { get; set; }
         public DbSet<ERolesToGrants> RolesToGrants { get; set; }
+        public DbSet<EComplain> Complains { get; set; }
+        public DbSet<EComplainFile> ComplainFiles { get; set; }
 
 
         public DBMergedContext(DbContextOptions<DBMergedContext> options)
@@ -109,6 +111,14 @@ namespace IOS_PROJECT3.Models
             //-------Grants----
             modelBuilder.Entity<ERolesToGrants>()
                 .HasKey(p=>new {p.RoleId, p.GrantId });
+            //------Complains-------
+            modelBuilder.Entity<EComplain>()
+                .HasMany(c => c.PinnedFiles)
+                .WithOne(c => c.ParentComplain)
+                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<EComplain>()
+                .Property(d => d.CreationDate)
+                .HasColumnType("datetime2");
         }
     }
 }
