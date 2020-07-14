@@ -19,22 +19,27 @@
 				@foreach (var grant in Model.getRoleGrants(role))
 				{
 					<span title="@grant.Description" style="display:inline;cursor: help ">
-						@grant.Name | 
+						@grant.Name |
 					</span>
 				}
 			</td>
 
-			<td>
-				@if (role.Name != "Admin" && role.Name != "Student" && role.Name != "Teacher" && role.Name != "Manager")
-				{
+			@if (role.Name != "Admin" && role.Name != "Student" && role.Name != "Teacher" && role.Name != "Manager")
+			{
+				<td>
 					<form asp-action="Delete" asp-route-roleId="@role.Id" method="post">
+						<a class="btn btn-sm btn-primary" asp-action="EditRole" asp-route-roleId="@role.Id">Изменить</a>
 						<button type="submit" class="btn btn-sm btn-danger">
 							Удалить
 						</button>
 					</form>
-				}
+				</td>
+			}
+			else
+			{
+				<td></td>
+			}
 
-			</td>
 		</tr>
 		}
 	</table>

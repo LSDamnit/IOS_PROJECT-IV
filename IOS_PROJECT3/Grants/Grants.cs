@@ -15,5 +15,14 @@ namespace IOS_PROJECT3.Grants
             public const string EditRole = "Grant.Roles.EditRole";
             public const string Delete = "Grant.Roles.Delete";
         }
+
+        public static class Institutions
+        {
+            public const string View = "Grant.Institutions.View";
+        }
+        public static class Specialities
+        {
+            public const string View = "Grant.Specialities.View";
+        }
     }
 }

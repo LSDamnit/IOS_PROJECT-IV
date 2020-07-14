@@ -76,7 +76,53 @@ namespace IOS_PROJECT3
 					GrantId = grant.Entity.Id.ToString()
 				});
 			}
-			if ((from g in context.Grants where g.Name == "Grant.Roles.View" select g).FirstOrDefault() == null)
+
+			if ((from g in context.Grants where g.Name == "Grant.Roles.Edit" select g).FirstOrDefault() == null)
+            {
+                var grant = context.Grants.Add(new EGrant()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "Grant.Roles.Edit",
+                    Description = "Позволяет пользователю редактировать роли пользователей"
+                });
+
+                context.RolesToGrants.Add(new ERolesToGrants()
+                {
+                    RoleId = adminRole.Id,
+                    GrantId = grant.Entity.Id.ToString()
+                });
+            }
+            if ((from g in context.Grants where g.Name == "Grant.Roles.EditRole" select g).FirstOrDefault() == null)
+            {
+                var grant = context.Grants.Add(new EGrant()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "Grant.Roles.EditRole",
+                    Description = "Позволяет пользователю редактировать роли"
+                });
+
+                context.RolesToGrants.Add(new ERolesToGrants()
+                {
+                    RoleId = adminRole.Id,
+                    GrantId = grant.Entity.Id.ToString()
+                });
+            }
+            if ((from g in context.Grants where g.Name == "Grant.Roles.Delete" select g).FirstOrDefault() == null)
+            {
+                var grant = context.Grants.Add(new EGrant()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "Grant.Roles.Delete",
+                    Description = "Позволяет пользователю удалять роли"
+                });
+
+                context.RolesToGrants.Add(new ERolesToGrants()
+                {
+                    RoleId = adminRole.Id,
+                    GrantId = grant.Entity.Id.ToString()
+                });
+            }
+            if ((from g in context.Grants where g.Name == "Grant.Roles.View" select g).FirstOrDefault() == null)
             {
                 var grant = context.Grants.Add(new EGrant()
                 {
@@ -91,12 +137,28 @@ namespace IOS_PROJECT3
                     GrantId = grant.Entity.Id.ToString()
                 });
             }
-            if ((from g in context.Grants where g.Name == "viewInstitutionsIndex" select g).FirstOrDefault() == null)
+            if ((from g in context.Grants where g.Name == "Grant.Roles.Create" select g).FirstOrDefault() == null)
             {
                 var grant = context.Grants.Add(new EGrant()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = "viewInstitutionsIndex",
+                    Name = "Grant.Roles.Create",
+                    Description = "Позволяет пользователю создавать роли"
+                });
+
+                context.RolesToGrants.Add(new ERolesToGrants()
+                {
+                    RoleId = adminRole.Id,
+                    GrantId = grant.Entity.Id.ToString()
+                });
+            }
+
+            if ((from g in context.Grants where g.Name == "Grant.Institutions.View" select g).FirstOrDefault() == null)
+            {
+                var grant = context.Grants.Add(new EGrant()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "Grant.Institutions.View",
                     Description = "Позволяет пользователю просматривать страницу \"Управление институтами\""
                 });
 
@@ -106,13 +168,14 @@ namespace IOS_PROJECT3
                     GrantId = grant.Entity.Id.ToString()
                 });
             }
-            if ((from g in context.Grants where g.Name == "sendMessageToAll" select g).FirstOrDefault() == null)
+
+            if ((from g in context.Grants where g.Name == "Grant.Specialities.View" select g).FirstOrDefault() == null)
             {
                 var grant = context.Grants.Add(new EGrant()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = "sendMessageToAll",
-                    Description = "Позволяет пользователю сделать рассылку для ВСЕХ пользователей системы"
+                    Name = "Grant.Specialities.View",
+                    Description = "Позволяет пользователю просматривать страницу со специальностями"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()

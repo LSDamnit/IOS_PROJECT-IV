@@ -8,6 +8,7 @@ using IOS_PROJECT3.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IOS_PROJECT3.Controllers
 {
@@ -22,6 +23,8 @@ namespace IOS_PROJECT3.Controllers
             UserManager = manager;
             this.environment = environment;
         }
+
+        [Authorize(Grants.Grants.Institutions.View)]
         public  IActionResult Index()
         {
             

@@ -8,6 +8,7 @@ using IOS_PROJECT3.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IOS_PROJECT3.Controllers
 {
@@ -22,6 +23,8 @@ namespace IOS_PROJECT3.Controllers
             this.environment = environment;
            // UserManager = manager;
         }
+
+        [Authorize(Grants.Grants.Specialities.View)]
         public async Task<IActionResult> Index(string DepId)
         {           
             var dep = await (from i in DBContext.Departments.Include(s => s.Specialities).Include(h => h.HeadTeacher)
