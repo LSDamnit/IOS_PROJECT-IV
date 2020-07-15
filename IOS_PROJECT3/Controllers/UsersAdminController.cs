@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.ComponentModel.DataAnnotations;
+using IOS_PROJECT3.Grants;
 
 namespace IOS_PROJECT3.Controllers
 {
@@ -21,15 +22,16 @@ namespace IOS_PROJECT3.Controllers
         DBMergedContext database;
         IWebHostEnvironment enviroment;
         RoleManager<IdentityRole> roleManager;
+        GrantCheckService checkService;
 
 
-        public UsersAdminController(UserManager<EUser> userManager, DBMergedContext db, IWebHostEnvironment enviroment, RoleManager<IdentityRole> roleManager)
+        public UsersAdminController(GrantCheckService checkService, UserManager<EUser> userManager, DBMergedContext db, IWebHostEnvironment enviroment, RoleManager<IdentityRole> roleManager)
         {
             this.userManager = userManager;
             database = db;
             this.enviroment = enviroment;
             this.roleManager = roleManager;
-           
+            this.checkService = checkService;
         }
 
         public IActionResult Index()
@@ -40,7 +42,7 @@ namespace IOS_PROJECT3.Controllers
             {
                 Users = users,
                 WhyTitles = new Dictionary<EUser, string>()
-            };
+        };
             return View(model);
         }
 

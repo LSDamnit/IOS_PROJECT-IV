@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using IOS_PROJECT3.Models;
+using IOS_PROJECT3.Grants;
 using IOS_PROJECT3.ViewModels;
 namespace IOS_PROJECT3.Controllers
 {
@@ -13,10 +14,12 @@ namespace IOS_PROJECT3.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly DBMergedContext DBContext;
-      //  private UserPageViewModel ViewModel;
-        public HomeController(ILogger<HomeController> logger, DBMergedContext dbContext)
+        GrantCheckService checkService;
+        //  private UserPageViewModel ViewModel;
+        public HomeController(GrantCheckService checkService, ILogger<HomeController> logger, DBMergedContext dbContext)
         {
             DBContext = dbContext;
+            this.checkService = checkService;
             _logger = logger;
         }
 
@@ -24,8 +27,11 @@ namespace IOS_PROJECT3.Controllers
         {
             if(!User.Identity.IsAuthenticated)
             {
-                UserPageViewModel model = new UserPageViewModel(DBContext);
-                
+                UserPageViewModel model = new UserPageViewModel(DBContext)
+                {
+                    userGrants = await checkService.getUserGrants(User)
+                };
+
                 return View(model);
             }
             else
@@ -37,7 +43,8 @@ namespace IOS_PROJECT3.Controllers
                                select usr.FIO).FirstOrDefault(),
                     UserId = (from usr in DBContext.Users
                                where usr.Email == User.Identity.Name
-                               select usr.Id).FirstOrDefault()
+                               select usr.Id).FirstOrDefault(),
+                    userGrants = await checkService.getUserGrants(User)
                 };
                 await model.CheckAblesAsync();
                 return View(model);

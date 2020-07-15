@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using IOS_PROJECT3.Models;
+using IOS_PROJECT3.Grants;
 using Microsoft.EntityFrameworkCore;
 
 namespace IOS_PROJECT3.ViewModels
@@ -19,7 +20,8 @@ namespace IOS_PROJECT3.ViewModels
         public ESpeciality OwnSpeciality_S { get; set; }
 
         private DBMergedContext DBContext;
-        
+        public List<string> userGrants;
+
         public async Task CheckAblesAsync()
         {
             var idRoles = await (from ro in DBContext.UserRoles

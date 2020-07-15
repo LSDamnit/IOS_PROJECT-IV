@@ -25,7 +25,7 @@ namespace IOS_PROJECT3.Controllers
             this.userManager = userManager;
         }
 
-        //[Authorize(Grants.Grants.Roles.View)]
+        [Authorize(Grants.Grants.Roles.View)]
         public IActionResult Index()
         {
             var model = new RolesViewModel(DBContext)

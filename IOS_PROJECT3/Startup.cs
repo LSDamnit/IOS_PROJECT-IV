@@ -38,7 +38,7 @@ namespace IOS_PROJECT3
 
             services.AddScoped<IAuthorizationHandler, GrantAuthorizationHandler>();
             services.AddSingleton<IAuthorizationPolicyProvider, GrantPolicyProvider>();
-
+            services.AddScoped<GrantCheckService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -20,6 +20,10 @@ namespace IOS_PROJECT3.Grants
         {
             public const string View = "Grant.Institutions.View";
         }
+        public static class UsersAdmin
+        {
+            public const string View = "Grant.UsersAdmin.View";
+        }
         public static class Specialities
         {
             public const string View = "Grant.Specialities.View";

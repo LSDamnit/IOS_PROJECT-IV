@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IOS_PROJECT3.Models;
+using IOS_PROJECT3.Grants;
 using Microsoft.EntityFrameworkCore;
 
 namespace IOS_PROJECT3.ViewModels
