@@ -50,6 +50,7 @@ namespace IOS_PROJECT3.Controllers
                 var forum = await (from f in DBContext.ForumNodes
                                    .Include(e => e.ChildEndpoints)
                                    .Include(n => n.ChildNodes)
+                                   .Include(p=>p.ParentNode)
                                    where f.Id.ToString()==NodeId
                                    select f).FirstOrDefaultAsync();
                 var creator = await (from c in DBContext.Users
@@ -59,12 +60,13 @@ namespace IOS_PROJECT3.Controllers
                 {
                     NodeId = forum.Id.ToString(),
                     NodeName = forum.Name,
-                    Endpoints = forum.ChildEndpoints.OrderByDescending(d=>d.CreationDate).ToList(),
+                    Endpoints = forum.ChildEndpoints.OrderByDescending(d => d.CreationDate).ToList(),
                     Nodes = forum.ChildNodes.OrderByDescending(d => d.CreationDate).ToList(),
                     CreatorId = forum.CreatorId.ToString(),
                     CreatorName = creator.FIO,
-                    CreatorEmail=creator.Email.ToLower(),
-                    CreationDateString = forum.CreationDate.ToString("d")
+                    CreatorEmail = creator.Email.ToLower(),
+                    CreationDateString = forum.CreationDate.ToString("d"),
+                    ParentNodeId = forum.ParentNode.Id.ToString()
                 };
                 return View(model);
             }
@@ -75,8 +77,10 @@ namespace IOS_PROJECT3.Controllers
             var endpoint = await (from f in DBContext.ForumEndpoints
                                   .Include(e => e.Comments)
                                   .Include(f=>f.PinnedFiles)
+                                  .Include(p=>p.ParentNode)
                               where f.Id.ToString()==EndpointId
                               select f).FirstOrDefaultAsync();
+            if((endpoint.Comments!=null)&&(endpoint.Comments.Count>0))
             foreach(var c in endpoint.Comments)
             {
                 var cfiles = await (from f in DBContext.ForumFiles.Include(c => c.ForumComment)
@@ -94,7 +98,8 @@ namespace IOS_PROJECT3.Controllers
                 CreatorId=endpoint.CreatorId,
                 CreatorEmail=endpoint.CreatorEmail,
                 CreatorName=endpoint.CreatorFio,
-                CreationDateString=endpoint.CreationDate.ToString("d")
+                CreationDateString=endpoint.CreationDate.ToString("d"),
+                ParentNodeId=endpoint.ParentNode.Id.ToString()
             };
             if(Errors!=null)
             {
@@ -142,32 +147,39 @@ namespace IOS_PROJECT3.Controllers
                     Text = safeText,//---
                     PinnedFiles = new List<EForumFile>()
                 };
-               // DBContext.ForumEndpoints.Add(NewEndpoint);
-               // await DBContext.SaveChangesAsync();
-
-                string outfolder = environment.WebRootPath + "/ForumFiles/EPFiles/" + model.EndpointName + "_"
-                    + System.DateTime.Now.ToString("s").Replace(":","-") + "/";
-                if(!Directory.Exists(outfolder))
+                // DBContext.ForumEndpoints.Add(NewEndpoint);
+                // await DBContext.SaveChangesAsync();
+                if (model.UploadedFiles != null)
                 {
-                    Directory.CreateDirectory(outfolder);
-                }
-                if(model.UploadedFiles!=null)
-                foreach (IFormFile file in model.UploadedFiles)
-                {
-                    var outpath = outfolder + file.FileName;
-                    using (var fileStream = new FileStream(outpath, FileMode.Create))
+                    string outfolder = environment.WebRootPath + "/ForumFiles/EPFiles/" + model.EndpointName + "_"
+                        + System.DateTime.Now.ToString("s").Replace(":", "-") + "/";
+                    if (!Directory.Exists(outfolder))
                     {
-                        await file.CopyToAsync(fileStream);
+                        Directory.CreateDirectory(outfolder);
                     }
-                    var efile = new EForumFile()
+
+                    foreach (IFormFile file in model.UploadedFiles)
                     {
-                        Name = file.FileName,
-                        Path = outpath,
-                        TypeOfParent = 1,
-                        ForumEndpoint = NewEndpoint
-                    };
-                    DBContext.ForumFiles.Add(efile);
-                    NewEndpoint.PinnedFiles.Add(efile);
+                        if (file.Length >= 10485760)
+                        {
+                            ModelState.AddModelError("FileTooBig", "Нельзя загружать файлы свыше 10 Мегабайт.");
+                            return View(model);
+                        }
+                        var outpath = outfolder + file.FileName;
+                        using (var fileStream = new FileStream(outpath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
+                        var efile = new EForumFile()
+                        {
+                            Name = file.FileName,
+                            Path = outpath,
+                            TypeOfParent = 1,
+                            ForumEndpoint = NewEndpoint
+                        };
+                        DBContext.ForumFiles.Add(efile);
+                        NewEndpoint.PinnedFiles.Add(efile);
+                    }
                 }
                 DBContext.ForumEndpoints.Add(NewEndpoint);
                 await DBContext.SaveChangesAsync();
@@ -206,16 +218,22 @@ namespace IOS_PROJECT3.Controllers
                     Text = model.CommentText,
                     PinnedFiles = new List<EForumFile>()
                 };
-
-                string outfolder = environment.WebRootPath + "/ForumFiles/CFiles/" + model.EndpointName + "_"
-                    + System.DateTime.Now.ToString("s").Replace(":", "-") + "/";
-                if (!Directory.Exists(outfolder))
-                {
-                    Directory.CreateDirectory(outfolder);
-                }
                 if (model.CommentUploadedFiles != null)
+                {
+                    string outfolder = environment.WebRootPath + "/ForumFiles/CFiles/" + model.EndpointName + "_"
+                        + System.DateTime.Now.ToString("s").Replace(":", "-") + "/";
+                    if (!Directory.Exists(outfolder))
+                    {
+                        Directory.CreateDirectory(outfolder);
+                    }
+
                     foreach (IFormFile file in model.CommentUploadedFiles)
                     {
+                        if (file.Length >= 10485760)
+                        {
+                            errors.Add("Нельзя загружать файлы свыше 10 Мегабайт.");
+                            return RedirectToAction("ForumEndpoint", new { EndpointId = model.EndpointId, Errors = errors });
+                        }
                         var outpath = outfolder + file.FileName;
                         using (var fileStream = new FileStream(outpath, FileMode.Create))
                         {
@@ -231,6 +249,7 @@ namespace IOS_PROJECT3.Controllers
                         DBContext.ForumFiles.Add(efile);
                         NewComment.PinnedFiles.Add(efile);
                     }
+                }
                 DBContext.ForumComments.Add(NewComment);
                 await DBContext.SaveChangesAsync();
                 return RedirectToAction("ForumEndpoint", new { EndpointId = model.EndpointId });
@@ -290,6 +309,11 @@ namespace IOS_PROJECT3.Controllers
                     }
                     foreach (IFormFile file in model.UploadedFiles)
                     {
+                        if (file.Length >= 10485760)
+                        {
+                            ModelState.AddModelError("FileTooBig", "Нельзя загружать файлы свыше 10 Мегабайт.");
+                            return View(model);
+                        }
                         var outpath = outfolder + file.FileName;
                         using (var fileStream = new FileStream(outpath, FileMode.Create))
                         {
@@ -367,6 +391,11 @@ namespace IOS_PROJECT3.Controllers
                     }
                     foreach (IFormFile file in model.CommentUploadedFiles)
                     {
+                        if (file.Length >= 10485760)
+                        {
+                            ModelState.AddModelError("FileTooBig", "Нельзя загружать файлы свыше 10 Мегабайт.");
+                            return View(model);
+                        }
                         var outpath = outfolder + file.FileName;
                         using (var fileStream = new FileStream(outpath, FileMode.Create))
                         {

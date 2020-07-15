@@ -16,6 +16,7 @@
                 <tr> <td><input type="text" asp-for="FIOs[i]" value="@Model.FIOs[i]" /></td><td><input type="text" asp-for="Emails[i]" value="@Model.Emails[i]" /></td><td><input type="text" asp-for="Passwords[i]" value="@Model.Passwords[i]" /></td><td><input type="text" asp-for="Roles[i]" value="@Model.Roles[i]" /></td></tr>
             }
         </table>
-        <button class="btn btn-primary" type="submit">Регистрация</button>
+        <button class="btn btn-outline-primary btn-block" type="submit">Регистрация</button>
+        <a class="btn btn-outline-secondary btn-block" asp-action="Index" asp-controller="UsersAdmin">Назад</a>
     </form>
 }

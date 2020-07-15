@@ -54,6 +54,7 @@ namespace IOS_PROJECT3.Controllers
                     InstManagerEmail = inst.Manager.Email,
                     Disciplines = dis,
                     Students = spec.Students,
+                    DepartmentId=dep.Id.ToString(),
                     Schedules = spec.Schedules.OrderBy(s => s.Name).ToList<EWeekSchedule>()
                 };
                 return View(model);

@@ -17,6 +17,7 @@
                 <tr> <td><input type="text" asp-for="Emails[i]" value="@Model.Emails[i]" /></td><td><input type="text" readonly="readonly" value="@Model.FIOs[i]" /></td></tr>
             }
         </table>
-        <button class="btn btn-primary" type="submit">Подтвердить</button>
+        <button class="btn btn-outline-primary btn-block" type="submit">Подтвердить</button>
+        <a class="btn btn-outline-secondary btn-block" asp-action="Index" asp-controller="Disciplines" asp-route-SpecId="@Model.TargetSpecId">Назад</a>
     </form>
 }

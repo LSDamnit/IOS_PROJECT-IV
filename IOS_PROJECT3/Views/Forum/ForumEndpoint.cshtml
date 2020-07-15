@@ -5,7 +5,7 @@
         font-size:75%;
         color:gray;
     }
-    </style>
+    </style> 
 <div id="Primary" class="alert alert-primary" role="main">
     <h3>@Model.EndpointName</h3>
     @if ((Model.CreatorEmail == User.Identity.Name) || User.IsInRole("Admin"))
@@ -19,7 +19,7 @@
     <div style="word-wrap: break-word;">
         @Html.Raw(Model.Text)
     </div>
-    @if ((Model.Files!=null)&&(Model.Files.Count > 0))
+    @if ((Model.Files != null) && (Model.Files.Count > 0))
     {
         <div id="Files">
             <h5>Прикрепленные файлы</h5>
@@ -113,3 +113,4 @@
         </div>
     </form>
     </div>
+<a class="btn btn-outline-secondary btn-block" asp-action="ForumNode" asp-controller="Forum" asp-route-NodeId="@Model.ParentNodeId">Назад</a>

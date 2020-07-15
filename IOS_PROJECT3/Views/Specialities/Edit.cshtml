@@ -13,8 +13,9 @@
             <input type="hidden" asp-for="DepId" class="form-control" />
         </div>
         <div class="form-group">
-            <input type="submit" value="Сохранить" class="btn btn-outline-secondary" />
+            <input type="submit" value="Сохранить" class="btn btn-outline-primary btn-block" />
         </div>
+        <a class="btn btn-outline-secondary btn-block" asp-action="Index" asp-controller="Specialities" asp-route-DepId="@Model.DepId">Назад</a>
     </form>
 }
     

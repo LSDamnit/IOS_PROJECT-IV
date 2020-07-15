@@ -34,7 +34,8 @@ namespace IOS_PROJECT3.Controllers
             var ce = CreatorEmail;
             var model = new CreateComplainViewModel()
             {
-                CreatorEmail = ce
+                CreatorEmail = ce,
+                PageLoads=1
             };
             return View(model);
         }
@@ -105,15 +106,21 @@ namespace IOS_PROJECT3.Controllers
                 }
                  DBContext.Complains.Add(NewComplain);
                  await DBContext.SaveChangesAsync();
-
-                string outfolder = environment.WebRootPath + "/ComplainFiles/" + NewComplain.Id + "/";
-                if (!Directory.Exists(outfolder))
-                {
-                    Directory.CreateDirectory(outfolder);
-                }
                 if (model.UploadedFiles != null)
+                {
+                    string outfolder = environment.WebRootPath + "/ComplainFiles/" + NewComplain.Id + "/";
+                    if (!Directory.Exists(outfolder))
+                    {
+                        Directory.CreateDirectory(outfolder);
+                    }
+
                     foreach (IFormFile file in model.UploadedFiles)
                     {
+                        if(file.Length>=10485760)
+                        {
+                            ModelState.AddModelError("FileTooBig", "Нельзя загружать файлы свыше 10 Мегабайт.");
+                            return View(model);
+                        }
                         var outpath = outfolder + file.FileName;
                         using (var fileStream = new FileStream(outpath, FileMode.Create))
                         {
@@ -123,16 +130,17 @@ namespace IOS_PROJECT3.Controllers
                         {
                             Name = file.FileName,
                             Path = outpath,
-                            ParentComplain=NewComplain
+                            ParentComplain = NewComplain
                         };
                         DBContext.ComplainFiles.Add(efile);
                         DBContext.Complains.Update(NewComplain).Entity.PinnedFiles.Add(efile);
                     }
-                
+                }
                 await DBContext.SaveChangesAsync();
                 //return RedirectToAction("ForumNode", new { NodeId = model.ParentNodeId });
                 return RedirectToAction("Index","Home");
             }
+            model.PageLoads+=1;
             return View(model);
         }
         [HttpPost]
