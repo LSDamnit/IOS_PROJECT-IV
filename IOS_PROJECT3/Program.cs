@@ -25,12 +25,12 @@ namespace IOS_PROJECT3
                     var userManager = services.GetRequiredService<UserManager<EUser>>();
                     var rolesManager = services.GetRequiredService<RoleManager<IdentityRole>>();
                     var dbc = services.GetRequiredService<DBMergedContext>();
-                    await FirstRunRoleInit.InitializeAsync(userManager, rolesManager,dbc);
+                    await FirstRunRoleInit.InitializeAsync(userManager, rolesManager, dbc);
                 }
                 catch (Exception ex)
                 {
                     var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "Произошла ошибка во время первой инициализации БД.");
+                    logger.LogError(ex, "ГЏГ°Г®ГЁГ§Г®ГёГ«Г  Г®ГёГЁГЎГЄГ  ГўГ® ГўГ°ГҐГ¬Гї ГЇГҐГ°ГўГ®Г© ГЁГ­ГЁГ¶ГЁГ Г«ГЁГ§Г Г¶ГЁГЁ ГЃГ„.");
                 }
             }
             host.Run();

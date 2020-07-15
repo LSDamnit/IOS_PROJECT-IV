@@ -1,0 +1,49 @@
+﻿@model IOS_PROJECT3.ViewModels.EditRoleViewModel
+@{
+	ViewBag.Title = "Редактирование роли" + Model.Name;
+}
+
+<h3>Редактирование роли "@Model.Name"</h3>
+
+<form method="post" asp-action="EditRole">
+	<div asp-validation-summary="All" class="text-danger"></div>
+	<div class="form-group">
+		<input type="hidden" asp-for="roleId" class="form-control" />
+		<label asp-for="Name" class="control-label">Название роли:</label>
+		<input type="text" asp-for="Name" class="form-control" />
+	</div>
+	<label class="control-label">Права роли:</label>
+	<table class="table">
+		<tbody>
+			@for (int i = 0; i < Math.Ceiling(Model.allGrants.Count / 4.0); ++i)
+			{
+				<tr>
+					@for (int j = i * 4; j < i * 4 + 4; ++j)
+					{
+						@if (j < Model.allGrants.Count)
+						{
+							<td>
+								@if (Model.roleGrantsId.Contains(Model.allGrants[j].Id))
+								{
+									<input type="checkbox" name="roleGrantsId" value="@Model.allGrants[j].Id" checked />
+									@Model.allGrants[j].Name
+								}
+								else
+								{
+									<input type="checkbox" name="roleGrantsId" value="@Model.allGrants[j].Id" />@Model.allGrants[j].Name
+								}
+							</td>
+						}
+						else
+						{
+							<td></td>
+						}
+					}
+				</tr>
+			}
+		</tbody>
+	</table>
+	<div class="form-group">
+		<input type="submit" value="Сохранить" class="btn btn-outline-secondary" />
+	</div>
+</form>
