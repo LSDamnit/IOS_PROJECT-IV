@@ -9,6 +9,7 @@ namespace IOS_PROJECT3.ViewModels
     public class DisciplinesViewModel
     {
         public string SpecialityId { get; set; }
+        public string DepartmentId { get; set; }
         public string SpecialityName { get; set; }
         public string InstId { get; set; }
         public string InstManagerId { get; set; }

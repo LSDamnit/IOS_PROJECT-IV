@@ -94,6 +94,14 @@
     {
         grant = true;
     }
+     @if(ViewBag.FileError==true)
+     {
+         <div class="text-danger">
+             <ul><li>
+             Нельзя загружать файлы свыше 10 Мегабайт.
+                 </li></ul>
+         </div>
+     }
     <div class="grid-container">
         <div class="d-head">
             @* инфа о дисциплине *@
@@ -247,3 +255,4 @@
         }
     </script>
 }
+<a class="btn btn-outline-secondary btn-block" asp-action="Index" asp-controller="Disciplines" asp-route-SpecId="@Model.SpecialityId">Назад</a>

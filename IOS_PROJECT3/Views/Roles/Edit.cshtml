@@ -21,6 +21,7 @@
                 // @(Model.UserRoles.Contains(role.Name) ? "checked=\"checked\"" : "") />@role.Name <br />
             }
         </div>
-        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <button type="submit" class="btn btn-outline-primary btn-block">Сохранить</button>
+        <a style="margin-top:10px" class="btn btn-outline-secondary btn-block" asp-action="Index" asp-controller="Roles">Назад</a>
     </form>
 }

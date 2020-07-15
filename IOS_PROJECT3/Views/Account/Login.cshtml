@@ -10,10 +10,11 @@
     </div>
     <div style="margin-top:10px">
         @*<label asp-for="Password" style="display:inline-flex;"></label><br />*@
-        <input class="form-control" style="display:inline-flex; width:30%"asp-for="Password" placeholder="Введите пароль"/>
+        <input class="form-control" style="display:inline-flex; width:30%" asp-for="Password" placeholder="Введите пароль" />
         <span class="alert alert-primary" style="margin-right:40%; padding:5px;" asp-validation-for="Password"></span>
     </div>
     <div style="margin-top:10px">
-        <input class="btn btn-primary" type="submit" value="Войти" />
+        <input class="btn btn-outline-primary btn-block" type="submit" value="Войти" />
     </div>
+    <a style="margin-top:10px" class="btn btn-outline-secondary btn-block" asp-action="Index" asp-controller="Home">Назад</a>
 </form>

@@ -58,7 +58,8 @@ namespace IOS_PROJECT3.Controllers
                     Disciplines = dis,
                     Students = spec.Students,
                     Schedules = spec.Schedules.OrderBy(s => s.Name).ToList<EWeekSchedule>(),
-                    userGrants = await checkService.getUserGrants(User)
+                    userGrants = await checkService.getUserGrants(User),
+                    DepartmentId=dep.Id.ToString()
                 };
                 return View(model);
 

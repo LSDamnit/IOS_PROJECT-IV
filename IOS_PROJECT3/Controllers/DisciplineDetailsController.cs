@@ -24,7 +24,7 @@ namespace IOS_PROJECT3.Controllers
             DBContext = context;
             Environment = environment;
         }
-        public async Task<IActionResult> Index(string DiscId)
+        public async Task<IActionResult> Index(string DiscId,bool FileError)
         {
             var disc = await (from di in DBContext.Disciplines.Include(t => t.Teacher).Include(f => f.Files) where di.Id.ToString() == DiscId select di).FirstOrDefaultAsync();
             var spec = await (from s in DBContext.Specialities.Include(s => s.Disciplines)
@@ -53,7 +53,8 @@ namespace IOS_PROJECT3.Controllers
                 PracH = disc.PracticeH.ToString(),
                 ExamType = disc.ExamType,
                 TeacherName = disc.Teacher.FIO,
-                userGrants = await checkService.getUserGrants(User)
+                userGrants = await checkService.getUserGrants(User),
+                SpecialityId = spec.Id.ToString()
             };
             foreach (var f in difiles)
             {
@@ -61,6 +62,10 @@ namespace IOS_PROJECT3.Controllers
                     model.LectionFiles.Add(f);
                 else if (f.Tag == "practice")
                     model.PracticeFiles.Add(f);
+            }
+            if(FileError)
+            {
+                ViewBag.FileError = true;
             }
             return View(model);
         }
@@ -71,6 +76,10 @@ namespace IOS_PROJECT3.Controllers
             //здесь пока что нет вообще никакой безопасности
             if (upload != null)
             {
+                if(upload.Length>= 10485760)
+                {
+                    return RedirectToAction("Index", new { DiscId = id, FileError=true });
+                }
                 var euser = await (from u in DBContext.Users where u.Email.ToLower() == user.ToLower() select u).FirstOrDefaultAsync();
                 string t = tag;
                 string outpath = Environment.WebRootPath + "/DisciplineFiles/" + "id" + id + "/" + tag + "/";

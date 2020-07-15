@@ -11,15 +11,17 @@
         <label asp-for="EndpointText" class="control-label">Текст статьи:</label>
         <textarea type="text" id="Multiline" asp-for="EndpointText" class="form-control"></textarea>
     </div>
-    @if ((Model.PinnedFiles!=null)&&(Model.PinnedFiles.Count > 0))
+    @if ((Model.PinnedFiles != null) && (Model.PinnedFiles.Count > 0))
     {
         <label>Прикрепленные файлы:</label>
         <div class="form-group" id="PinnedFiles">
             @foreach (var f in Model.PinnedFiles)
             {
-                <p>@f.Name <a class="btn btn-danger btn-sm" asp-controller="Forum" asp-action="DeletePinnedFile"
-                              asp-route-FileId="@f.Id" asp-route-ParentType="1">Удалить</a></p>
-            }
+                <p>
+                    @f.Name <a class="btn btn-danger btn-sm" asp-controller="Forum" asp-action="DeletePinnedFile"
+                               asp-route-FileId="@f.Id" asp-route-ParentType="1">Удалить</a>
+            </p>
+        }
         </div>
     }
     <div class="form-group">
@@ -30,4 +32,5 @@
     <div class="form-group">
         <input type="submit" value="Добавить" class="btn btn-outline-primary btn-block" />
     </div>
+    <a class="btn btn-outline-secondary btn-block" asp-action="ForumEndpoint" asp-controller="Forum" asp-route-EndpointId="@Model.EndpointId">Назад</a>
 </form>

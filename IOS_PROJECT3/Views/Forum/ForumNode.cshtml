@@ -53,4 +53,12 @@ else
         }
     </table>
 </div>
+@if (Model.CreatorId == "-1")
+{
+    <a class="btn btn-outline-secondary btn-block" asp-action="Index" asp-controller="Home">Назад</a>
+}
+else
+{
+    <a class="btn btn-outline-secondary btn-block" asp-action="ForumNode" asp-controller="Forum" asp-route-NodeId="@Model.ParentNodeId">Назад</a>
+}
 

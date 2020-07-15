@@ -3,6 +3,7 @@
 <form method="post" asp-action="CreateComplain" asp-controller="Complains" enctype="multipart/form-data">
     <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group">
+        <input type="hidden" asp-for="PageLoads" value="@Model.PageLoads" class="form-control"/>
         <input type="hidden" asp-for="CreatorEmail" class="form-control" />
         <label asp-for="Subject" class="control-label">Введите тему:</label>
         <input type="text" asp-for="Subject" class="form-control" />
@@ -20,5 +21,7 @@
     </div>
     <div class="form-group">
         <input type="submit" value="Добавить" class="btn btn-outline-primary btn-block" />
+
     </div>
+    <button class="btn btn-outline-secondary btn-block" onClick="history.go(-1*@Model.PageLoads); return false;">Назад</button>
 </form>

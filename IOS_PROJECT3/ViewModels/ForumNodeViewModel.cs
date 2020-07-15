@@ -16,6 +16,7 @@ namespace IOS_PROJECT3.ViewModels
         public string CreatorEmail { get; set; }
         public string CreationDateString { get; set; }
         public List<string> userGrants { get; set; }
+        public string ParentNodeId { get; set; }
 
     }
 }

@@ -9,6 +9,7 @@ namespace IOS_PROJECT3.ViewModels
 {
     public class CreateComplainViewModel
     {
+        public int PageLoads { get; set; }
         [Required(ErrorMessage = "Не указана тема жалобы")]
         public string Subject { get; set; }
         [Required(ErrorMessage = "Ничего не написано в тексте жалобы")]

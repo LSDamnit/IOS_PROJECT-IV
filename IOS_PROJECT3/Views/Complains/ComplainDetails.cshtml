@@ -40,9 +40,10 @@
 </div>
 <div id="Controls">
     <a id="MarkChecked" class="btn btn-outline-primary btn-block" style="margin-bottom:10px" asp-action="MarkComplainChecked" asp-route-ComplainId="@Model.ComplainId" asp-route-UserEmail="@User.Identity.Name">Пометить как рассмотренную</a>
-    <form method="post" asp-controller="Complains" asp-action="DeleteComplain" asp-route-ComplainId="@Model.ComplainId">
+    <form method="post" style="margin-bottom:10px" asp-controller="Complains" asp-action="DeleteComplain" asp-route-ComplainId="@Model.ComplainId">
         <button type="submit" class="btn btn-outline-danger btn-block">Удалить</button>
     </form>
+    <a class="btn btn-outline-secondary btn-block" asp-action="Index" asp-controller="Complains">Назад</a>
 </div>
 @if (Model.Checked == 1)
 {

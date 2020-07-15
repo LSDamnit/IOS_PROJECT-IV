@@ -10,40 +10,41 @@
 		let grants = @Json.Serialize(Model.allGrants);
 		for (let i = 0; i < grants.length; ++i) console.log(grants[i].name + ' | ' + grants[i].description);
 	</script>
+	<a asp-action="Create">Добавить роль</a>
 	<table class="table">
 		@foreach (var role in Model.allRoles)
 		{
-		<tr>
-			<td>@role.Name</td>
-			<td>
-				@foreach (var grant in Model.getRoleGrants(role))
-				{
-					<span title="@grant.Description" style="display:inline;cursor: help ">
-						@grant.Name |
-					</span>
-				}
-			</td>
-
-			@if (role.Name != "Admin" && role.Name != "Student" && role.Name != "Teacher" && role.Name != "Manager")
-			{
+			<tr>
+				<td>@role.Name</td>
 				<td>
-					<form asp-action="Delete" asp-route-roleId="@role.Id" method="post">
-						<a class="btn btn-sm btn-primary" asp-action="EditRole" asp-route-roleId="@role.Id">Изменить</a>
-						<button type="submit" class="btn btn-sm btn-danger">
-							Удалить
-						</button>
-					</form>
+					@foreach (var grant in Model.getRoleGrants(role))
+					{
+						<span title="@grant.Description" style="display:inline;cursor: help ">
+							@grant.Name |
+						</span>
+					}
 				</td>
-			}
-			else
-			{
-				<td></td>
-			}
 
-		</tr>
+				@if (role.Name != "Admin" && role.Name != "Student" && role.Name != "Teacher" && role.Name != "Manager")
+				{
+					<td>
+						<form asp-action="Delete" asp-route-roleId="@role.Id" method="post">
+							<a class="btn btn-sm btn-primary" asp-action="EditRole" asp-route-roleId="@role.Id">Изменить</a>
+							<button type="submit" class="btn btn-sm btn-danger">
+								Удалить
+							</button>
+						</form>
+					</td>
+				}
+				else
+				{
+					<td></td>
+				}
+
+			</tr>
 		}
 	</table>
-	<a asp-action="Create">Добавить роль</a>
-}
 
+}
+<a class="btn btn-outline-secondary btn-block" asp-action="Index" asp-controller="Home">Назад</a>
 @*<a asp-action="UserList">Список пользователей</a>*@
