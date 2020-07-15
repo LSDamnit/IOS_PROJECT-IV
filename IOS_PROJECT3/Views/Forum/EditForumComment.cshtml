@@ -1,0 +1,34 @@
+﻿@model IOS_PROJECT3.ViewModels.EditForumCommentViewModel
+
+<h3>Редактирование комментария</h3>
+<form method="post" asp-action="EditForumComment" asp-controller="Forum" enctype="multipart/form-data">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <input type="hidden" asp-for="EndpointId" class="form-control" />
+        <input type="hidden" asp-for="CommentId" class="form-control" />
+        <input type="hidden" asp-for="CommentCreatorEmail" class="form-control" />
+        <label asp-for="CommentText" class="control-label">Текст комментария:</label>
+        <textarea type="text" id="Multiline" asp-for="CommentText" class="form-control"></textarea>
+    </div>
+    @if ((Model.PinnedFiles != null) && (Model.PinnedFiles.Count > 0))
+    {
+        <label>Прикрепленные файлы:</label>
+        <div class="form-group" id="PinnedFiles">
+            @foreach (var f in Model.PinnedFiles)
+            {
+                <p>
+                    @f.Name <a class="btn btn-danger btn-sm" asp-controller="Forum" asp-action="DeletePinnedFile"
+                               asp-route-FileId="@f.Id" asp-route-ParentType="2">Удалить</a>
+            </p>
+        }
+        </div>
+    }
+    <div class="form-group">
+        <label>Прикрепите дополнительные файлы:</label>
+        <br>
+        <input type="file" asp-for="CommentUploadedFiles" multiple="" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Добавить" class="btn btn-outline-primary btn-block" />
+    </div>
+</form>

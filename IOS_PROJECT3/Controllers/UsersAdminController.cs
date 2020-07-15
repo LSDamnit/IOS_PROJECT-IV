@@ -124,6 +124,7 @@ namespace IOS_PROJECT3.Controllers
                                     isOk = false;
                                     reason = "Ошибка внесения изменений в базу данных, точная причина неизвестна";
                                 }
+                                await RegistrationAlertAsync(user, pass);
                             }
                         }
                     }
@@ -136,7 +137,18 @@ namespace IOS_PROJECT3.Controllers
             else return RedirectToAction("MassRegistrationFails",new {list=FailedUsers});
 
         }
-
+        public async Task RegistrationAlertAsync(EUser user,string password)
+        {
+            string message = "<h3> Вы были зарегистрированы в системе ИОС СГТУ</h3>"+
+                "<p>Для входа используйте свой email-адресс в качестве логина и" +
+                "данный пароль: "+password+"</p><br>" +
+                "<b style='color:red;'>Никому не сообщайте свои данные для входа!</b>" +
+               "<br><b><Отправлено из системы ИОС СГТУ. Не отвечайте на это сообщение></b>";
+            string subj = "Оповещение о регистрации в системе ИОС СГТУ";
+            string[] receiver = new string[1] { user.Email };
+            var mailer = new EmailService();
+            await mailer.SendEmailAsync(receiver, subj, message);
+        }
         [HttpPost]
         public async Task<IActionResult> Create(CreateUserViewModel model)
         {
@@ -147,6 +159,7 @@ namespace IOS_PROJECT3.Controllers
 
                 if (result.Succeeded)
                 {
+                    await RegistrationAlertAsync(user, model.Password);
                     return RedirectToAction("Index");
                 }
                 else
@@ -177,12 +190,21 @@ namespace IOS_PROJECT3.Controllers
             {
                 return NotFound();
             }
-
+            var gen = new PasswordGenerator();
+            string newPass = gen.Generate();
             var token = await userManager.GeneratePasswordResetTokenAsync(user);
-            var result = await userManager.ResetPasswordAsync(user, token, "Default@Pass123");
+            var result = await userManager.ResetPasswordAsync(user, token, newPass);
             if (result.Succeeded)
             {
                 await userManager.ResetAccessFailedCountAsync(user);
+                var alert = new EmailService();
+                string subj = "Оповещение о сбросе пароля ИОС СГТУ";
+                string message = "Ваш новый пароль: "+newPass+"\n"+
+                    "<p style='color=red;'>Никому его не сообщайте!</p>"+
+                    "<br>" +
+                        "<b><Отправлено из системы ИОС СГТУ. Не отвечайте на это сообщение></b>";
+                string[] receiver = new string[1] { user.Email};
+                await alert.SendEmailAsync(receiver, subj, message);
                 return RedirectToAction("Index");
             }
             else

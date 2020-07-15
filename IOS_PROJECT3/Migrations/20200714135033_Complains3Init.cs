@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IOS_PROJECT3.Migrations
 {
-    public partial class ForumAndRolesReInit : Migration
+    public partial class Complains3Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -22,13 +22,38 @@ namespace IOS_PROJECT3.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Complains",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Subject = table.Column<string>(nullable: true),
+                    Text = table.Column<string>(nullable: true),
+                    CreatorId = table.Column<string>(nullable: true),
+                    CreatorEmail = table.Column<string>(nullable: true),
+                    CreatorFio = table.Column<string>(nullable: true),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Checked = table.Column<int>(nullable: false),
+                    CheckedBy_Id = table.Column<string>(nullable: true),
+                    CheckedBy_Email = table.Column<string>(nullable: true),
+                    CheckedBy_Fio = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Complains", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ForumNodes",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatorId = table.Column<int>(nullable: false),
+                    CreatorId = table.Column<string>(nullable: true),
+                    CreatorEmail = table.Column<string>(nullable: true),
+                    CreatorFio = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ParentNodeId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -45,8 +70,7 @@ namespace IOS_PROJECT3.Migrations
                 name: "Grants",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true)
                 },
@@ -59,11 +83,12 @@ namespace IOS_PROJECT3.Migrations
                 name: "RolesToGrants",
                 columns: table => new
                 {
-                    RoleId = table.Column<int>(nullable: false),
-                    GrantId = table.Column<int>(nullable: false)
+                    RoleId = table.Column<string>(nullable: false),
+                    GrantId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_RolesToGrants", x => new { x.RoleId, x.GrantId });
                 });
 
             migrationBuilder.CreateTable(
@@ -88,13 +113,36 @@ namespace IOS_PROJECT3.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ComplainFiles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: true),
+                    Path = table.Column<string>(nullable: true),
+                    ParentComplainId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ComplainFiles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ComplainFiles_Complains_ParentComplainId",
+                        column: x => x.ParentComplainId,
+                        principalTable: "Complains",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ForumEndpoints",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatorId = table.Column<int>(nullable: false),
+                    CreatorId = table.Column<string>(nullable: true),
+                    CreatorEmail = table.Column<string>(nullable: true),
+                    CreatorFio = table.Column<string>(nullable: true),
                     ParentNodeId = table.Column<int>(nullable: true),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Text = table.Column<string>(nullable: true)
                 },
@@ -106,7 +154,32 @@ namespace IOS_PROJECT3.Migrations
                         column: x => x.ParentNodeId,
                         principalTable: "ForumNodes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ForumComments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatorId = table.Column<string>(nullable: true),
+                    CreatorEmail = table.Column<string>(nullable: true),
+                    CreatorFio = table.Column<string>(nullable: true),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ParentEndpointId = table.Column<int>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    Text = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ForumComments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ForumComments_ForumEndpoints_ParentEndpointId",
+                        column: x => x.ParentEndpointId,
+                        principalTable: "ForumEndpoints",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -117,17 +190,23 @@ namespace IOS_PROJECT3.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: true),
                     Path = table.Column<string>(nullable: true),
-                    ForumEndpointId = table.Column<int>(nullable: true)
+                    TypeOfParent = table.Column<int>(nullable: false),
+                    ForumEndpointId = table.Column<int>(nullable: true),
+                    ForumCommentId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ForumFiles", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_ForumFiles_ForumComments_ForumCommentId",
+                        column: x => x.ForumCommentId,
+                        principalTable: "ForumComments",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_ForumFiles_ForumEndpoints_ForumEndpointId",
                         column: x => x.ForumEndpointId,
                         principalTable: "ForumEndpoints",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -449,6 +528,11 @@ namespace IOS_PROJECT3.Migrations
                 column: "SpecialityId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ComplainFiles_ParentComplainId",
+                table: "ComplainFiles",
+                column: "ParentComplainId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DaySchedules_WeekScheduleid",
                 table: "DaySchedules",
                 column: "WeekScheduleid");
@@ -484,9 +568,19 @@ namespace IOS_PROJECT3.Migrations
                 column: "UserLoadId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ForumComments_ParentEndpointId",
+                table: "ForumComments",
+                column: "ParentEndpointId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ForumEndpoints_ParentNodeId",
                 table: "ForumEndpoints",
                 column: "ParentNodeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ForumFiles_ForumCommentId",
+                table: "ForumFiles",
+                column: "ForumCommentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ForumFiles_ForumEndpointId",
@@ -593,6 +687,9 @@ namespace IOS_PROJECT3.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "ComplainFiles");
+
+            migrationBuilder.DropTable(
                 name: "Files");
 
             migrationBuilder.DropTable(
@@ -611,19 +708,25 @@ namespace IOS_PROJECT3.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Complains");
+
+            migrationBuilder.DropTable(
                 name: "Disciplines");
 
             migrationBuilder.DropTable(
-                name: "ForumEndpoints");
+                name: "ForumComments");
 
             migrationBuilder.DropTable(
                 name: "DaySchedules");
 
             migrationBuilder.DropTable(
-                name: "ForumNodes");
+                name: "ForumEndpoints");
 
             migrationBuilder.DropTable(
                 name: "WeekSchedules");
+
+            migrationBuilder.DropTable(
+                name: "ForumNodes");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

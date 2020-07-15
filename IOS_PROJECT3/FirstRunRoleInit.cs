@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.Collections;
 using System.Linq;
 using System;
-
 namespace IOS_PROJECT3
 {
     public class FirstRunRoleInit
@@ -46,20 +45,22 @@ namespace IOS_PROJECT3
                 await userManager.AddToRoleAsync(firstAdmin, "Admin");
    
             }
-            if (await roleManager.FindByNameAsync("Manager") != null&& await userManager.IsInRoleAsync(firstAdmin, "Manager"))
+            if((from f in context.ForumNodes where f.CreatorId=="-1" select f).FirstOrDefault()==null)
             {
-                await userManager.RemoveFromRoleAsync(firstAdmin, "Manager");
+                var MainForum = new EForumNode()
+                {
+                    CreatorId="-1",
+                    Name="Main",
+                    ParentNode=null,
+                    CreationDate=System.DateTime.Now,
+                    CreatorEmail="System",
+                    CreatorFio="System"
+                };
+                context.ForumNodes.Add(MainForum);
+                await context.SaveChangesAsync();
             }
-            if (await roleManager.FindByNameAsync("Teacher") != null && await userManager.IsInRoleAsync(firstAdmin, "Teacher"))
-            {
-                await userManager.RemoveFromRoleAsync(firstAdmin, "Teacher");
-            }
-            if (await roleManager.FindByNameAsync("Student") != null && await userManager.IsInRoleAsync(firstAdmin, "Student"))
-            {
-                await userManager.RemoveFromRoleAsync(firstAdmin, "Student");
-            }
-
-            var adminRole = await roleManager.FindByNameAsync("Admin");
+            
+          var adminRole = await roleManager.FindByNameAsync("Admin");
 
             if ((from g in context.Grants where g.Name == "Grant.UsersAdmin.View" select g).FirstOrDefault() == null)
             {

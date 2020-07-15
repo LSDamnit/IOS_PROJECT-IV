@@ -30,6 +30,7 @@
                                 <form method="post" asp-controller="Account" asp-action="Logout">
                                     <input class="btn btn-outline-secondary" style="position:absolute; right:3%" type="submit" value="Выход" />
                                 </form>
+                                
                             </li>
                         }
                         else
@@ -57,8 +58,11 @@
     <footer class="border-top footer text-muted" style="line-height:30px">
         <div class="container">
             <p>Информационная образовательная среда</p>
-            
-
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a class="btn btn-outline-danger btn-sm" style="position:absolute;right:3%;bottom:-10px"
+                   asp-controller="Complains" asp-action="CreateComplain" asp-route-CreatorEmail="@User.Identity.Name">Оставить жалобу</a>
+            }
         </div>
     </footer>
     @RenderSection("Scripts", required: false)

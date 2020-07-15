@@ -1,0 +1,22 @@
+﻿@model IOS_PROJECT3.ViewModels.CreateForumEndpointViewModel
+
+<h3>Создание статьи</h3>
+<form method="post" asp-action="CreateForumEndpoint" asp-controller="Forum" enctype="multipart/form-data">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <input type="hidden" asp-for="ParentNodeId" class="form-control" />
+        <input type="hidden" asp-for="CreatorEmail" class="form-control" />
+        <label asp-for="EndpointName" class="control-label">Введите название:</label>
+        <input type="text" asp-for="EndpointName" class="form-control" />
+        <label asp-for="EndpointText" class="control-label">Введите текст статьи:</label>
+        <textarea type="text" id="Multiline" asp-for="EndpointText" class="form-control"></textarea>
+    </div>
+    <div class="form-group">
+        <label>Прикрепите файлы:</label>
+        <br>
+        <input type="file" asp-for="UploadedFiles" multiple="" />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Добавить" class="btn btn-outline-primary btn-block" />
+    </div>
+</form>

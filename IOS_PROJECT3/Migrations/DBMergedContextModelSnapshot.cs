@@ -19,6 +19,71 @@ namespace IOS_PROJECT3.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("IOS_PROJECT3.Models.EComplain", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Checked")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CheckedBy_Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CheckedBy_Fio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CheckedBy_Id")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatorFio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatorId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Complains");
+                });
+
+            modelBuilder.Entity("IOS_PROJECT3.Models.EComplainFile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentComplainId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentComplainId");
+
+                    b.ToTable("ComplainFiles");
+                });
+
             modelBuilder.Entity("IOS_PROJECT3.Models.EDaySchedule", b =>
                 {
                     b.Property<int>("id")
@@ -135,15 +200,59 @@ namespace IOS_PROJECT3.Migrations
                     b.ToTable("Files");
                 });
 
-            modelBuilder.Entity("IOS_PROJECT3.Models.EForumEndopoint", b =>
+            modelBuilder.Entity("IOS_PROJECT3.Models.EForumComment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CreatorId")
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatorFio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatorId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentEndpointId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentEndpointId");
+
+                    b.ToTable("ForumComments");
+                });
+
+            modelBuilder.Entity("IOS_PROJECT3.Models.EForumEndpoint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatorFio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatorId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -168,6 +277,9 @@ namespace IOS_PROJECT3.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("ForumCommentId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("ForumEndpointId")
                         .HasColumnType("int");
 
@@ -177,7 +289,12 @@ namespace IOS_PROJECT3.Migrations
                     b.Property<string>("Path")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TypeOfParent")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ForumCommentId");
 
                     b.HasIndex("ForumEndpointId");
 
@@ -191,8 +308,17 @@ namespace IOS_PROJECT3.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CreatorId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatorEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatorFio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatorId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -209,10 +335,8 @@ namespace IOS_PROJECT3.Migrations
 
             modelBuilder.Entity("IOS_PROJECT3.Models.EGrant", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -247,11 +371,13 @@ namespace IOS_PROJECT3.Migrations
 
             modelBuilder.Entity("IOS_PROJECT3.Models.ERolesToGrants", b =>
                 {
-                    b.Property<int>("GrantId")
-                        .HasColumnType("int");
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
+                    b.Property<string>("GrantId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("RoleId", "GrantId");
 
                     b.ToTable("RolesToGrants");
                 });
@@ -532,6 +658,14 @@ namespace IOS_PROJECT3.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("IOS_PROJECT3.Models.EComplainFile", b =>
+                {
+                    b.HasOne("IOS_PROJECT3.Models.EComplain", "ParentComplain")
+                        .WithMany("PinnedFiles")
+                        .HasForeignKey("ParentComplainId")
+                        .OnDelete(DeleteBehavior.NoAction);
+                });
+
             modelBuilder.Entity("IOS_PROJECT3.Models.EDaySchedule", b =>
                 {
                     b.HasOne("IOS_PROJECT3.Models.EWeekSchedule", "WeekSchedule")
@@ -576,19 +710,33 @@ namespace IOS_PROJECT3.Migrations
                         .HasForeignKey("UserLoadId");
                 });
 
-            modelBuilder.Entity("IOS_PROJECT3.Models.EForumEndopoint", b =>
+            modelBuilder.Entity("IOS_PROJECT3.Models.EForumComment", b =>
+                {
+                    b.HasOne("IOS_PROJECT3.Models.EForumEndpoint", "ParentEndpoint")
+                        .WithMany("Comments")
+                        .HasForeignKey("ParentEndpointId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("IOS_PROJECT3.Models.EForumEndpoint", b =>
                 {
                     b.HasOne("IOS_PROJECT3.Models.EForumNode", "ParentNode")
                         .WithMany("ChildEndpoints")
-                        .HasForeignKey("ParentNodeId");
+                        .HasForeignKey("ParentNodeId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("IOS_PROJECT3.Models.EForumFile", b =>
                 {
-                    b.HasOne("IOS_PROJECT3.Models.EForumEndopoint", "ForumEndpoint")
+                    b.HasOne("IOS_PROJECT3.Models.EForumComment", "ForumComment")
+                        .WithMany("PinnedFiles")
+                        .HasForeignKey("ForumCommentId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("IOS_PROJECT3.Models.EForumEndpoint", "ForumEndpoint")
                         .WithMany("PinnedFiles")
                         .HasForeignKey("ForumEndpointId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.NoAction);
                 });
 
             modelBuilder.Entity("IOS_PROJECT3.Models.EForumNode", b =>

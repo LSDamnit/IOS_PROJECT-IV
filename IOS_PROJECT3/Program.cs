@@ -30,7 +30,7 @@ namespace IOS_PROJECT3
                 catch (Exception ex)
                 {
                     var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "Произошла ошибка во время первой инициализации БД.");
+                    logger.LogError(ex, "ГЏГ°Г®ГЁГ§Г®ГёГ«Г  Г®ГёГЁГЎГЄГ  ГўГ® ГўГ°ГҐГ¬Гї ГЇГҐГ°ГўГ®Г© ГЁГ­ГЁГ¶ГЁГ Г«ГЁГ§Г Г¶ГЁГЁ ГЃГ„.");
                 }
             }
             host.Run();

@@ -1,0 +1,50 @@
+﻿@model IOS_PROJECT3.ViewModels.ForumNodeViewModel
+@{
+    ViewData["Title"] = "Форум";
+}
+@if (Model.CreatorId == "-1")
+{
+    <h3>Форум</h3>
+}
+else
+{
+<h3>@Model.NodeName</h3>
+@if((Model.CreatorEmail==User.Identity.Name)||User.IsInRole("Admin"))
+{
+<a asp-controller="Forum" asp-action="EditForumNode" asp-route-NodeId="@Model.NodeId">Переименовать ветку</a>
+<form style="display:inline" method="post" asp-controller="Forum" asp-action="DeleteForumNode" asp-route-NodeId="@Model.NodeId">
+    <button type="submit" class="btn btn-outline-danger btn-sm">Удалить ветку</button>
+</form>
+}
+}
+<div id="Nodes">
+    <h5>Ветки</h5>
+    <a asp-controller="Forum" asp-action="CreateForumNode" asp-route-ParentNodeId="@Model.NodeId" asp-route-CreatorEmail="@User.Identity.Name">Добавить ветку</a>
+    <table class="table table-primary">
+        <tr><th>Название</th><th>Создатель</th><th>Дата создания</th></tr>
+        @foreach (var node in Model.Nodes)
+        {
+            <tr>
+                <td><a asp-controller="Forum" asp-action="ForumNode" asp-route-NodeId="@node.Id.ToString()">@node.Name</a></td>
+                <td>@node.CreatorFio</td>
+                <td>@node.CreationDate.ToString("d")</td>
+            </tr>
+        }
+    </table>
+</div>
+<div id="Endpoints">
+    <h5>Статьи</h5>
+    <a asp-controller="Forum" asp-action="CreateForumEndpoint" asp-route-ParentNodeId="@Model.NodeId" asp-route-CreatorEmail="@User.Identity.Name">Добавить статью</a>
+    <table class="table table-secondary">
+        <tr><th>Название</th><th>Создатель</th><th>Дата создания</th></tr>
+        @foreach (var ep in Model.Endpoints)
+        {
+            <tr>
+                <td><a asp-controller="Forum" asp-action="ForumEndpoint" asp-route-EndpointId="@ep.Id.ToString()">@ep.Name</a></td>
+                <td>@ep.CreatorFio</td>
+                <td>@ep.CreationDate.ToString("d")</td>
+            </tr>
+        }
+    </table>
+</div>
+
