@@ -55,7 +55,6 @@ namespace IOS_PROJECT3.Controllers
                 TeacherName = disc.Teacher.FIO,
                 userGrants = await checkService.getUserGrants(User),
                 SpecialityId = spec.Id.ToString(),
-                SpecialityId = spec.Id.ToString()
             };
             foreach (var f in difiles)
             {
