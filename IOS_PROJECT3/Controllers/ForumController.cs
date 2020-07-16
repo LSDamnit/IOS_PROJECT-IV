@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using IOS_PROJECT3.Models;
+using IOS_PROJECT3.Grants;
 using IOS_PROJECT3.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -18,8 +19,10 @@ namespace IOS_PROJECT3.Controllers
         private DBMergedContext DBContext;
        // UserManager<EUser> userManager;
         IWebHostEnvironment environment;
-        public ForumController(DBMergedContext context, /*UserManager<EUser> userManager,*/ IWebHostEnvironment environment)
+        GrantCheckService checkService;
+        public ForumController(GrantCheckService checkService, DBMergedContext context, /*UserManager<EUser> userManager,*/ IWebHostEnvironment environment)
         {
+            this.checkService = checkService;
             DBContext = context;
             //this.userManager = userManager;
             this.environment = environment;
@@ -42,6 +45,7 @@ namespace IOS_PROJECT3.Controllers
                     CreatorId = "-1",
                     CreatorName = "System",
                     CreationDateString = forum.CreationDate.ToString("d"),
+                    userGrants = await checkService.getUserGrants(User)
                 };
                 return View(model);
             }

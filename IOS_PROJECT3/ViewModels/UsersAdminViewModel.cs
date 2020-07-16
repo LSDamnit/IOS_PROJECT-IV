@@ -17,6 +17,7 @@ namespace IOS_PROJECT3.ViewModels
         }
         public IEnumerable<EUser> Users {get;set;}
         public IDictionary<EUser, string> WhyTitles { get; set; }
+        public List<string> userGrants { get; set; }
 
         public bool IsDeletable(EUser u)
         {

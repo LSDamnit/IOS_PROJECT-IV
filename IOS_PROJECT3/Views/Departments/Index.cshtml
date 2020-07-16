@@ -2,33 +2,40 @@
 @using IOS_PROJECT3.Models;
 <h3 style="align-self:center; margin-bottom:25px">Список кафедр института @Model.InstitutionName</h3>
 <div class="container-fluid">
-    @if ((User.IsInRole("Manager") && User.Identity.Name == Model.ManagerEmail)||User.IsInRole("Admin"))
-    {
-        <a style="margin-bottom:15px" asp-controller="Departments" asp-route-InstId="@Model.InstitutionId" asp-action="Create">Добавить кафедру</a>
-        <a class="btn btn-secondary btn-sm" style="position:absolute; top:10%; right:3%" asp-controller="Message" asp-action="Index" asp-all-route-data='new Dictionary<string,string> { { "ContainerType", "Institution" }, {"ContainerId", Model.InstitutionId }, { "SenderEmail", User.Identity.Name } }'>Массовая рассылка</a>
-    }
+	@if ((User.IsInRole("Manager") && User.Identity.Name == Model.ManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Departments.Create))
+	{
+		<a style="margin-bottom:15px" asp-controller="Departments" asp-route-InstId="@Model.InstitutionId" asp-action="Create">Добавить кафедру</a>
+	}
+	@if ((User.IsInRole("Manager") && User.Identity.Name == Model.ManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Message.Departments))
+	{
+		<a class="btn btn-secondary btn-sm" style="position:absolute; top:10%; right:3%" asp-controller="Message" asp-action="Index" asp-all-route-data='new Dictionary<string,string> { { "ContainerType", "Institution" }, {"ContainerId", Model.InstitutionId }, { "SenderEmail", User.Identity.Name } }'>Массовая рассылка</a>
+	}
 
 
-    <table class="table">
-        <tr><td><b>Кафедра</b></td><td><b>Заведующий</b></td>@*<td><b>Управление</b></td*@</tr>
-        @foreach (var dep in Model.Departments)
-        {
-            <tr>
-                <td><a style="margin-bottom:15px" asp-controller="Specialities" asp-route-DepId="@dep.Id" asp-action="Index">@dep.Name</a></td>
-                <td>@dep.HeadTeacher.FIO</td>
-                @if ((User.IsInRole("Manager") && User.Identity.Name == Model.ManagerEmail)||User.IsInRole("Admin"))
-                {
-                    <td>
-                            <form asp-action="Delete" asp-controller="Departments" asp-route-Id="@dep.Id" method="post">
-                                <a class="btn btn-sm btn-primary" style="margin-top:5px" asp-controller="Departments" asp-action="Edit" asp-route-Id="@dep.Id">Изменить</a>
-                                <button type="submit" style="margin-top:5px" class="btn btn-sm btn-danger">
-                                    Удалить
-                                </button>
-                            </form>
-                        </td>
-                }
+	<table class="table">
+		<tr><td><b>Кафедра</b></td><td><b>Заведующий</b></td>@*<td><b>Управление</b></td*@</tr>
+		@foreach (var dep in Model.Departments)
+		{
+			<tr>
+				<td><a style="margin-bottom:15px" asp-controller="Specialities" asp-route-DepId="@dep.Id" asp-action="Index">@dep.Name</a></td>
+				<td>@dep.HeadTeacher.FIO</td>
+				
+				<td>
+					@if ((User.IsInRole("Manager") && User.Identity.Name == Model.ManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Departments.Edit))
+					{
+						<a class="btn btn-sm btn-primary" style="margin-top:5px" asp-controller="Departments" asp-action="Edit" asp-route-Id="@dep.Id">Изменить</a>
+					}
+					@if ((User.IsInRole("Manager") && User.Identity.Name == Model.ManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Departments.Delete))
+					{
+						<form asp-action="Delete" asp-controller="Departments" asp-route-Id="@dep.Id" method="post">
+							<button type="submit" style="margin-top:5px" class="btn btn-sm btn-danger">
+								Удалить
+							</button>
+						</form>
+					}
+				</td>
 
-            </tr>
-        }
-    </table>
+			</tr>
+		}
+	</table>
 </div>

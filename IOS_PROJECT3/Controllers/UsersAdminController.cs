@@ -34,30 +34,32 @@ namespace IOS_PROJECT3.Controllers
             this.checkService = checkService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var users = userManager.Users.ToList();
             users.Sort(new EUser.CompareByFIO());
             var model = new UsersAdminViewModel(database)
             {
                 Users = users,
-                WhyTitles = new Dictionary<EUser, string>()
-        };
-            return View(model);
-        }
-
-
-        public IActionResult MassRegistrationFails(List<string> list)
-        {
-            var model = new MassRegErrorViewModel()
-            {
-                FailedUsers = list
+                WhyTitles = new Dictionary<EUser, string>(),
+                userGrants = await checkService.getUserGrants(User)
             };
             return View(model);
         }
-        public IActionResult Create()
+
+
+        public async Task<IActionResult> MassRegistrationFails(List<string> list)
         {
-            return View();
+            var model = new MassRegErrorViewModel()
+            {
+                FailedUsers = list,
+                userGrants = await checkService.getUserGrants(User)
+            };
+            return View(model);
+        }
+        public async Task<IActionResult> Create()
+        {
+            return View(new CreateUserViewModel() { userGrants = await checkService.getUserGrants(User) });
         }
 
         [HttpPost]
@@ -180,7 +182,12 @@ namespace IOS_PROJECT3.Controllers
             {
                 return NotFound();
             }
-            EditUserViewModel model = new EditUserViewModel { Id = user.Id, Email = user.Email, FIO = user.FIO };
+            EditUserViewModel model = new EditUserViewModel { 
+                Id = user.Id, 
+                Email = user.Email, 
+                FIO = user.FIO,
+                userGrants = await checkService.getUserGrants(User)
+            };
             return View(model);
         }
         public async Task<IActionResult> ResetPassword(string Id)
@@ -294,7 +301,7 @@ namespace IOS_PROJECT3.Controllers
             
         }
        
-        public IActionResult MassRegistration(string Path)
+        public async Task<IActionResult> MassRegistration(string Path)
         {
             try
             {
@@ -304,7 +311,8 @@ namespace IOS_PROJECT3.Controllers
                     FIOs = ep.ReadColumn(Path, 0),
                     Emails = ep.ReadColumn(Path, 1),
                     Passwords = ep.ReadColumn(Path, 2),
-                    Roles = ep.ReadColumn(Path, 3)
+                    Roles = ep.ReadColumn(Path, 3),
+                    userGrants = await checkService.getUserGrants(User)
                 };
                 int em = model.Emails.Count;
                 int fi = model.FIOs.Count;

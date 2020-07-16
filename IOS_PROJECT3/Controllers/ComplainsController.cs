@@ -4,11 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using IOS_PROJECT3.Models;
+using IOS_PROJECT3.Grants;
 using IOS_PROJECT3.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IOS_PROJECT3.Controllers
 {
@@ -17,18 +19,21 @@ namespace IOS_PROJECT3.Controllers
         private DBMergedContext DBContext;
         // UserManager<EUser> userManager;
         IWebHostEnvironment environment;
-        public ComplainsController(DBMergedContext context, /*UserManager<EUser> userManager,*/ IWebHostEnvironment environment)
+        GrantCheckService checkService;
+        public ComplainsController(GrantCheckService checkService, DBMergedContext context, /*UserManager<EUser> userManager,*/ IWebHostEnvironment environment)
         {
+            this.checkService = checkService;
             DBContext = context;
             //this.userManager = userManager;
             this.environment = environment;
         }
+        [Authorize(Grants.Grants.Complains.View)]
         public IActionResult Index()
         {
-            var model = (from c in DBContext.Complains select c).OrderBy(c=>c.Checked).ThenByDescending(p => p.CreationDate).ToList();
+            var model = (from c in DBContext.Complains select c).OrderBy(c => c.Checked).ThenByDescending(p => p.CreationDate).ToList();
             return View(model);
         }
-
+        [Authorize]
         public IActionResult CreateComplain(string CreatorEmail)
         {
             var ce = CreatorEmail;
@@ -38,6 +43,7 @@ namespace IOS_PROJECT3.Controllers
             };
             return View(model);
         }
+        [Authorize(Grants.Grants.Complains.Details)]
         public async Task<IActionResult> ComplainDetails(string ComplainId)
         {
             var complain = await (from f in DBContext.Complains

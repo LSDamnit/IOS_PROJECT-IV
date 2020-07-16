@@ -8,6 +8,9 @@ using IOS_PROJECT3.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
+using IOS_PROJECT3.Grants;
+
+
 
 namespace IOS_PROJECT3.Controllers
 {
@@ -16,8 +19,10 @@ namespace IOS_PROJECT3.Controllers
         private DBMergedContext DBContext;
         private UserManager<EUser> UserManager;
         IWebHostEnvironment environment;
-        public DepartmentsController(DBMergedContext context, UserManager<EUser> manager, IWebHostEnvironment environment)
+        GrantCheckService checkService;
+        public DepartmentsController(GrantCheckService checkService, DBMergedContext context, UserManager<EUser> manager, IWebHostEnvironment environment)
         {
+            this.checkService = checkService;
             DBContext = context;
             UserManager = manager;
             this.environment = environment;
@@ -47,7 +52,8 @@ namespace IOS_PROJECT3.Controllers
                     InstitutionName = name,
                     ManagerId = man.Id,
                     Departments = deps,
-                    ManagerEmail=mail
+                    ManagerEmail=mail,
+                    userGrants = await checkService.getUserGrants(User)
                 };
                 return View(model);
             }
@@ -62,7 +68,8 @@ namespace IOS_PROJECT3.Controllers
             CreateDepartmentViewModel model = new CreateDepartmentViewModel()
             {
                 AvailableTeachers = await UserManager.GetUsersInRoleAsync("Teacher"),
-                InstId = id
+                InstId = id,
+                userGrants = await checkService.getUserGrants(User)
             };
             return View(model);
         }
@@ -110,7 +117,8 @@ namespace IOS_PROJECT3.Controllers
                     HeadTeacherId = dep.HeadTeacher.Id,
                     InstitutionId = inst.Id.ToString(),
                     InstitutionName = inst.Name,
-                    AvailableTeachers=await UserManager.GetUsersInRoleAsync("Teacher")
+                    AvailableTeachers=await UserManager.GetUsersInRoleAsync("Teacher"),
+                    userGrants = await checkService.getUserGrants(User)
 
                 };
                 return View(model);

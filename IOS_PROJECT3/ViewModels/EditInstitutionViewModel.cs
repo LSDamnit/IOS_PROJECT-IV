@@ -13,5 +13,6 @@ namespace IOS_PROJECT3.ViewModels
         public string Idinst { get; set; }
         public IList<EUser> AvailableManagers { get; set; } 
         public string ManagerId { get; set; }
+        public List<string> userGrants { get; set; }
     }
 }

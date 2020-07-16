@@ -19,6 +19,7 @@ namespace IOS_PROJECT3.ViewModels
         public string CurrentSpecId { get; set; }
         public string TargetSpecId { get; set; }
         public IList<EUser> AvailableStudents { get; set; }
+        public List<string> userGrants { get; set; }
         public DBMergedContext context { get; set; }
 
         public async Task FillDataAsync()

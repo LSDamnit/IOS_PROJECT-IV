@@ -63,19 +63,42 @@
                             <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Disciplines" asp-action="Index" asp-route-SpecId="@Model.OwnSpeciality_S.Id">К специальности @Model.OwnSpeciality_S.Name</a>
                         }
                     </div>
-                }
+				}
 
-                if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.UsersAdmin.View))
-                {
-        <div id="RoleBlock" style="margin-top:10px;margin-bottom:10px">
-            <h6 style="position:relative; margin-right:3%">Как администратору:</h6>
-            <a class="btn btn-secondary" style="margin-top:5px" asp-controller="UsersAdmin" asp-action="Index" value="Список пользователей">Список пользователей</a>
-            <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Roles" asp-action="Index" value="Список ролей">Список ролей</a>
-            <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Institutions" asp-action="Index" value="Список институтов">Управление институтами</a>
-            <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Message" asp-action="Index" asp-all-route-data='new Dictionary<string,string> { { "ContainerType", "All" }, {"ContainerId", "None" }, { "SenderEmail", User.Identity.Name } }'>Массовая рассылка</a>
-            <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Complains" asp-action="Index">Список жалоб</a>
-            <br>
-        </div>
+				if (Model.userGrants.Exists(u => u == IOS_PROJECT3.Grants.Grants.UsersAdmin.View
+                                            || u == IOS_PROJECT3.Grants.Grants.Roles.View
+                                            || u == IOS_PROJECT3.Grants.Grants.Institutions.View
+                                            || u == IOS_PROJECT3.Grants.Grants.Message.Admin
+                                            || u == IOS_PROJECT3.Grants.Grants.Complains.View))
+				{
+		            <div id="RoleBlock" style="margin-top:10px;margin-bottom:10px">
+			            <h6 style="position:relative; margin-right:3%">Как администратору:</h6>
+			            @if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.UsersAdmin.View))
+			            {
+				            <a class="btn btn-secondary" style="margin-top:5px" asp-controller="UsersAdmin" asp-action="Index" value="Список пользователей">Список пользователей</a>
+			            }
+			            @if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Roles.View))
+			            {
+					        <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Roles" asp-action="Index" value="Список ролей">Список ролей</a>
+			            }
+			            @if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Institutions.View))
+			            {
+					        <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Institutions" asp-action="Index" value="Список институтов">Управление институтами</a>
+			            }
+			            @if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Message.Admin))
+			            {
+					        <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Message" asp-action="Index" asp-all-route-data='new Dictionary<string,string> { { "ContainerType", "All" }, {"ContainerId", "None" }, { "SenderEmail", User.Identity.Name } }'>Массовая рассылка</a>
+			            }
+			            @if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Complains.View))
+			            {
+					        <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Complains" asp-action="Index">Список жалоб</a>
+			            }
+			            
+			            
+			            
+			            
+			            <br>
+		            </div>
                 };
 
 

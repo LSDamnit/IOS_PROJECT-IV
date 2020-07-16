@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using IOS_PROJECT3.Models;
+using IOS_PROJECT3.Grants;
 using IOS_PROJECT3.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -18,8 +19,10 @@ namespace IOS_PROJECT3.Controllers
         private DBMergedContext DBContext;
         UserManager<EUser> userManager;
         IWebHostEnvironment environment;
-        public DisciplinesController(DBMergedContext context, UserManager<EUser> userManager, IWebHostEnvironment environment)
+        GrantCheckService checkService;
+        public DisciplinesController(GrantCheckService checkService, DBMergedContext context, UserManager<EUser> userManager, IWebHostEnvironment environment)
         {
+            this.checkService = checkService;
             DBContext = context;
             this.userManager = userManager;
             this.environment = environment;
@@ -54,7 +57,8 @@ namespace IOS_PROJECT3.Controllers
                     InstManagerEmail = inst.Manager.Email,
                     Disciplines = dis,
                     Students = spec.Students,
-                    Schedules = spec.Schedules.OrderBy(s => s.Name).ToList<EWeekSchedule>()
+                    Schedules = spec.Schedules.OrderBy(s => s.Name).ToList<EWeekSchedule>(),
+                    userGrants = await checkService.getUserGrants(User)
                 };
                 return View(model);
 
@@ -97,7 +101,8 @@ namespace IOS_PROJECT3.Controllers
             var model = new CreateScheduleViewModel()
             {
                 SpecialityId = SpecId,
-                AvailableDisciplines = discs
+                AvailableDisciplines = discs,
+                userGrants = await checkService.getUserGrants(User)
             };
             model.init();
             return View(model);
@@ -115,7 +120,8 @@ namespace IOS_PROJECT3.Controllers
                                         where Sched.Speciality.Disciplines.Contains(di) select di).ToListAsync();
             var model = new EditScheduleViewModel()
             {
-                AvailableDisciplines = availablediscs
+                AvailableDisciplines = availablediscs,
+                userGrants = await checkService.getUserGrants(User)
             };
             model.init(Sched);
             return View(model);
@@ -552,7 +558,8 @@ namespace IOS_PROJECT3.Controllers
                 var model = new CreateDisciplineViewModel()
                 {
                     SpecialityId = spec.Id.ToString(),
-                    AvailableTeachers = await userManager.GetUsersInRoleAsync("Teacher")
+                    AvailableTeachers = await userManager.GetUsersInRoleAsync("Teacher"),
+                    userGrants = await checkService.getUserGrants(User)
                 };
                 return View(model);
         }
@@ -609,7 +616,8 @@ namespace IOS_PROJECT3.Controllers
                     ExamType = disc.ExamType,
                     TeacherId = disc.Teacher.Id,
                     Info=disc.About,
-                    AvailableTeachers = await userManager.GetUsersInRoleAsync("Teacher")
+                    AvailableTeachers = await userManager.GetUsersInRoleAsync("Teacher"),
+                    userGrants = await checkService.getUserGrants(User)
 
                 };
 
@@ -695,7 +703,8 @@ namespace IOS_PROJECT3.Controllers
                 {
                     AvailableStudents = await userManager.GetUsersInRoleAsync("Student"),
                     context = DBContext,
-                    TargetSpecId = TSpecId
+                    TargetSpecId = TSpecId,
+                    userGrants = await checkService.getUserGrants(User)
                 };
                 return View(model1);
             }
@@ -709,7 +718,8 @@ namespace IOS_PROJECT3.Controllers
                     CurrentSpecId=CSpecId,
                     CurrentSpec=CSpecName,
                     FIO=uFIO,
-                    Email=uEmail
+                    Email=uEmail,
+                    userGrants = await checkService.getUserGrants(User)
                 };
                 return View(model2);
             
@@ -776,7 +786,8 @@ namespace IOS_PROJECT3.Controllers
                 {
                     FIOs = ep.ReadColumn(Path, 0),
                     Emails = ep.ReadColumn(Path, 0),
-                   // Passwords = ep.ReadColumn(Path, 2),
+                    userGrants = await checkService.getUserGrants(User)
+                    // Passwords = ep.ReadColumn(Path, 2),
                     //Roles = ep.ReadColumn(Path, 3)
                 };
                 model.TargetSpecId = Id;
@@ -861,12 +872,13 @@ namespace IOS_PROJECT3.Controllers
                 return RedirectToAction("Index", new { SpecId = model.TargetSpecId });
             else return RedirectToAction("MassRegistrationFails", new { list = FailedUsers, Id=model.TargetSpecId });
         }
-        public IActionResult MassRegistrationFails(List<string> list, string Id)
+        public async Task<IActionResult> MassRegistrationFails(List<string> list, string Id)
         {
             ViewBag.SpecId = Id;
             var model = new MassRegErrorViewModel()
             {
-                FailedUsers = list
+                FailedUsers = list,
+                userGrants = await checkService.getUserGrants(User)
             };
             return View(model);
         }

@@ -16,5 +16,6 @@ namespace IOS_PROJECT3.ViewModels
         public IList<EWeekSchedule> Schedules { get; set; }
         public IList<EUser> Students { get; set; }
         public IList<EDiscipline> Disciplines { get; set; }
+        public List<string> userGrants { get; set; }
     }
 }

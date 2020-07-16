@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Список для зачисления";
 }
-@if (User.Identity.IsAuthenticated && (User.IsInRole("Manager") || User.IsInRole("Admin")))
+@if (User.Identity.IsAuthenticated && (User.IsInRole("Manager") || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.EnrollStudent)))
 {
     <h3>Заготовка данных для зачисления студентов</h3>
     <br>

@@ -46,9 +46,9 @@ namespace IOS_PROJECT3.Grants
 
         public async Task<List<string>> getUserGrants(ClaimsPrincipal userCP)
         {
-            if (userCP == null)
+            if (!userCP.Identity.IsAuthenticated)
             {
-                throw new ArgumentNullException();
+                return null;
             }
 
             var user = await userManager.GetUserAsync(userCP);

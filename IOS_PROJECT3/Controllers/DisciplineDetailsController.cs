@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using IOS_PROJECT3.Models;
+using IOS_PROJECT3.Grants;
 using IOS_PROJECT3.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
@@ -16,8 +17,10 @@ namespace IOS_PROJECT3.Controllers
     {
         DBMergedContext DBContext;
         IWebHostEnvironment Environment;
-        public DisciplineDetailsController(DBMergedContext context, IWebHostEnvironment environment)
+        GrantCheckService checkService;
+        public DisciplineDetailsController(GrantCheckService checkService, DBMergedContext context, IWebHostEnvironment environment)
         {
+            this.checkService = checkService;
             DBContext = context;
             Environment = environment;
         }
@@ -49,7 +52,8 @@ namespace IOS_PROJECT3.Controllers
                 LecH = disc.LectionH.ToString(),
                 PracH = disc.PracticeH.ToString(),
                 ExamType = disc.ExamType,
-                TeacherName = disc.Teacher.FIO
+                TeacherName = disc.Teacher.FIO,
+                userGrants = await checkService.getUserGrants(User)
             };
             foreach (var f in difiles)
             {

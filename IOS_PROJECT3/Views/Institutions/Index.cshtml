@@ -1,26 +1,33 @@
 ﻿@model IOS_PROJECT3.ViewModels.InstitutionsViewModel
-@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-{
-    <h3 style="align-self:center; margin-bottom:25px">Управление списком институтов</h3>
-    <div class="container-fluid">
-        <a style="position:center; margin-bottom:15px" asp-controller="Institutions" asp-action="Create">Добавить институт</a>
-        <table class="table">
-            <tr><td><b>Институт</b></td><td><b>Менеджер</b></td><td><b>Управление</b></td></tr>
-            @foreach (var inst in Model.Institutions)
-            {
-                <tr>
-                    <td>@inst.Name</td>
-                    <td>@inst.Manager.FIO</td>
-                    <td>
-                        <form asp-action="Delete" asp-route-Id="@inst.Id" method="post">
-                            <a style="margin-top:5px" class="btn btn-sm btn-primary" asp-controller="Institutions" asp-action="Edit" asp-route-Id="@inst.Id">Изменить</a>
-                            <button type="submit" style="margin-top:5px" class="btn btn-sm btn-danger">
-                                Удалить
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            }
-        </table>
-    </div>
-}
+<h3 style="align-self:center; margin-bottom:25px">Управление списком институтов</h3>
+<div class="container-fluid">
+    @if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Institutions.Create))
+	{
+    <a style="position:center; margin-bottom:15px" asp-controller="Institutions" asp-action="Create">Добавить институт</a>
+	}
+    <table class="table">
+        <tr><td><b>Институт</b></td><td><b>Менеджер</b></td><td><b>Управление</b></td></tr>
+        @foreach (var inst in Model.Institutions)
+        {
+            <tr>
+                <td>@inst.Name</td>
+                <td>@inst.Manager.FIO</td>
+				<td>
+					@if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Institutions.Edit))
+					{
+						<a style="margin-top:5px" class="btn btn-sm btn-primary" asp-controller="Institutions" asp-action="Edit" asp-route-Id="@inst.Id">Изменить</a>
+					}
+					@if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Institutions.Delete))
+					{
+						<form asp-action="Delete" asp-route-Id="@inst.Id" method="post">
+							<button type="submit" style="margin-top:5px" class="btn btn-sm btn-danger">
+								Удалить
+							</button>
+						</form>
+					}
+					
+				</td>
+            </tr>
+        }
+    </table>
+</div>

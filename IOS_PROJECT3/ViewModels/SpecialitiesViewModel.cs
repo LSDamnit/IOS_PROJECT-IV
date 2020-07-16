@@ -16,5 +16,6 @@ namespace IOS_PROJECT3.ViewModels
         public string HeadTeacherEmail { get; set; }
         public string DepartmentName { get; set; }
         public IList<ESpeciality> Specialities { get; set; }
+        public List<string> userGrants { get; set; }
     }
 }

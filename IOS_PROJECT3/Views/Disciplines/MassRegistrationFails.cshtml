@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Ошибки массового зачисления студентов на специальность";
 }
-@if (User.Identity.IsAuthenticated && (User.IsInRole("Manager") || User.IsInRole("Admin")))
+@if (User.Identity.IsAuthenticated && (User.IsInRole("Manager") || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.EnrollStudent)))
 {
     <h3>Не удалось зарегистрировать следующих пользователей:</h3>
     <div class="alert alert-warning" role="alert">

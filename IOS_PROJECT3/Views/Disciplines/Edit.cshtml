@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Редактирование учебной дисциплины";
 }
-@if (User.Identity.IsAuthenticated && (User.IsInRole("Manager") || User.IsInRole("Admin")))
+@if (User.Identity.IsAuthenticated && (User.IsInRole("Manager") || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Edit)))
 {
     <form method="post" asp-action="Edit" asp-controller="Disciplines">
         <div asp-validation-summary="All" class="text-danger"></div>

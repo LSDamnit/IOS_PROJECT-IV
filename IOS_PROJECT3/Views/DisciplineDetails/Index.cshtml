@@ -90,7 +90,7 @@
 
     @if ((User.Identity.Name == Model.InstManagerEmail && User.IsInRole("Manager")) ||
          (User.Identity.Name == Model.TeacherEmail && User.IsInRole("Teacher")) ||
-         (User.IsInRole("Admin")))
+         Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.DisciplinesDetails.Files))
     {
         grant = true;
     }
@@ -112,7 +112,7 @@
                 <p style="display:inline"><b>Дата загрузки: </b></p><p style="display:inline" id="fdate"></p><br>
                 <p style="display:inline"><b>Загружен пользователем: </b></p><p style="display:inline" id="fuser"></p><br>
 
-                @if (User.IsInRole("Admin"))
+                @if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.DisciplinesDetails.FilePath))
                 {
                     <p style="display:inline"><b>Полный путь: </b></p>
                     <br>
@@ -218,9 +218,15 @@
                         isHidden = !isHidden;
                     }
                 </script>
-                <a class="btn btn-sm btn-primary" style="position:absolute; top:10%;right:3%" asp-controller="Disciplines" asp-action="Edit" asp-route-DiscId="@Model.DisciplineId">Изменить</a>
-                <a class="btn btn-secondary btn-sm" style="position:absolute; top:15%; right:3%" asp-controller="Message" asp-action="Index" asp-all-route-data='new Dictionary<string, string> { { "ContainerType", "Discipline" }, { "ContainerId", Model.DisciplineId }, { "SenderEmail", User.Identity.Name } }'>Массовая рассылка</a>
-            }
+                @if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Edit))
+				{
+                    <a class="btn btn-sm btn-primary" style="position:absolute; top:10%;right:3%" asp-controller="Disciplines" asp-action="Edit" asp-route-DiscId="@Model.DisciplineId">Изменить</a>
+				}
+                @if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Message.DisciplinesDetails))
+				{
+                    <a class="btn btn-secondary btn-sm" style="position:absolute; top:15%; right:3%" asp-controller="Message" asp-action="Index" asp-all-route-data='new Dictionary<string, string> { { "ContainerType", "Discipline" }, { "ContainerId", Model.DisciplineId }, { "SenderEmail", User.Identity.Name } }'>Массовая рассылка</a>
+				}
+			}
         </div>
         <div class="d-info">
             <h4>Дополнительная информация</h4>

@@ -16,5 +16,6 @@ namespace IOS_PROJECT3.ViewModels
         public IList<string> Roles { get; set; }
         //если используется для зачисления на специальность
         public string TargetSpecId { get; set; }
+        public List<string> userGrants { get; set; }
     }
 }

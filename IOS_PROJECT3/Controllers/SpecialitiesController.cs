@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using IOS_PROJECT3.Models;
+using IOS_PROJECT3.Grants;
 using IOS_PROJECT3.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,26 +17,27 @@ namespace IOS_PROJECT3.Controllers
     {
         private DBMergedContext DBContext;
         IWebHostEnvironment environment;
-       // private UserManager<EUser> UserManager;
-        public SpecialitiesController(DBMergedContext context, IWebHostEnvironment environment)
+        GrantCheckService checkService;
+        // private UserManager<EUser> UserManager;
+        public SpecialitiesController(GrantCheckService checkService, DBMergedContext context, IWebHostEnvironment environment)
         {
+            this.checkService = checkService;
             DBContext = context;
             this.environment = environment;
-           // UserManager = manager;
+            // UserManager = manager;
         }
 
-        [Authorize(Grants.Grants.Specialities.View)]
         public async Task<IActionResult> Index(string DepId)
-        {           
+        {
             var dep = await (from i in DBContext.Departments.Include(s => s.Specialities).Include(h => h.HeadTeacher)
-                              where i.Id.ToString() == DepId
-                              select i).FirstOrDefaultAsync();
+                             where i.Id.ToString() == DepId
+                             select i).FirstOrDefaultAsync();
 
             var specs = await (from d in DBContext.Specialities
-                              where dep.Specialities.Contains(d)
-                              select d).ToListAsync();
+                               where dep.Specialities.Contains(d)
+                               select d).ToListAsync();
 
-            if (dep != null && specs!=null)
+            if (dep != null && specs != null)
             {
                 var inst = await (from i in DBContext.Institutions.Include(d => d.Departments).Include(m => m.Manager)
                                   where i.Departments.Contains(dep)
@@ -44,14 +46,15 @@ namespace IOS_PROJECT3.Controllers
                 //var manager
                 var model = new SpecialitiesViewModel()
                 {
-                   Specialities=specs,
-                   DepartmentId=DepId,
-                   DepartmentName=dep.Name,
-                   InstId=inst.Id.ToString(),
-                   InstManagerId=inst.Manager.Id.ToString(),
-                   InstManagerEmail=inst.Manager.Email,
-                   HeadTeacherId=dep.HeadTeacher.Id.ToString(),
-                   HeadTeacherEmail=dep.HeadTeacher.Email
+                    Specialities = specs,
+                    DepartmentId = DepId,
+                    DepartmentName = dep.Name,
+                    InstId = inst.Id.ToString(),
+                    InstManagerId = inst.Manager.Id.ToString(),
+                    InstManagerEmail = inst.Manager.Email,
+                    HeadTeacherId = dep.HeadTeacher.Id.ToString(),
+                    HeadTeacherEmail = dep.HeadTeacher.Email,
+                    userGrants = await checkService.getUserGrants(User)
                 };
                 return View(model);
             }
@@ -60,13 +63,14 @@ namespace IOS_PROJECT3.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Create(string DepId)
+        public async Task<IActionResult> Create(string DepId)
         {
             var id = DepId;
             var model = new CreateSpecialityViewModel()
             {
                 //AvailableTeachers = await UserManager.GetUsersInRoleAsync("Teacher"),
-                DepId = id
+                DepId = id,
+                userGrants = await checkService.getUserGrants(User)
             };
             return View(model);
         }
@@ -74,15 +78,15 @@ namespace IOS_PROJECT3.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateSpecialityViewModel model)
         {
-            if (ModelState.IsValid) { 
-            var name = model.Name;
-            var dep = await (from i in DBContext.Departments.Include(s => s.Specialities) where i.Id.ToString() == model.DepId select i).FirstOrDefaultAsync();
-     
-            
+            if (ModelState.IsValid) {
+                var name = model.Name;
+                var dep = await (from i in DBContext.Departments.Include(s => s.Specialities) where i.Id.ToString() == model.DepId select i).FirstOrDefaultAsync();
+
+
                 var spec = new ESpeciality()
                 {
                     Name = name
-                    
+
                 };
 
                 dep.Specialities.Add(spec);
@@ -107,7 +111,8 @@ namespace IOS_PROJECT3.Controllers
                 {
                     SpecId = spec.Id.ToString(),
                     Name = spec.Name,
-                    DepId=dep.Id.ToString()
+                    DepId=dep.Id.ToString(),
+                    userGrants = await checkService.getUserGrants(User)
                 };
                 return View(model);
             }

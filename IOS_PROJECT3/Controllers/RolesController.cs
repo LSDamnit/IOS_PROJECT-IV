@@ -90,6 +90,7 @@ namespace IOS_PROJECT3.Controllers
             {
                 role.Name = model.Name;
                 DBContext.Update(role).Entity.Name = model.Name;
+                DBContext.Update(role).Entity.NormalizedName = model.Name.ToUpper();
 
                 var deleteGrants = DBContext.RolesToGrants.Where(rtg => rtg.RoleId == role.Id);
                 DBContext.RolesToGrants.RemoveRange(deleteGrants);

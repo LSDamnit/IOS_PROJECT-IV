@@ -16,5 +16,6 @@ namespace IOS_PROJECT3.ViewModels
         //[Required]
         //[Display(Name = "Менеджер")]
         public string ManagerId { get; set; }
+        public List<string> userGrants { get; set; }
     }
 }

@@ -1,228 +1,230 @@
 ﻿@model IOS_PROJECT3.ViewModels.EditScheduleViewModel
+@if (User.Identity.IsAuthenticated && (User.IsInRole("Manager") || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Schedule.Edit)))
+{
+	<style>
+		table {
+			border-collapse: separate;
+			border-style: solid;
+			border: 1px;
+		}
+	</style>
+	<div class="grid-container" style="font-size:70%">
+		<script>
 
-<style>
-    table {
-        border-collapse: separate;
-        border-style: solid;
-        border: 1px;
-    }
-</style>
-<div class="grid-container" style="font-size:70%">
-    <script>
+			function checkPair(i, day) {
 
-        function checkPair(i, day) {
+				var select = document.getElementById(day + "_pairselect[" + i + "]");
+				var value = select.value;
+				if (value == "-1") {
+					document.getElementById(day + "_additional[" + i + "]").hidden = true;
+					document.getElementById(day + "_classrom[" + i + "]").value = "";
+				}
+				else
+					document.getElementById(day + "_additional[" + i + "]").hidden = false;
+			}
+			function allCheck() {
+				for (var i = 0; i < 8; i++) {
+					checkPair(i, "mon");
+					checkPair(i, "tue");
+					checkPair(i, "wed");
+					checkPair(i, "thu");
+					checkPair(i, "fri");
+					checkPair(i, "sat");
+				}
+			}
+		</script>
 
-            var select = document.getElementById(day + "_pairselect[" + i + "]");
-            var value = select.value;
-            if (value == "-1") {
-                document.getElementById(day + "_additional[" + i + "]").hidden = true;
-                document.getElementById(day + "_classrom[" + i + "]").value = "";
-            }
-            else
-                document.getElementById(day + "_additional[" + i + "]").hidden = false;
-        }
-        function allCheck() {
-            for (var i = 0; i < 8; i++) {
-                checkPair(i, "mon");
-                checkPair(i, "tue");
-                checkPair(i, "wed");
-                checkPair(i, "thu");
-                checkPair(i, "fri");
-                checkPair(i, "sat");
-            }
-        }
-    </script>
-    
-    <form method="post" asp-controller="Disciplines" asp-action="EditSchedule">
-        <input type="hidden" asp-for="SpecialityId" class="form-control" />
-        <input type="hidden" asp-for="WeekScheduleId" class="form-control" />
-        <h5 style="display:inline">Название расписания: </h5> <input type="text" asp-for="WeekScheduleName" style="display:inline" />
-        <table>
-            <tr>
-                <td>
-                    <div class="mon">
-                        <h6>Понедельник</h6>
-                        @for (int i = 0; i < 8; i++)
-                        {
-                            <div class="mon[@i]">
-                                <label><b>Пара №@(i + 1)</b></label>
-                                <br>
-                                <label>Дисциплина</label>
-                                <select id="mon_pairselect[@i]" asp-for="mon[i].DisciplineId" onchange="checkPair((@i),'mon')">
-                                    <option value="-1">Нет пары</option>
-                                    @foreach (var di in Model.AvailableDisciplines)
-                                    {
-                                        <option value="@di.Id">@di.Name / @di.Teacher.FIO</option>
-                                    }
-                                </select>
-                                <div id="mon_additional[@i]" hidden="hidden">
-                                    <label>Аудитория</label>
-                                    <input type="text" asp-for="mon[i].Classroom" id="mon_classrom[@i]" />
-                                    <label>Формат</label><br>
-                                    <select asp-for="mon[i].Type">
-                                        <option value="Лекция">Лекция</option>
-                                        <option value="Практика">Практика</option>
-                                        <option value="Зачет">Зачет</option>
-                                        <option value="Экзамен">Экзамен</option>
-                                    </select>
-                                </div>
-                            </div>}
-                    </div>
-                </td>
-                <td>
-                    <div class="tue">
-                        <h6>Вторник</h6>
-                        @for (int i = 0; i < 8; i++)
-                        {
-                            <div class="tue[@i]">
-                                <label><b>Пара №@(i + 1)</b></label>
-                                <br>
-                                <label>Дисциплина</label>
-                                <select id="tue_pairselect[@i]" asp-for="tue[i].DisciplineId" onchange="checkPair((@i),'tue')">
-                                    <option value="-1">Нет пары</option>
-                                    @foreach (var di in Model.AvailableDisciplines)
-                                    {
-                                        <option value="@di.Id">@di.Name / @di.Teacher.FIO</option>
-                                    }
-                                </select>
-                                <div id="tue_additional[@i]" hidden="hidden">
-                                    <label>Аудитория</label>
-                                    <input type="text" asp-for="tue[i].Classroom" id="tue_classrom[@i]" />
-                                    <label>Формат</label><br>
-                                    <select asp-for="tue[i].Type">
-                                        <option value="Лекция">Лекция</option>
-                                        <option value="Практика">Практика</option>
-                                        <option value="Зачет">Зачет</option>
-                                        <option value="Экзамен">Экзамен</option>
-                                    </select>
-                                </div>
-                            </div>}
-                    </div>
-                </td>
-                <td>
-                    <div class="wed">
-                        <h6>Среда</h6>
-                        @for (int i = 0; i < 8; i++)
-                        {
-                            <div class="wed[@i]">
-                                <label><b>Пара №@(i + 1)</b></label>
-                                <br>
-                                <label>Дисциплина</label>
-                                <select id="wed_pairselect[@i]" asp-for="wed[i].DisciplineId" onchange="checkPair((@i),'wed')">
-                                    <option value="-1">Нет пары</option>
-                                    @foreach (var di in Model.AvailableDisciplines)
-                                    {
-                                        <option value="@di.Id">@di.Name / @di.Teacher.FIO</option>
-                                    }
-                                </select>
-                                <div id="wed_additional[@i]" hidden="hidden">
-                                    <label>Аудитория</label>
-                                    <input type="text" asp-for="wed[i].Classroom" id="wed_classrom[@i]" />
-                                    <label>Формат</label><br>
-                                    <select asp-for="wed[i].Type">
-                                        <option value="Лекция">Лекция</option>
-                                        <option value="Практика">Практика</option>
-                                        <option value="Зачет">Зачет</option>
-                                        <option value="Экзамен">Экзамен</option>
-                                    </select>
-                                </div>
-                            </div>}
-                    </div>
-                </td>
-                <td>
-                    <div class="thu">
-                        <h6>Четверг</h6>
-                        @for (int i = 0; i < 8; i++)
-                        {
-                            <div class="thu[@i]">
-                                <label><b>Пара №@(i + 1)</b></label>
-                                <br>
-                                <label>Дисциплина</label>
-                                <select id="thu_pairselect[@i]" asp-for="thu[i].DisciplineId" onchange="checkPair((@i),'thu')">
-                                    <option value="-1">Нет пары</option>
-                                    @foreach (var di in Model.AvailableDisciplines)
-                                    {
-                                        <option value="@di.Id">@di.Name / @di.Teacher.FIO</option>
-                                    }
-                                </select>
-                                <div id="thu_additional[@i]" hidden="hidden">
-                                    <label>Аудитория</label>
-                                    <input type="text" asp-for="thu[i].Classroom" id="thu_classrom[@i]"/>
-                                    <label>Формат</label><br>
-                                    <select asp-for="thu[i].Type">
-                                        <option value="Лекция">Лекция</option>
-                                        <option value="Практика">Практика</option>
-                                        <option value="Зачет">Зачет</option>
-                                        <option value="Экзамен">Экзамен</option>
-                                    </select>
-                                </div>
-                            </div>}
-                    </div>
-                </td>
-                <td>
-                    <div class="fri">
-                        <h6>Пятница</h6>
-                        @for (int i = 0; i < 8; i++)
-                        {
-                            <div class="fri[@i]">
-                                <label><b>Пара №@(i + 1)</b></label>
-                                <br>
-                                <label>Дисциплина</label>
-                                <select id="fri_pairselect[@i]" asp-for="fri[i].DisciplineId" onchange="checkPair((@i),'fri')">
-                                    <option value="-1">Нет пары</option>
-                                    @foreach (var di in Model.AvailableDisciplines)
-                                    {
-                                        <option value="@di.Id">@di.Name / @di.Teacher.FIO</option>
-                                    }
-                                </select>
-                                <div id="fri_additional[@i]" hidden="hidden">
-                                    <label>Аудитория</label>
-                                    <input type="text" asp-for="fri[i].Classroom" id="fri_classrom[@i]"/>
-                                    <label>Формат</label><br>
-                                    <select asp-for="fri[i].Type">
-                                        <option value="Лекция">Лекция</option>
-                                        <option value="Практика">Практика</option>
-                                        <option value="Зачет">Зачет</option>
-                                        <option value="Экзамен">Экзамен</option>
-                                    </select>
-                                </div>
-                            </div>}
-                    </div>
-                </td>
-                <td>
-                    <div class="sat">
-                        <h6>Суббота</h6>
-                        @for (int i = 0; i < 8; i++)
-                        {
-                            <div class="sat[@i]">
-                                <label><b>Пара №@(i + 1)</b></label>
-                                <br>
-                                <label>Дисциплина</label>
-                                <select id="sat_pairselect[@i]" asp-for="sat[i].DisciplineId" onchange="checkPair((@i),'sat')">
-                                    <option value="-1">Нет пары</option>
-                                    @foreach (var di in Model.AvailableDisciplines)
-                                    {
-                                        <option value="@di.Id">@di.Name / @di.Teacher.FIO</option>
-                                    }
-                                </select>
-                                <div id="sat_additional[@i]" hidden="hidden">
-                                    <label>Аудитория</label>
-                                    <input type="text" asp-for="sat[i].Classroom" id="sat_classrom[@i]"/>
-                                    <label>Формат</label><br>
-                                    <select asp-for="sat[i].Type">
-                                        <option value="Лекция">Лекция</option>
-                                        <option value="Практика">Практика</option>
-                                        <option value="Зачет">Зачет</option>
-                                        <option value="Экзамен">Экзамен</option>
-                                    </select>
-                                </div>
-                            </div>}
-                    </div>
-                </td>
-            </tr>
-        </table>
-        <input type="submit" value="Сохранить" class="btn btn-block" />
-    </form>
+		<form method="post" asp-controller="Disciplines" asp-action="EditSchedule">
+			<input type="hidden" asp-for="SpecialityId" class="form-control" />
+			<input type="hidden" asp-for="WeekScheduleId" class="form-control" />
+			<h5 style="display:inline">Название расписания: </h5> <input type="text" asp-for="WeekScheduleName" style="display:inline" />
+			<table>
+				<tr>
+					<td>
+						<div class="mon">
+							<h6>Понедельник</h6>
+							@for (int i = 0; i < 8; i++)
+							{
+								<div class="mon[@i]">
+									<label><b>Пара №@(i + 1)</b></label>
+									<br>
+									<label>Дисциплина</label>
+									<select id="mon_pairselect[@i]" asp-for="mon[i].DisciplineId" onchange="checkPair((@i),'mon')">
+										<option value="-1">Нет пары</option>
+										@foreach (var di in Model.AvailableDisciplines)
+										{
+											<option value="@di.Id">@di.Name / @di.Teacher.FIO</option>
+										}
+									</select>
+									<div id="mon_additional[@i]" hidden="hidden">
+										<label>Аудитория</label>
+										<input type="text" asp-for="mon[i].Classroom" id="mon_classrom[@i]" />
+										<label>Формат</label><br>
+										<select asp-for="mon[i].Type">
+											<option value="Лекция">Лекция</option>
+											<option value="Практика">Практика</option>
+											<option value="Зачет">Зачет</option>
+											<option value="Экзамен">Экзамен</option>
+										</select>
+									</div>
+								</div>}
+						</div>
+					</td>
+					<td>
+						<div class="tue">
+							<h6>Вторник</h6>
+							@for (int i = 0; i < 8; i++)
+							{
+								<div class="tue[@i]">
+									<label><b>Пара №@(i + 1)</b></label>
+									<br>
+									<label>Дисциплина</label>
+									<select id="tue_pairselect[@i]" asp-for="tue[i].DisciplineId" onchange="checkPair((@i),'tue')">
+										<option value="-1">Нет пары</option>
+										@foreach (var di in Model.AvailableDisciplines)
+										{
+											<option value="@di.Id">@di.Name / @di.Teacher.FIO</option>
+										}
+									</select>
+									<div id="tue_additional[@i]" hidden="hidden">
+										<label>Аудитория</label>
+										<input type="text" asp-for="tue[i].Classroom" id="tue_classrom[@i]" />
+										<label>Формат</label><br>
+										<select asp-for="tue[i].Type">
+											<option value="Лекция">Лекция</option>
+											<option value="Практика">Практика</option>
+											<option value="Зачет">Зачет</option>
+											<option value="Экзамен">Экзамен</option>
+										</select>
+									</div>
+								</div>}
+						</div>
+					</td>
+					<td>
+						<div class="wed">
+							<h6>Среда</h6>
+							@for (int i = 0; i < 8; i++)
+							{
+								<div class="wed[@i]">
+									<label><b>Пара №@(i + 1)</b></label>
+									<br>
+									<label>Дисциплина</label>
+									<select id="wed_pairselect[@i]" asp-for="wed[i].DisciplineId" onchange="checkPair((@i),'wed')">
+										<option value="-1">Нет пары</option>
+										@foreach (var di in Model.AvailableDisciplines)
+										{
+											<option value="@di.Id">@di.Name / @di.Teacher.FIO</option>
+										}
+									</select>
+									<div id="wed_additional[@i]" hidden="hidden">
+										<label>Аудитория</label>
+										<input type="text" asp-for="wed[i].Classroom" id="wed_classrom[@i]" />
+										<label>Формат</label><br>
+										<select asp-for="wed[i].Type">
+											<option value="Лекция">Лекция</option>
+											<option value="Практика">Практика</option>
+											<option value="Зачет">Зачет</option>
+											<option value="Экзамен">Экзамен</option>
+										</select>
+									</div>
+								</div>}
+						</div>
+					</td>
+					<td>
+						<div class="thu">
+							<h6>Четверг</h6>
+							@for (int i = 0; i < 8; i++)
+							{
+								<div class="thu[@i]">
+									<label><b>Пара №@(i + 1)</b></label>
+									<br>
+									<label>Дисциплина</label>
+									<select id="thu_pairselect[@i]" asp-for="thu[i].DisciplineId" onchange="checkPair((@i),'thu')">
+										<option value="-1">Нет пары</option>
+										@foreach (var di in Model.AvailableDisciplines)
+										{
+											<option value="@di.Id">@di.Name / @di.Teacher.FIO</option>
+										}
+									</select>
+									<div id="thu_additional[@i]" hidden="hidden">
+										<label>Аудитория</label>
+										<input type="text" asp-for="thu[i].Classroom" id="thu_classrom[@i]" />
+										<label>Формат</label><br>
+										<select asp-for="thu[i].Type">
+											<option value="Лекция">Лекция</option>
+											<option value="Практика">Практика</option>
+											<option value="Зачет">Зачет</option>
+											<option value="Экзамен">Экзамен</option>
+										</select>
+									</div>
+								</div>}
+						</div>
+					</td>
+					<td>
+						<div class="fri">
+							<h6>Пятница</h6>
+							@for (int i = 0; i < 8; i++)
+							{
+								<div class="fri[@i]">
+									<label><b>Пара №@(i + 1)</b></label>
+									<br>
+									<label>Дисциплина</label>
+									<select id="fri_pairselect[@i]" asp-for="fri[i].DisciplineId" onchange="checkPair((@i),'fri')">
+										<option value="-1">Нет пары</option>
+										@foreach (var di in Model.AvailableDisciplines)
+										{
+											<option value="@di.Id">@di.Name / @di.Teacher.FIO</option>
+										}
+									</select>
+									<div id="fri_additional[@i]" hidden="hidden">
+										<label>Аудитория</label>
+										<input type="text" asp-for="fri[i].Classroom" id="fri_classrom[@i]" />
+										<label>Формат</label><br>
+										<select asp-for="fri[i].Type">
+											<option value="Лекция">Лекция</option>
+											<option value="Практика">Практика</option>
+											<option value="Зачет">Зачет</option>
+											<option value="Экзамен">Экзамен</option>
+										</select>
+									</div>
+								</div>}
+						</div>
+					</td>
+					<td>
+						<div class="sat">
+							<h6>Суббота</h6>
+							@for (int i = 0; i < 8; i++)
+							{
+								<div class="sat[@i]">
+									<label><b>Пара №@(i + 1)</b></label>
+									<br>
+									<label>Дисциплина</label>
+									<select id="sat_pairselect[@i]" asp-for="sat[i].DisciplineId" onchange="checkPair((@i),'sat')">
+										<option value="-1">Нет пары</option>
+										@foreach (var di in Model.AvailableDisciplines)
+										{
+											<option value="@di.Id">@di.Name / @di.Teacher.FIO</option>
+										}
+									</select>
+									<div id="sat_additional[@i]" hidden="hidden">
+										<label>Аудитория</label>
+										<input type="text" asp-for="sat[i].Classroom" id="sat_classrom[@i]" />
+										<label>Формат</label><br>
+										<select asp-for="sat[i].Type">
+											<option value="Лекция">Лекция</option>
+											<option value="Практика">Практика</option>
+											<option value="Зачет">Зачет</option>
+											<option value="Экзамен">Экзамен</option>
+										</select>
+									</div>
+								</div>}
+						</div>
+					</td>
+				</tr>
+			</table>
+			<input type="submit" value="Сохранить" class="btn btn-block" />
+		</form>
 
-    <script>allCheck();</script>
-</div>
+		<script>allCheck();</script>
+	</div>
+}

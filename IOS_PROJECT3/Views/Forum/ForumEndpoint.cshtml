@@ -8,7 +8,7 @@
     </style>
 <div id="Primary" class="alert alert-primary" role="main">
     <h3>@Model.EndpointName</h3>
-    @if ((Model.CreatorEmail == User.Identity.Name) || User.IsInRole("Admin"))
+    @if ((Model.CreatorEmail == User.Identity.Name) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Forum.EditEndpoint))
     {
         <a asp-controller="Forum" asp-action="EditForumEndpoint" asp-route-EndpointId="@Model.EndpointId">Редактировать статью</a>
         <form style="display:inline" method="post" asp-controller="Forum" asp-action="DeleteForumEndpoint" asp-route-EndpointId="@Model.EndpointId">
@@ -50,7 +50,7 @@
                         {
                             <a style="display:inline; margin-right:10px" class="btn btn-outline-primary btn-sm" asp-controller="Forum" asp-action="EditForumComment" asp-route-CommentId="@c.Id">Редактировать</a>
                         }
-                        @if (User.IsInRole("Admin"))
+                        @if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Forum.DeleteComment))
                         {
                             <form style="display:inline" method="post" asp-controller="Forum" asp-action="DeleteForumComment" asp-route-CommentId="@c.Id">
                             <button type="submit"  class="btn btn-outline-danger btn-sm">Удалить</button>

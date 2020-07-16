@@ -17,6 +17,7 @@ namespace IOS_PROJECT3.ViewModels
         public IList<EScheduleItem> thu { get; set; }
         public IList<EScheduleItem> fri { get; set; }
         public IList<EScheduleItem> sat { get; set; }
+        public List<string> userGrants { get; set; }
 
         public void init()
         {

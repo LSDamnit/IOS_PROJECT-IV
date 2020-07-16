@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Добавление пользователя";
 }
-@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+@if (User.Identity.IsAuthenticated && Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.EnrollStudent))
 {
     <form asp-action="Create" asp-controller="UsersAdmin">
         <div asp-validation-summary="All" class="text-danger"></div>

@@ -20,5 +20,6 @@ namespace IOS_PROJECT3.ViewModels
         public IList<EUser> AvailableTeachers { get; set; }
         public string Info { get; set; }
         public string TeacherId { get; set; }
+        public List<string> userGrants { get; set; }
     }
 }

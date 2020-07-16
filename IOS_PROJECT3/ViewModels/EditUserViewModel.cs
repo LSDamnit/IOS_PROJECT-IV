@@ -19,5 +19,6 @@ namespace IOS_PROJECT3.ViewModels
 
         [Required(ErrorMessage = "Не указано ФИО")]
         public string FIO { get; set; }
+        public List<string> userGrants { get; set; }
     }
 }
