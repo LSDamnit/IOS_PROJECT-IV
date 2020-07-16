@@ -27,7 +27,7 @@ namespace IOS_PROJECT3.Controllers
             UserManager = manager;
             this.environment = environment;
         }
-        public async Task<IActionResult> Index(string InstId)
+        public async Task<IActionResult> Index(string InstId,bool FromPP)
         {
             //-----!!!! Это был тест отправки сообщений - пусть он тут побудет
            // EmailService es = new EmailService();
@@ -39,8 +39,7 @@ namespace IOS_PROJECT3.Controllers
             var deps = await (from d in DBContext.Departments.Include(h => h.HeadTeacher)
                               where inst.Departments.Contains(d)
                               select d).ToListAsync();
-            if (inst != null)
-            {
+            
                 var departs = deps;
                 var man = inst.Manager;
                 var name = inst.Name;
@@ -55,11 +54,10 @@ namespace IOS_PROJECT3.Controllers
                     ManagerEmail=mail,
                     userGrants = await checkService.getUserGrants(User)
                 };
+            model.FromPP = FromPP;
                 return View(model);
-            }
-            else ModelState.AddModelError("Index", "No such institution");
-
-            return View();
+            
+            
         }
 
         public async Task<IActionResult> Create(string InstId)

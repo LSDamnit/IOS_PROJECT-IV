@@ -1,0 +1,178 @@
+﻿@model IOS_PROJECT3.ViewModels.UserPageViewModel
+<style>
+    .grid-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        grid-template-areas: "personal-data personal-buttons" "personal-settings personal-buttons";
+    }
+
+    .personal-data {
+        grid-area: personal-data;
+    }
+
+    .personal-buttons {
+        grid-area: personal-buttons;
+    }
+
+    .personal-settings {
+        grid-area: personal-settings;
+    }
+</style>
+<div class="grid-container">
+<div class="personal-data">
+    <h5>Ваши данные</h5>
+    <dl class="row">
+        <dt class="col-sm-3">ФИО</dt>
+        <dd class="col-sm-9">@Model.UserFIO</dd>
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@User.Identity.Name</dd>
+        <dt class="col-sm-3">Роли</dt>
+        <dd class="col-sm-9">
+            <ul class="list-unstyled">
+                @foreach(var role in Model.userRoles)
+                {
+                    <li>@role</li>
+                }
+                </ul>
+        </dd>
+    </dl>
+</div>
+<div class="personal-settings">
+    <h5>Настройки безопасности</h5>
+    <b>Кнопка/форма смены почты</b>
+    <br>
+    <b>Кнопка/форма смены пароля</b>
+</div>
+<div class="personal-buttons" style="position:absolute; right:5%">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <h5 style="position:relative; margin-right:3%">Вам доступны действия:</h5>
+
+        if (User.IsInRole("Student"))
+        {
+            <div id="RoleBlock" style="margin-top:10px;margin-bottom:10px">
+                <h6 style="position:relative; margin-right:3%">Как студенту:</h6>
+                @if (Model.OwnSpeciality_S != null)
+                {
+                    <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Disciplines" asp-action="Index" asp-route-SpecId="@Model.OwnSpeciality_S.Id" asp-route-FromPP="true">К специальности @Model.OwnSpeciality_S.Name</a>
+                }
+            </div>
+        }
+
+        if (Model.userGrants.Exists(u => u == IOS_PROJECT3.Grants.Grants.UsersAdmin.View
+                                    || u == IOS_PROJECT3.Grants.Grants.Roles.View
+                                    || u == IOS_PROJECT3.Grants.Grants.Institutions.View
+                                    || u == IOS_PROJECT3.Grants.Grants.Message.Admin
+                                    || u == IOS_PROJECT3.Grants.Grants.Complains.View))
+        {
+            <div id="RoleBlock" style="margin-top:10px;margin-bottom:10px">
+                <h6 style="position:relative; margin-right:3%">Как администратору:</h6>
+                <ul class="list-unstyled">
+                    @if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.UsersAdmin.View))
+                    {
+                        <li>
+                            <a class="btn btn-secondary" style="margin-top:5px" asp-controller="UsersAdmin" asp-action="Index" value="Список пользователей">Список пользователей</a>
+                        </li>
+                    }
+                    @if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Roles.View))
+                    {
+                        <li>
+                            <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Roles" asp-action="Index" value="Список ролей">Список ролей</a>
+                        </li>
+                    }
+                    @if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Institutions.View))
+                    {
+                        <li>
+                            <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Institutions" asp-action="Index" value="Список институтов">Управление институтами</a>
+                        </li>
+                    }
+                    @if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Message.Admin))
+                    {
+                        <li>
+                            <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Message" asp-action="Index" asp-all-route-data='new Dictionary<string,string> { { "ContainerType", "All" }, {"ContainerId", "None" }, { "SenderEmail", User.Identity.Name } }'>Массовая рассылка</a>
+                        </li>
+                    }
+                    @if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Complains.View))
+                    {
+                        <li>
+                            <a class="btn btn-secondary" style="margin-top:5px" asp-controller="Complains" asp-action="Index">Список жалоб</a>
+                        </li>
+                    }
+                    </ul>
+            </div>
+        };
+
+
+        if (User.IsInRole("Teacher"))
+        {
+            <div id="RoleBlock" style="margin-top:10px;margin-bottom:10px">
+                <h6 style="position:relative; margin-right:3%">Как учителю:</h6>
+                @if (Model.OwnDiscilpines_T.Count > 0)
+                {
+                    <script>
+                                var isHidden = true;
+                                function ShowHide() {
+                                    document.getElementById('DiscList').hidden = !isHidden;
+                                    document.getElementById('DiscBtn').hidden = isHidden;
+                                    isHidden = !isHidden;
+                                }
+                    </script>
+                    <button style="margin-bottom:10px;" id="DiscBtn" class="btn btn-secondary btn-sm" onclick="ShowHide()">Преподаваемые вами дисциплины</button>
+                    <br>
+                    <div id="DiscList" hidden="hidden" class="alert alert-info" role="alert">
+                        <button style="margin-bottom:10px;" class="btn btn-outline-secondary btn-sm" onclick="ShowHide()">Скрыть список</button>
+                        <table class="table table-bordered">
+                            <tr><th>Преподаваемые дисциплины</th></tr>
+                            @foreach (var di in Model.OwnDiscilpines_T)
+                            {
+                                <tr><td><a asp-controller="DisciplineDetails" asp-action="Index" asp-route-DiscId="@di.Id" asp-route-FromPP="true">@di.Name</a></td></tr>
+                            }
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p>Вы не преподаете ни одной дисциплины</p>
+                }
+            </div>
+        };
+
+        if (User.IsInRole("Manager"))
+        {
+            <div id="RoleBlock" style="margin-top:10px;margin-bottom:10px">
+                <h6 style="position:relative; margin-right:3%">Как менеджеру:</h6>
+                @if (Model.OwnInstitutions_M.Count > 0)
+                {
+                    <script>
+                                var isBlockHidden = true;
+                                function ShowHideInstList() {
+                                    document.getElementById('InstList').hidden = !isBlockHidden;
+                                    document.getElementById('InstBtn').hidden = isBlockHidden;
+                                    isBlockHidden = !isBlockHidden;
+                                }
+                    </script>
+                    <button style="margin-bottom:10px;" id="InstBtn" class="btn btn-secondary btn-sm" onclick="ShowHideInstList()">Институты под вашим управлением</button>
+                    <br>
+                    <div id="InstList" hidden="hidden" class="alert alert-info" role="alert">
+                        <button style="margin-bottom:10px;" class="btn btn-outline-secondary btn-sm" onclick="ShowHideInstList()">Скрыть список</button>
+                        <table class="table table-bordered">
+                            <tr><th>Управляемые институты</th></tr>
+                            @foreach (var di in Model.OwnInstitutions_M)
+                            {
+                                <tr><td><a asp-controller="Departments" asp-action="Index" asp-route-InstId="@di.Id" asp-route-FromPP="true">@di.Name</a></td></tr>
+                            }
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p>Вы управляете ни одним институтом</p>
+                }
+            </div>
+
+        };        
+
+    }
+</div>
+</div>

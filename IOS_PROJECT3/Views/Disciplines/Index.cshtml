@@ -3,7 +3,7 @@
     .grid-container-spec {
         display: grid;
         grid-template-columns: /*1.2fr 0.8fr;*/ 80% 20%;
-        grid-gap:10px;
+        grid-gap: 10px;
         grid-template-areas: "disciplines-spec students-spec";
     }
 
@@ -14,7 +14,6 @@
     .students-spec {
         grid-area: students-spec;
     }
-
 </style>
 <h3 style="align-self:center; margin-bottom:25px">Специальность @Model.SpecialityName</h3>
 <div id="schedules">
@@ -33,15 +32,15 @@
                 @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Schedule.Edit))
                 {
                     <td>
-                        <a class="btn btn-primary btn-sm"  asp-controller="Disciplines" asp-route-WeekScheduleId="@s.id" asp-action="EditSchedule">Изменить</a>
+                        <a class="btn btn-primary btn-sm" asp-controller="Disciplines" asp-route-WeekScheduleId="@s.id" asp-action="EditSchedule">Изменить</a>
                     </td>
-				}
+                }
                 @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Schedule.Delete))
-				{
+                {
                     <td>
                         <form method="post" asp-action="DeleteSchedule" asp-route-WeekScheduleId="@s.id">
-                    
-                            <button type="submit" class="btn btn-danger btn-sm" >Удалить</button>
+
+                            <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
                         </form>
                     </td>
                 }
@@ -50,66 +49,66 @@
     }
 </div>
 <div class="grid-container-spec" style="width:100%">
-	<div class="disciplines-spec">
-		<h5 style="align-self:center; margin-bottom:25px">Список дисциплин</h5>
-		@if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Create))
-		{
-			<a style="margin-bottom:15px" asp-controller="Disciplines" asp-route-SpecId="@Model.SpecialityId" asp-action="Create">Добавить дисциплину</a>
-		}
-		@if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Message.Disciplines))
-		{
-			<a class="btn btn-secondary btn-sm" style="position:absolute; top:10%; right:3%" asp-controller="Message" asp-action="Index" asp-all-route-data='new Dictionary<string,string> { { "ContainerType", "Speciality" }, {"ContainerId", Model.SpecialityId }, { "SenderEmail", User.Identity.Name } }'>Массовая рассылка</a>
-		}
-		<table class="table table-bordered" style="border-collapse:collapse;table-layout:auto; text-align:center;">
-			<tr>
-				<th>Название</th>
-				<th>Лекции(часы)</th>
-				<th>Практики(часы)</th>
-				<th>Зачетность</th>
-				<th>Преподаватель</th>
-				@if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Edit) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Delete))
-				{
-					<th>Управление</th>
-				}
-			</tr>
-			@foreach (var di in Model.Disciplines)
-			{
-		<tr>
-			<td>
-				@if (User.Identity.IsAuthenticated)
-				{
-					<a style="margin-bottom:15px" asp-controller="DisciplineDetails" asp-route-DiscId="@di.Id" asp-action="Index">@di.Name</a>
-				}
-				else
-				{
-					<p>@di.Name</p>
-				}
-			</td>
-			<td>@di.LectionH</td>
-			<td>@di.PracticeH</td>
-			<td>@di.ExamType</td>
-			<td>@di.Teacher.FIO</td>
-			@if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Edit) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Delete))
-			{
-		        <td>
-			        @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Edit))
-			        {
-				        <a class="btn btn-sm btn-primary" style="margin-top:5px" asp-controller="Disciplines" asp-action="Edit" asp-route-DiscId="@di.Id">Изменить</a>
-			        }
-			        @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Delete))
-			        {
-				        <form asp-action="Delete" asp-controller="Disciplines" asp-route-Id="@di.Id" method="post">
-					        <button type="submit" style="margin-top:5px" class="btn btn-sm btn-danger">
-						        Удалить
-					        </button>
-				        </form>
-			        }
-		        </td>
-			}
-			</tr>
-			}
-		</table>
-	</div>
+    <div class="disciplines-spec">
+        <h5 style="align-self:center; margin-bottom:25px">Список дисциплин</h5>
+        @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Create))
+        {
+            <a style="margin-bottom:15px" asp-controller="Disciplines" asp-route-SpecId="@Model.SpecialityId" asp-action="Create">Добавить дисциплину</a>
+        }
+        @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Message.Disciplines))
+        {
+            <a class="btn btn-secondary btn-sm" style="position:absolute; top:10%; right:3%" asp-controller="Message" asp-action="Index" asp-all-route-data='new Dictionary<string,string> { { "ContainerType", "Speciality" }, {"ContainerId", Model.SpecialityId }, { "SenderEmail", User.Identity.Name } }'>Массовая рассылка</a>
+        }
+        <table class="table table-bordered" style="border-collapse:collapse;table-layout:auto; text-align:center;">
+            <tr>
+                <th>Название</th>
+                <th>Лекции(часы)</th>
+                <th>Практики(часы)</th>
+                <th>Зачетность</th>
+                <th>Преподаватель</th>
+                @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Edit) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Delete))
+                {
+                    <th>Управление</th>
+                }
+            </tr>
+            @foreach (var di in Model.Disciplines)
+            {
+                <tr>
+                    <td>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <a style="margin-bottom:15px" asp-controller="DisciplineDetails" asp-route-DiscId="@di.Id" asp-action="Index">@di.Name</a>
+                        }
+                        else
+                        {
+                            <p>@di.Name</p>
+                        }
+                    </td>
+                    <td>@di.LectionH</td>
+                    <td>@di.PracticeH</td>
+                    <td>@di.ExamType</td>
+                    <td>@di.Teacher.FIO</td>
+                    @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Edit) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Delete))
+                    {
+                        <td>
+                            @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Edit))
+                            {
+                                <a class="btn btn-sm btn-primary" style="margin-top:5px" asp-controller="Disciplines" asp-action="Edit" asp-route-DiscId="@di.Id">Изменить</a>
+                            }
+                            @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Delete))
+                            {
+                                <form asp-action="Delete" asp-controller="Disciplines" asp-route-Id="@di.Id" method="post">
+                                    <button type="submit" style="margin-top:5px" class="btn btn-sm btn-danger">
+                                        Удалить
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </table>
+    </div>
     <div class="students-spec">
         <h5 style="align-self:center; margin-bottom:25px">Список студентов</h5>
         @if (User.Identity.IsAuthenticated)
@@ -185,4 +184,11 @@
 
     </div>
 </div>
-<a class="btn btn-outline-secondary btn-block" asp-action="Index" asp-controller="Specialities" asp-route-DepId="@Model.DepartmentId">Назад</a>
+@if (Model.FromPP)
+{
+    <a class="btn btn-outline-secondary btn-block" asp-action="Index" asp-controller="PersonalPage">Назад</a>
+}
+else
+{
+    <a class="btn btn-outline-secondary btn-block" asp-action="Index" asp-controller="Specialities" asp-route-DepId="@Model.DepartmentId">Назад</a>
+}

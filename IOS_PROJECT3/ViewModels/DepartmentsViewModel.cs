@@ -13,6 +13,7 @@ namespace IOS_PROJECT3.ViewModels
         public string InstitutionName { get; set; }
         public IList<EDepartment> Departments { get; set; }
         public List<string> userGrants { get; set; }
+        public bool FromPP { get; set; }
 
     }
 }

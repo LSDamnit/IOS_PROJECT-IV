@@ -27,7 +27,7 @@ namespace IOS_PROJECT3.Controllers
             this.userManager = userManager;
             this.environment = environment;
         }
-        public async Task<IActionResult> Index(string SpecId)
+        public async Task<IActionResult> Index(string SpecId, bool FromPP)
         {
             var spec = await (from sp in DBContext.Specialities.Include(d => d.Disciplines).Include(s => s.Students).Include(s=>s.Schedules)
                               where sp.Id.ToString() == SpecId
@@ -61,6 +61,8 @@ namespace IOS_PROJECT3.Controllers
                     userGrants = await checkService.getUserGrants(User),
                     DepartmentId=dep.Id.ToString()
                 };
+                
+                    model.FromPP = FromPP;
                 return View(model);
 
             }

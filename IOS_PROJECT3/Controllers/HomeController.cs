@@ -23,32 +23,34 @@ namespace IOS_PROJECT3.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            if(!User.Identity.IsAuthenticated)
-            {
-                UserPageViewModel model = new UserPageViewModel(DBContext)
-                {
-                    userGrants = await checkService.getUserGrants(User)
-                };
+            var model = new HomePageViewModel(DBContext);
+            return View(model);
+            //if(!User.Identity.IsAuthenticated)
+            //{
+            //    UserPageViewModel model = new UserPageViewModel(DBContext)
+            //    {
+            //        userGrants = await checkService.getUserGrants(User)
+            //    };
 
-                return View(model);
-            }
-            else
-            {
-                UserPageViewModel model = new UserPageViewModel(DBContext)
-                {
-                    UserFIO = (from usr in DBContext.Users
-                               where usr.Email == User.Identity.Name
-                               select usr.FIO).FirstOrDefault(),
-                    UserId = (from usr in DBContext.Users
-                               where usr.Email == User.Identity.Name
-                               select usr.Id).FirstOrDefault(),
-                    userGrants = await checkService.getUserGrants(User)
-                };
-                await model.CheckAblesAsync();
-                return View(model);
-            }
+            //    return View(model);
+            //}
+            //else
+            //{
+            //    UserPageViewModel model = new UserPageViewModel(DBContext)
+            //    {
+            //        UserFIO = (from usr in DBContext.Users
+            //                   where usr.Email == User.Identity.Name
+            //                   select usr.FIO).FirstOrDefault(),
+            //        UserId = (from usr in DBContext.Users
+            //                   where usr.Email == User.Identity.Name
+            //                   select usr.Id).FirstOrDefault(),
+            //        userGrants = await checkService.getUserGrants(User)
+            //    };
+            //    await model.CheckAblesAsync();
+            //    return View(model);
+            //}
             
         }
 

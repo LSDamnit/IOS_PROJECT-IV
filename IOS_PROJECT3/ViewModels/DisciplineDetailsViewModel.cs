@@ -24,6 +24,7 @@ namespace IOS_PROJECT3.ViewModels
         public IList<EFile> LectionFiles { get; set; }
         public IList<EFile> PracticeFiles { get; set; }
         public List<string> userGrants { get; set; }
+        public bool FromPP { get; set; }
 
     }
 }

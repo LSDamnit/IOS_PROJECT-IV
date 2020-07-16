@@ -24,7 +24,7 @@ namespace IOS_PROJECT3.Controllers
             DBContext = context;
             Environment = environment;
         }
-        public async Task<IActionResult> Index(string DiscId,bool FileError)
+        public async Task<IActionResult> Index(string DiscId,bool FromPP,bool FileError)
         {
             var disc = await (from di in DBContext.Disciplines.Include(t => t.Teacher).Include(f => f.Files) where di.Id.ToString() == DiscId select di).FirstOrDefaultAsync();
             var spec = await (from s in DBContext.Specialities.Include(s => s.Disciplines)
@@ -67,6 +67,7 @@ namespace IOS_PROJECT3.Controllers
             {
                 ViewBag.FileError = true;
             }
+            model.FromPP = FromPP;
             return View(model);
         }
 

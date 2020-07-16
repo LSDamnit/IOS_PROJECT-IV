@@ -70,7 +70,8 @@ namespace IOS_PROJECT3.Controllers
                     CreatorName = creator.FIO,
                     CreatorEmail = creator.Email.ToLower(),
                     CreationDateString = forum.CreationDate.ToString("d"),
-                    ParentNodeId = forum.ParentNode.Id.ToString()
+                    ParentNodeId = forum.ParentNode.Id.ToString(),
+                    userGrants = await checkService.getUserGrants(User)
                 };
                 return View(model);
             }

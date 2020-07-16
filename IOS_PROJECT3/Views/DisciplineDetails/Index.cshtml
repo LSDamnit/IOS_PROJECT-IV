@@ -4,8 +4,8 @@
 }
 @if (User.Identity.IsAuthenticated)
 {
- 
- bool grant = false; 
+
+    bool grant = false;
 
     <style>
         .grid-container {
@@ -89,19 +89,21 @@
     </style>
 
     @if ((User.Identity.Name == Model.InstManagerEmail && User.IsInRole("Manager")) ||
-         (User.Identity.Name == Model.TeacherEmail && User.IsInRole("Teacher")) ||
-         Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.DisciplinesDetails.Files))
+       (User.Identity.Name == Model.TeacherEmail && User.IsInRole("Teacher")) ||
+       Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.DisciplinesDetails.Files))
     {
         grant = true;
     }
-     @if(ViewBag.FileError==true)
-     {
-         <div class="text-danger">
-             <ul><li>
-             Нельзя загружать файлы свыше 10 Мегабайт.
-                 </li></ul>
-         </div>
-     }
+    @if (ViewBag.FileError == true)
+    {
+        <div class="text-danger">
+            <ul>
+                <li>
+                    Нельзя загружать файлы свыше 10 Мегабайт.
+                </li>
+            </ul>
+        </div>
+    }
     <div class="grid-container">
         <div class="d-head">
             @* инфа о дисциплине *@
@@ -227,14 +229,14 @@
                     }
                 </script>
                 @if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Edit))
-				{
+                {
                     <a class="btn btn-sm btn-primary" style="position:absolute; top:10%;right:3%" asp-controller="Disciplines" asp-action="Edit" asp-route-DiscId="@Model.DisciplineId">Изменить</a>
-				}
+                }
                 @if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Message.DisciplinesDetails))
-				{
+                {
                     <a class="btn btn-secondary btn-sm" style="position:absolute; top:15%; right:3%" asp-controller="Message" asp-action="Index" asp-all-route-data='new Dictionary<string, string> { { "ContainerType", "Discipline" }, { "ContainerId", Model.DisciplineId }, { "SenderEmail", User.Identity.Name } }'>Массовая рассылка</a>
-				}
-			}
+                }
+            }
         </div>
         <div class="d-info">
             <h4>Дополнительная информация</h4>
@@ -255,4 +257,11 @@
         }
     </script>
 }
-<a class="btn btn-outline-secondary btn-block" asp-action="Index" asp-controller="Disciplines" asp-route-SpecId="@Model.SpecialityId">Назад</a>
+@if (Model.FromPP)
+{
+    <a class="btn btn-outline-secondary btn-block" asp-action="Index" asp-controller="PersonalPage">Назад</a>
+}
+else
+{
+    <a class="btn btn-outline-secondary btn-block" asp-action="Index" asp-controller="Disciplines" asp-route-SpecId="@Model.SpecialityId">Назад</a>
+}

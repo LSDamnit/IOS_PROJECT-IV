@@ -15,10 +15,6 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a font-size="200%" class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><b>ИОС СГТУ 2020</b></a>
-                @*@if (!User.Identity.IsAuthenticated)
-                {
-                    <p><b>Авторизуйтесь, чтобы получить дополнительные возможности</b></p>
-                }*@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
@@ -26,6 +22,12 @@
                         </li>
                         @if (User.Identity.IsAuthenticated)
                         {
+                            <li>
+                                <a class="nav-link text-dark" asp-controller="PersonalPage" asp-action="Index">Персональная страница</a>
+                                </li>
+                    <li>
+                        <a class="nav-link text-dark" asp-controller="Forum" asp-action="ForumNode" asp-route-NodeId="1">Форум</a>
+                    </li>
                             <li>
                                 <form method="post" asp-controller="Account" asp-action="Logout">
                                     <input class="btn btn-outline-secondary" style="position:absolute; right:3%" type="submit" value="Выход" />
