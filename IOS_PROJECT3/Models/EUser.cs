@@ -9,6 +9,8 @@ namespace IOS_PROJECT3.Models
     {
         public string FIO { get; set; }
         public ESpeciality Speciality { get; set; }
+        public int NotifyOnLogins { get; set; }
+        public int BlockOnFailedLogins { get; set; }
 
         public class CompareByFIO : IComparer<EUser>
         {
