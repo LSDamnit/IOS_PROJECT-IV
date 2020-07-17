@@ -4,17 +4,33 @@
 }
 @if (User.Identity.IsAuthenticated && Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.UsersAdmin.View))
 {
+	<style>
+		a{
+			margin:5px 5px 5px 5px;
+		}
+		</style>
 	@if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.EnrollStudent))
 	{
 		<a asp-action="Create" id="singleRed">Зарегистрировать одного пользователя</a>
 		<div style="margin-bottom:10px; margin-top:10px">
-			<label margin-right:5px;>Массовая регистрация </label><input type="checkbox" id="massRegCheck" name="Массовая регистрация" value="Массовая регистрация" />
+			<input type="checkbox" id="massRegCheck" name="Массовая регистрация" value="Массовая регистрация" />
+			<label margin-right:5px;>Массовая регистрация </label>
 		</div>
 		<div hidden="hidden" id="massReg" class="alert alert-primary">
 			<form asp-action="AddFile" asp-controller="UsersAdmin" method="post" enctype="multipart/form-data">
-				<input type="file" style="margin-bottom:5px; display:inline;" name="uploadedFile" />
+				@*<input type="file" style="margin-bottom:5px; display:inline;" name="uploadedFile" />
 
-				<input type="submit" style="display:inline;margin-left:15px" class="btn btn-sm btn-primary" value="Загрузить" />
+				<input type="submit" style="display:inline;margin-left:15px" class="btn btn-sm btn-primary" value="Загрузить" />*@
+				
+				<div class="input-group">
+				<div class="custom-file">
+				 <input type="file" class="custom-file-input" id="inputGroupFile04" name="uploadedFile">
+					<label class="custom-file-label" for="inputGroupFile04">Выберите файл</label>
+				</div>
+				<div class="input-group-append">
+				 <input type="submit" class="btn btn-outline-secondary" value="Загрузить"/>
+				 </div>
+					</div> 
 			</form>
 		</div>
 		<div class="alert alert-info" role="alert" id="InfoReg" hidden="hidden">
@@ -112,7 +128,7 @@
 		}
 
 		function getSearchUsers(allUsers) {
-			//Формируем массив отоброжаемых пользователей
+			//Формируем массив отображаемых пользователей
 			let printUsers = [];
 			if (document.getElementById('fioSearch').value == "" && document.getElementById('emailSearch').value == "")
 				printUsers = allUsers;

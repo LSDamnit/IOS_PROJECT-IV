@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IOS_PROJECT3.Migrations
 {
     [DbContext(typeof(DBMergedContext))]
-    [Migration("20200714135033_Complains3Init")]
-    partial class Complains3Init
+    [Migration("20200717103912_SecuritySettingsInit")]
+    partial class SecuritySettingsInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -444,6 +444,9 @@ namespace IOS_PROJECT3.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int>("BlockOnFailedLogins")
+                        .HasColumnType("int");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -471,6 +474,9 @@ namespace IOS_PROJECT3.Migrations
                     b.Property<string>("NormalizedUserName")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
+
+                    b.Property<int>("NotifyOnLogins")
+                        .HasColumnType("int");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");

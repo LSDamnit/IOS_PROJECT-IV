@@ -18,7 +18,7 @@
 <h3 style="align-self:center; margin-bottom:25px">Специальность @Model.SpecialityName</h3>
 <div id="schedules">
     <h5>Расписания для этой специальности</h5>
-    @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Schedule.Create))
+    @if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Schedule.Create)))
     {
         <a style="margin-bottom:15px" asp-controller="Disciplines" asp-route-SpecId="@Model.SpecialityId" asp-action="CreateSchedule">Добавить расписание</a>
     }
@@ -29,13 +29,13 @@
                 <td>
                     <a asp-controller="Disciplines" asp-route-WeekScheduleId="@s.id" asp-action="WeekSchedule">Расписание @s.Name</a>
                 </td>
-                @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Schedule.Edit))
+                @if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Schedule.Edit)))
                 {
                     <td>
                         <a class="btn btn-primary btn-sm" asp-controller="Disciplines" asp-route-WeekScheduleId="@s.id" asp-action="EditSchedule">Изменить</a>
                     </td>
                 }
-                @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Schedule.Delete))
+                @if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Schedule.Delete)))
                 {
                     <td>
                         <form method="post" asp-action="DeleteSchedule" asp-route-WeekScheduleId="@s.id">
@@ -51,11 +51,11 @@
 <div class="grid-container-spec" style="width:100%">
     <div class="disciplines-spec">
         <h5 style="align-self:center; margin-bottom:25px">Список дисциплин</h5>
-        @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Create))
+        @if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Create)))
         {
             <a style="margin-bottom:15px" asp-controller="Disciplines" asp-route-SpecId="@Model.SpecialityId" asp-action="Create">Добавить дисциплину</a>
         }
-        @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Message.Disciplines))
+        @if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Message.Disciplines)))
         {
             <a class="btn btn-secondary btn-sm" style="position:absolute; top:10%; right:3%" asp-controller="Message" asp-action="Index" asp-all-route-data='new Dictionary<string,string> { { "ContainerType", "Speciality" }, {"ContainerId", Model.SpecialityId }, { "SenderEmail", User.Identity.Name } }'>Массовая рассылка</a>
         }
@@ -66,7 +66,7 @@
                 <th>Практики(часы)</th>
                 <th>Зачетность</th>
                 <th>Преподаватель</th>
-                @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Edit) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Delete))
+                @if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Edit) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Delete)))
                 {
                     <th>Управление</th>
                 }
@@ -88,14 +88,14 @@
                     <td>@di.PracticeH</td>
                     <td>@di.ExamType</td>
                     <td>@di.Teacher.FIO</td>
-                    @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Edit) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Delete))
+                    @if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Edit) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Delete)))
                     {
                         <td>
-                            @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Edit))
+                            @if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Edit)))
                             {
                                 <a class="btn btn-sm btn-primary" style="margin-top:5px" asp-controller="Disciplines" asp-action="Edit" asp-route-DiscId="@di.Id">Изменить</a>
                             }
-                            @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Delete))
+                            @if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Delete)))
                             {
                                 <form asp-action="Delete" asp-controller="Disciplines" asp-route-Id="@di.Id" method="post">
                                     <button type="submit" style="margin-top:5px" class="btn btn-sm btn-danger">
@@ -121,9 +121,11 @@
                 <a style="margin-bottom: 15px" asp-controller="Disciplines" id="singleReg" asp-route-SpecId="@Model.SpecialityId" asp-action="AddStudentUNF">Зачислить студента</a>
                 <div hidden="hidden" id="massReg" class="alert alert-primary">
                     <form style="font-size:70%" asp-action="AddFile" asp-route-SpecId="@Model.SpecialityId" asp-controller="Disciplines" method="post" enctype="multipart/form-data">
+                        
                         <input type="file" style="margin-bottom:5px; display:block;" name="uploadedFile" />
 
-                        <input type="submit" style="display:block;margin-bottom:7px" class="btn btn-sm btn-primary" value="Загрузить" />
+        <input type="submit" style="display:block;margin-bottom:7px" class="btn btn-sm btn-primary" value="Загрузить" />
+
                     </form>
                 </div>
                 <div class="alert alert-info" role="alert" id="InfoReg" hidden="hidden">

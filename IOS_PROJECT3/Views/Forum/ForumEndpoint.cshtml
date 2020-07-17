@@ -1,116 +1,187 @@
 ﻿@model IOS_PROJECT3.ViewModels.ForumEndPointViewModel
-<meta charset="utf-8">
-<style>
-    #upd{
-        font-size:75%;
-        color:gray;
-    }
-    </style> 
-<div id="Primary" class="alert alert-primary" role="main">
-    <h3>@Model.EndpointName</h3>
-    @if ((Model.CreatorEmail == User.Identity.Name) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Forum.EditEndpoint))
-    {
-        <a asp-controller="Forum" asp-action="EditForumEndpoint" asp-route-EndpointId="@Model.EndpointId">Редактировать статью</a>
-        <form style="display:inline" method="post" asp-controller="Forum" asp-action="DeleteForumEndpoint" asp-route-EndpointId="@Model.EndpointId">
-            <button type="submit" class="btn btn-outline-danger btn-sm">Удалить</button>
-        </form>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="~/summernote/summernote-bs4.min.css">
+		<script src="~/summernote/summernote-bs4.min.js"></script>
+	</head>
+	<style>
+		#upd {
+			font-size: 75%;
+			color: gray;
+		}
+	</style>
+	<div id="Primary" class="alert alert-primary" role="main">
+		<h3>@Model.EndpointName</h3>
+		@if ((Model.CreatorEmail == User.Identity.Name) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Forum.EditEndpoint))
+		{
+			<a asp-controller="Forum" asp-action="EditForumEndpoint" asp-route-EndpointId="@Model.EndpointId">Редактировать статью</a>
+			<form style="display:inline" method="post" asp-controller="Forum" asp-action="DeleteForumEndpoint" asp-route-EndpointId="@Model.EndpointId">
+				<button type="submit" class="btn btn-outline-danger btn-sm">Удалить</button>
+			</form>
 
-    }
-    <div style="word-wrap: break-word;">
-        @Html.Raw(Model.Text)
-    </div>
-    @if ((Model.Files != null) && (Model.Files.Count > 0))
-    {
-        <div id="Files">
-            <h5>Прикрепленные файлы</h5>
-            @foreach (var f in Model.Files)
-            {
-                <a asp-action="DownloadFile" asp-route-FileId="@f.Id" style="display:inline; margin:5px 5px 5px 5px">@f.Name</a>
-            }
-        </div>
-    }
-</div>
-<div id="AboutAuthor" class="alert alert-light">
-    <p><i>@Model.CreatorName | @Model.CreationDateString</i></p>
-</div>
-<div id="Comments">
-    <h4>Комментарии</h4>
-    @foreach (var c in Model.Comments)
-    {
-        <div id="Comment_@c.Id">
-            <table class="table table-borderless">
-                <tr>
-                    <td class="table-primary" style="width:10%; word-wrap:normal">
-                        <b>@c.CreatorFio</b>
-                        <br>
-                        @c.CreationDate.ToString("d")
-                    </td>
-                    <td id="CommentAndFiles">
-                        @if (c.CreatorEmail == User.Identity.Name)
-                        {
-                            <a style="display:inline; margin-right:10px" class="btn btn-outline-primary btn-sm" asp-controller="Forum" asp-action="EditForumComment" asp-route-CommentId="@c.Id">Редактировать</a>
-                        }
-                        @if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Forum.DeleteComment))
-                        {
-                            <form style="display:inline" method="post" asp-controller="Forum" asp-action="DeleteForumComment" asp-route-CommentId="@c.Id">
-                            <button type="submit"  class="btn btn-outline-danger btn-sm">Удалить</button>
-                                </form>
-                        }
-                        <table class="table table-borderless">
-                            <tr id="Comment">
-                                <td>@Html.Raw(c.Text)</td>
-                            </tr>
-                            @if (c.PinnedFiles.Count > 0)
-                            {
-                                <tr>
-                                    <td>
+		}
+		<div style="word-wrap: break-word;">
+			@Html.Raw(Model.Text)
+		</div>
+		@if ((Model.Files != null) && (Model.Files.Count > 0))
+		{
+			<div id="Files">
+				<h5>Прикрепленные файлы</h5>
+				@foreach (var f in Model.Files)
+				{
+					<a asp-action="DownloadFile" asp-route-FileId="@f.Id" style="display:inline; margin:5px 5px 5px 5px">@f.Name</a>
+				}
+			</div>
+		}
+	</div>
+	<div id="AboutAuthor" class="alert alert-light">
+		<p><i>@Model.CreatorName | @Model.CreationDateString</i></p>
+	</div>
+	<div id="Comments">
+		<h4>Комментарии</h4>
+		@foreach (var c in Model.Comments)
+		{
+			<div id="Comment_@c.Id">
+				<table class="table table-borderless">
+					<tr>
+						<td class="table-primary" style="width:10%; word-wrap:normal">
+							<b>@c.CreatorFio</b>
+							<br>
+							@c.CreationDate.ToString("d")
+						</td>
+						<td id="CommentAndFiles">
+							@if (c.CreatorEmail == User.Identity.Name)
+							{
+								<a style="display:inline; margin-right:10px" class="btn btn-outline-primary btn-sm" asp-controller="Forum" asp-action="EditForumComment" asp-route-CommentId="@c.Id">Редактировать</a>
+							}
+							@if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Forum.DeleteComment))
+							{
+								<form style="display:inline" method="post" asp-controller="Forum" asp-action="DeleteForumComment" asp-route-CommentId="@c.Id">
+									<button type="submit" class="btn btn-outline-danger btn-sm">Удалить</button>
+								</form>
+							}
+							<table class="table table-borderless">
+								<tr id="Comment">
+									<td>@Html.Raw(c.Text)</td>
+								</tr>
+								@if (c.PinnedFiles.Count > 0)
+								{
+									<tr>
+										<td>
 
-                                        <div id="CommentFiles" style="">
-                                            <b>Прикрепленные файлы: </b>
-                                            @foreach (var f in c.PinnedFiles)
-                                            {
-                                                <a asp-action="DownloadFile" asp-route-FileId="@f.Id" style="margin:5px 5px 5px 5px">@f.Name</a>
-                                            }
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        </table>
+											<div id="CommentFiles" style="">
+												<b>Прикрепленные файлы: </b>
+												@foreach (var f in c.PinnedFiles)
+												{
+													<a asp-action="DownloadFile" asp-route-FileId="@f.Id" style="margin:5px 5px 5px 5px">@f.Name</a>
+												}
+											</div>
+										</td>
+									</tr>
+								}
+							</table>
 
-                    </td>
+						</td>
+					</tr>
+				</table>
+			</div>
+		}
+	</div>
+	<div id="WriteComment">
+		<form method="post" asp- asp-action="CreateComment" asp-controller="Forum" enctype="multipart/form-data">
+			<div class="text-danger">
+				@if (ViewBag.Errors != null)
+				{
+					<ul>
+						@foreach (string error in ViewBag.Errors)
+						{
+							<li>@error</li>
+						}
+					</ul>
+				}
+			</div>
+			<div class="form-group">
+				<input type="hidden" asp-for="EndpointId" class="form-control" />
+				<input type="hidden" asp-for="CommentCreatorEmail" value="@User.Identity.Name" class="form-control" />
+				<label asp-for="CommentText" class="control-label">Введите текст комментария:</label>
+				<textarea id="text-editor" type="text" asp-for="CommentText" class="form-control"></textarea>
+			</div>
+			<div id="commentPreview" style="display: none">
+				<label class="control-label">Предварительный просмотр:</label>
+				<div id="Comment_prev">
+					<table class="table table-borderless">
+						<tr>
+							<td class="table-primary" style="width:10%; word-wrap:normal">
+								<b>Имя Фамилия</b>
+								<br>
+								01.01.2013
+							</td>
+							<td id="CommentAndFiles">
+								<a style="display:inline; margin-right:10px" class="btn btn-outline-info btn-sm" onclick="$('#commentPreview').slideUp(500);">Закрыть предварительный просмотр</a>
+								<table class="table table-borderless">
+									<tr>
+										<td id="CommentPrevtd"></td>
+									</tr>
+								</table>
 
-                </tr>
-                </table>
-        </div>
-    }
-</div>
-<div id="WriteComment">
-    <form method="post" asp- asp-action="CreateComment" asp-controller="Forum" enctype="multipart/form-data">
-        <div class="text-danger">
-            @if(ViewBag.Errors!=null)
-            {
-                <ul>
-                @foreach(string error in ViewBag.Errors)
-                {
-                    <li>@error</li>
-                }
-                    </ul>
-            }
-        </div>
-        <div class="form-group">
-            <input type="hidden" asp-for="EndpointId" class="form-control" />
-            <input type="hidden" asp-for="CommentCreatorEmail" value="@User.Identity.Name" class="form-control" />
-            <label asp-for="CommentText" class="control-label">Введите текст комментария:</label>
-            <textarea type="text" asp-for="CommentText" class="form-control"></textarea>
-        </div>
-        <div class="form-group">
-            <label>Прикрепите файлы:</label>
-            <br>
-            <input type="file" asp-for="CommentUploadedFiles" multiple="" />
-        </div>
-        <div class="form-group">
-            <input type="submit" value="Добавить" class="btn btn-outline-primary btn-block" />
-        </div>
-    </form>
-    </div>
-<a class="btn btn-outline-secondary btn-sm" style="position:fixed; top:80px; left:20px" asp-action="ForumNode" asp-controller="Forum" asp-route-NodeId="@Model.ParentNodeId">Назад</a>
+							</td>
+
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div class="form-group">
+				<label>Прикрепите файлы:</label>
+				<br>
+				<input type="file" asp-for="CommentUploadedFiles" multiple="" />
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Добавить" class="btn btn-outline-primary btn-block" />
+			</div>
+		</form>
+	</div>
+	<a class="btn btn-outline-secondary btn-sm" style="position:fixed; top:80px; left:20px" asp-action="ForumNode" asp-controller="Forum" asp-route-NodeId="@Model.ParentNodeId">Назад</a>
+	<script>
+		var togglePreviewCommentBtn = function (context) {
+			var ui = $.summernote.ui;
+
+			// create button
+			var button = ui.button({
+				contents: 'Preview',
+				tooltip: 'Предварительный просмотр комментария',
+				click: function () {
+					document.getElementById('CommentPrevtd').innerHTML = $('#text-editor').summernote('code');
+
+					$('#commentPreview').slideDown(500);
+					return;
+				}
+			});
+
+			return button.render();   // return button as jquery object
+		}
+
+		$(document).ready(function () {
+			$('#text-editor').summernote({
+				codeviewFilter: true,
+				codeviewIframeFilter: true,
+				height: 150,
+				maxHeight: 400,
+				minHeight: 100,
+				toolbar: [
+					['style', ['style']],
+					['font', ['bold', 'italic', 'strikethrough', 'underline', 'clear']],
+					['script', ['superscript', 'subscript']],
+					['fontstyle', ['fontname', 'fontsize']],
+					['color', ['color']],
+					['para', ['ul', 'ol', 'paragraph']],
+					['table', ['table']],
+					['insert', ['link', 'picture', 'video']],
+					['view', ['codeview', 'help']],
+					['preview', ['prevBtn']]
+				],
+				buttons: {
+					prevBtn: togglePreviewCommentBtn
+				}
+			});
+		});
+	</script>

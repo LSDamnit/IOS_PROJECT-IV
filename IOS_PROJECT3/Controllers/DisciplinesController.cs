@@ -71,6 +71,7 @@ namespace IOS_PROJECT3.Controllers
         public async Task<IActionResult> WeekSchedule(string WeekScheduleId)
         {
             var wsched = await (from s in DBContext.WeekSchedules.Include(s => s.Schedule)
+                                .Include(s=>s.Speciality)
                                 where s.id.ToString() == WeekScheduleId
                                 select s).FirstOrDefaultAsync();
             var dscheds = await (from s in DBContext.DaySchedules.Include(s => s.DisciplinesForDay)
@@ -80,15 +81,16 @@ namespace IOS_PROJECT3.Controllers
             {
                 WeekScheduleId = wsched.id.ToString(),
                 WeekScheduleName = wsched.Name,
-                ScheduleForDays=new Dictionary<string, List<EScheduleItem>>()
+                ScheduleForDays = new Dictionary<string, List<EScheduleItem>>()
                 {
-                    {"mon",(from d in dscheds where d.DayNumber==0 select d.DisciplinesForDay).FirstOrDefault() },
-                    {"tue",(from d in dscheds where d.DayNumber==1 select d.DisciplinesForDay).FirstOrDefault() },
-                    {"wed",(from d in dscheds where d.DayNumber==2 select d.DisciplinesForDay).FirstOrDefault() },
-                    {"thu",(from d in dscheds where d.DayNumber==3 select d.DisciplinesForDay).FirstOrDefault() },
-                    {"fri",(from d in dscheds where d.DayNumber==4 select d.DisciplinesForDay).FirstOrDefault() },
-                    {"sat",(from d in dscheds where d.DayNumber==5 select d.DisciplinesForDay).FirstOrDefault() },
-                }
+                    { "mon", (from d in dscheds where d.DayNumber == 0 select d.DisciplinesForDay).FirstOrDefault() },
+                    { "tue", (from d in dscheds where d.DayNumber == 1 select d.DisciplinesForDay).FirstOrDefault() },
+                    { "wed", (from d in dscheds where d.DayNumber == 2 select d.DisciplinesForDay).FirstOrDefault() },
+                    { "thu", (from d in dscheds where d.DayNumber == 3 select d.DisciplinesForDay).FirstOrDefault() },
+                    { "fri", (from d in dscheds where d.DayNumber == 4 select d.DisciplinesForDay).FirstOrDefault() },
+                    { "sat", (from d in dscheds where d.DayNumber == 5 select d.DisciplinesForDay).FirstOrDefault() },
+                },
+                SpecialityId = wsched.Speciality.Id.ToString()
             };
             return View(model);
         }

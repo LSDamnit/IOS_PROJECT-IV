@@ -1,12 +1,13 @@
 ﻿@model IOS_PROJECT3.ViewModels.SpecialitiesViewModel
 @using IOS_PROJECT3.Models;
 <h3 style="align-self:center; margin-bottom:25px">Список специальностей кафедры @Model.DepartmentName</h3>
+
 <div class="container-fluid">
-	@if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Specialities.Create))
+	@if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Specialities.Create)))
 	{
 		<a style="margin-bottom:15px" asp-controller="Specialities" asp-route-DepId="@Model.DepartmentId" asp-action="Create">Добавить специальность</a>
 	}
-	@if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Message.Specialities))
+	@if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Message.Specialities)))
 	{
 		<a class="btn btn-secondary btn-sm" style="position:absolute; top:10%; right:3%" asp-controller="Message" asp-action="Index" asp-all-route-data='new Dictionary<string,string> { { "ContainerType", "Department" }, {"ContainerId", Model.DepartmentId }, { "SenderEmail", User.Identity.Name } }'>Массовая рассылка</a>
 	}
@@ -17,11 +18,11 @@
 			<tr>
 				<td><a style="margin-bottom:15px" asp-controller="Disciplines" asp-route-SpecId="@spec.Id" asp-action="Index">@spec.Name</a></td>
 				<td>
-					@if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Specialities.Edit))
+					@if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Specialities.Edit)))
 					{
 						<a class="btn btn-sm btn-primary" asp-controller="Specialities" style="margin-top:5px" asp-action="Edit" asp-route-Id="@spec.Id">Изменить</a>
 					}
-					@if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Specialities.Delete))
+					@if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Specialities.Delete)))
 					{
 						<form asp-action="Delete" asp-controller="Specialities" asp-route-Id="@spec.Id" method="post">
 							<button type="submit" style="margin-top:5px" class="btn btn-sm btn-danger">

@@ -18,7 +18,7 @@ namespace IOS_PROJECT3.Controllers
             this.DBContext = context;
             this.checkService = checkService;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(List<string> SecuritySettingsErrors,bool SettingsChanged)
         {
             if (!User.Identity.IsAuthenticated)
             {
@@ -41,7 +41,19 @@ namespace IOS_PROJECT3.Controllers
                               select usr.Id).FirstOrDefault(),
                     userGrants = await checkService.getUserGrants(User)
                 };
-                await model.CheckAblesAsync();
+                if(SecuritySettingsErrors!=null)
+                {
+                    ViewBag.Errors = new List<string>();
+                    foreach(var err in SecuritySettingsErrors)
+                    {
+                        ViewBag.Errors.Add(err);
+                    }
+                }
+                if(SettingsChanged)
+                {
+                    ViewBag.Success = "Настройки безопасности успешно обновлены";
+                }
+                await model.CheckAsync();
                 return View(model);
             }
         }

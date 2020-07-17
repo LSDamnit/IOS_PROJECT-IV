@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IOS_PROJECT3.Migrations
 {
-    public partial class Complains3Init : Migration
+    public partial class SecuritySettingsInit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -325,7 +325,9 @@ namespace IOS_PROJECT3.Migrations
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
                     FIO = table.Column<string>(nullable: true),
-                    SpecialityId = table.Column<int>(nullable: true)
+                    SpecialityId = table.Column<int>(nullable: true),
+                    NotifyOnLogins = table.Column<int>(nullable: false),
+                    BlockOnFailedLogins = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

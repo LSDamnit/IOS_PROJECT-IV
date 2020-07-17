@@ -17,7 +17,13 @@
     <div class="form-group">
         <label>Прикрепите файлы (если необходимо):</label>
         <br>
-        <input type="file" asp-for="UploadedFiles" multiple="" />
+        <div class="input-group">
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="inputGroupFile04" asp-for="UploadedFiles">
+                <label class="custom-file-label" for="inputGroupFile04">Выберите файлы</label>
+            </div>
+            
+        </div>
     </div>
     <div class="form-group">
         <input type="submit" value="Оставить жалобу" class="btn btn-outline-primary btn-block" />
