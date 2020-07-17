@@ -186,9 +186,9 @@
 </div>
 @if (Model.FromPP)
 {
-    <a class="btn btn-outline-secondary btn-block" asp-action="Index" asp-controller="PersonalPage">Назад</a>
+    <a class="btn btn-outline-secondary" style="position:fixed; top:80px; left:20px" asp-action="Index" asp-controller="PersonalPage">Назад</a>
 }
 else
 {
-    <a class="btn btn-outline-secondary btn-block" asp-action="Index" asp-controller="Specialities" asp-route-DepId="@Model.DepartmentId">Назад</a>
+    <a class="btn btn-outline-secondary btn-sm" style="position:fixed; top:80px; left:20px" asp-action="Index" asp-controller="Specialities" asp-route-DepId="@Model.DepartmentId">Назад</a>
 }

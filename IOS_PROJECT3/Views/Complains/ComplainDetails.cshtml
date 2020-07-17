@@ -43,7 +43,7 @@
     <form method="post" style="margin-bottom:10px" asp-controller="Complains" asp-action="DeleteComplain" asp-route-ComplainId="@Model.ComplainId">
         <button type="submit" class="btn btn-outline-danger btn-block">Удалить</button>
     </form>
-    <a class="btn btn-outline-secondary btn-block" asp-action="Index" asp-controller="Complains">Назад</a>
+    <a class="btn btn-outline-secondary btn-sm" style="position:fixed; top:80px; left:20px" asp-action="Index" asp-controller="Complains">Назад</a>
 </div>
 @if (Model.Checked == 1)
 {
