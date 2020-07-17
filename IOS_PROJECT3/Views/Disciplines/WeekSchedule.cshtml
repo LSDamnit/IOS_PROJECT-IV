@@ -4,8 +4,7 @@
     .grid-container {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-        /*grid-template-rows:;
-        column-gap: 1px 1px;*/
+        grid-column-gap:30px;
         grid-template-areas: "mon tue wed thu fri sat";
     }
     .mon {
@@ -31,110 +30,200 @@
         border-style:solid;
         border:1px;
     }
+  
 </style>
 <h3>Расписание @Model.WeekScheduleName</h3>
 <div class="grid-container" style="font-size:70%">
     <div class="mon">
-        <table>
-            <tr><th>Понедельник</th></tr>
-            @if(Model.ScheduleForDays["mon"]!=null)
-            @foreach (var di in Model.ScheduleForDays["mon"])
+        <table class="table table-borderless">
+            <tr class="table-primary"><th>Понедельник</th></tr>
+            @if (Model.ScheduleForDays["mon"] != null)
             {
-                <tr><td><b>@di.Name</b><br>
-                        @di.Type<br>
-                        @di.TeacherFIO<br>
-                        @di.Classroom 
-                </td></tr>
-                
+                @foreach (var di in Model.ScheduleForDays["mon"])
+                {
+                    @if (di.DisciplineId != -1)
+                    {
+                        <tr class="table-success">
+                            <td>
+                                <b>@di.Name</b><br>
+                                @di.Type<br>
+                                @di.TeacherFIO<br>
+                                @di.Classroom
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr class="table-secondary">
+                            <td>
+                                <b>@di.Name</b><br>
+                                @di.Type<br>
+                                @di.TeacherFIO<br>
+                                @di.Classroom
+                            </td>
+                        </tr>
+                    }
+
+                }
             }
         </table>
     </div>
     <div class="tue">
-        <table>
-            <tr><th>Вторник</th></tr>
+        <table class="table table-borderless">
+            <tr class="table-primary"><th>Вторник</th></tr>
             @if (Model.ScheduleForDays["tue"] != null)
                 @foreach (var di in Model.ScheduleForDays["tue"])
                 {
-                    <tr>
-                        <td>
-                            <b>@di.Name</b><br>
-                            @di.Type<br>
-                            @di.TeacherFIO<br>
-                            @di.Classroom
-                        </td>
-                    </tr>
+                    @if (di.DisciplineId != -1)
+                    {
+                        <tr class="table-success">
+                            <td>
+                                <b>@di.Name</b><br>
+                                @di.Type<br>
+                                @di.TeacherFIO<br>
+                                @di.Classroom
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr class="table-secondary">
+                            <td>
+                                <b>@di.Name</b><br>
+                                @di.Type<br>
+                                @di.TeacherFIO<br>
+                                @di.Classroom
+                            </td>
+                        </tr>
+                    }
 
                 }
         </table>
     </div>
     <div class="wed">
-        <table>
-            <tr><th>Среда</th></tr>
+        <table class="table table-borderless">
+            <tr class="table-primary"><th>Среда</th></tr>
             @if (Model.ScheduleForDays["wed"] != null)
                 @foreach (var di in Model.ScheduleForDays["wed"])
                 {
-                    <tr>
-                        <td>
-                            <b>@di.Name</b><br>
-                            @di.Type<br>
-                            @di.TeacherFIO<br>
-                            @di.Classroom
-                        </td>
-                    </tr>
+                    @if (di.DisciplineId != -1)
+                    {
+                        <tr class="table-success">
+                            <td>
+                                <b>@di.Name</b><br>
+                                @di.Type<br>
+                                @di.TeacherFIO<br>
+                                @di.Classroom
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr class="table-secondary">
+                            <td>
+                                <b>@di.Name</b><br>
+                                @di.Type<br>
+                                @di.TeacherFIO<br>
+                                @di.Classroom
+                            </td>
+                        </tr>
+                    }
 
                 }
         </table>
     </div>
     <div class="thu">
-        <table>
-            <tr><th>Четверг</th></tr>
+        <table class="table table-borderless">
+            <tr class="table-primary"><th>Четверг</th></tr>
             @if (Model.ScheduleForDays["thu"] != null)
                 @foreach (var di in Model.ScheduleForDays["thu"])
                 {
-                    <tr>
-                        <td>
-                            <b>@di.Name</b><br>
-                            @di.Type<br>
-                            @di.TeacherFIO<br>
-                            @di.Classroom
-                        </td>
-                    </tr>
+                    @if (di.DisciplineId != -1)
+                    {
+                        <tr class="table-success">
+                            <td>
+                                <b>@di.Name</b><br>
+                                @di.Type<br>
+                                @di.TeacherFIO<br>
+                                @di.Classroom
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr class="table-secondary">
+                            <td>
+                                <b>@di.Name</b><br>
+                                @di.Type<br>
+                                @di.TeacherFIO<br>
+                                @di.Classroom
+                            </td>
+                        </tr>
+                    }
 
                 }
         </table>
     </div>
     <div class="fri">
-        <table>
-            <tr><th>Пятница</th></tr>
+        <table class="table table-borderless">
+            <tr class="table-primary"><th>Пятница</th></tr>
             @if (Model.ScheduleForDays["fri"] != null)
                 @foreach (var di in Model.ScheduleForDays["fri"])
                 {
-                    <tr>
-                        <td>
-                            <b>@di.Name</b><br>
-                            @di.Type<br>
-                            @di.TeacherFIO<br>
-                            @di.Classroom
-                        </td>
-                    </tr>
+                    @if (di.DisciplineId != -1)
+                    {
+                        <tr class="table-success">
+                            <td>
+                                <b>@di.Name</b><br>
+                                @di.Type<br>
+                                @di.TeacherFIO<br>
+                                @di.Classroom
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr class="table-secondary">
+                            <td>
+                                <b>@di.Name</b><br>
+                                @di.Type<br>
+                                @di.TeacherFIO<br>
+                                @di.Classroom
+                            </td>
+                        </tr>
+                    }
 
                 }
         </table>
     </div>
     <div class="sat">
-        <table>
-            <tr><th>Суббота</th></tr>
+        <table class="table table-borderless">
+            <tr class="table-primary"><th>Суббота</th></tr>
             @if (Model.ScheduleForDays["sat"] != null)
                 @foreach (var di in Model.ScheduleForDays["sat"])
                 {
-                    <tr>
-                        <td>
-                            <b>@di.Name</b><br>
-                            @di.Type<br>
-                            @di.TeacherFIO<br>
-                            @di.Classroom
-                        </td>
-                    </tr>
+                    @if (di.DisciplineId != -1)
+                    {
+                        <tr class="table-success">
+                            <td>
+                                <b>@di.Name</b><br>
+                                @di.Type<br>
+                                @di.TeacherFIO<br>
+                                @di.Classroom
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr class="table-secondary">
+                            <td>
+                                <b>@di.Name</b><br>
+                                @di.Type<br>
+                                @di.TeacherFIO<br>
+                                @di.Classroom
+                            </td>
+                        </tr>
+                    }
 
                 }
         </table>

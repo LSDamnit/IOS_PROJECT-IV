@@ -142,7 +142,7 @@ namespace IOS_PROJECT3.Controllers
         public async Task RegistrationAlertAsync(EUser user,string password)
         {
             string message = "<h3> Вы были зарегистрированы в системе ИОС СГТУ</h3>"+
-                "<p>Для входа используйте свой email-адресс в качестве логина и" +
+                "<p>Для входа используйте свой email-адресс в качестве логина и " +
                 "данный пароль: "+password+"</p><br>" +
                 "<b style='color:red;'>Никому не сообщайте свои данные для входа!</b>" +
                "<br><b><Отправлено из системы ИОС СГТУ. Не отвечайте на это сообщение></b>";
@@ -319,6 +319,7 @@ namespace IOS_PROJECT3.Controllers
                 int pa = model.FIOs.Count;
                 int ro = model.Roles.Count;
                 model.Count = Math.Max(Math.Max(em, fi), Math.Max(pa, ro));
+                System.IO.File.Delete(Path);
                 return View(model);
             }
             catch(Exception e)

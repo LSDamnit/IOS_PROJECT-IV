@@ -8,11 +8,12 @@ namespace IOS_PROJECT3
 {
     public class FirstRunRoleInit
     {
+        public const string FirstAdminEmail = "firstadmin@admin.adm";
+        private const string FirstAdminPassword = "@FirstAccess000";
+        public const string FirstAdminFio = "Первый Администратор";
         public static async Task InitializeAsync(UserManager<EUser> userManager, RoleManager<IdentityRole> roleManager, DBMergedContext context)
         {
-            string adminEmail = "firstadmin@admin.adm";
-            string password = "@FirstAccess000";
-            string admFio = "Первый Администратор";
+            
            
             if (await roleManager.FindByNameAsync("Admin") == null)
             {
@@ -30,11 +31,11 @@ namespace IOS_PROJECT3
             {
                 await roleManager.CreateAsync(new IdentityRole("Student"));
             }
-            var firstAdmin = await userManager.FindByNameAsync(adminEmail);
+            var firstAdmin = await userManager.FindByNameAsync(FirstAdminEmail);
             if (firstAdmin == null)
             {
-                EUser admin = new EUser { Email = adminEmail, UserName = adminEmail, FIO=admFio };
-                IdentityResult result = await userManager.CreateAsync(admin, password);
+                EUser admin = new EUser { Email = FirstAdminEmail, UserName = FirstAdminEmail, FIO=FirstAdminFio };
+                IdentityResult result = await userManager.CreateAsync(admin, FirstAdminPassword);
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(admin, "Admin");
