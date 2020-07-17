@@ -348,7 +348,7 @@ namespace IOS_PROJECT3
                 var grant = context.Grants.Add(new EGrant()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = Grants.Grants.Disciplines.EnrollStudent,
+                    Name = Grants.Grants.Disciplines.Edit,
                     Description = "Позволяет пользователю изменять дисциплины"
                 });
 
@@ -577,7 +577,7 @@ namespace IOS_PROJECT3
                 var grant = context.Grants.Add(new EGrant()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = Grants.Grants.Message.Specialities,
+                    Name = Grants.Grants.Message.DisciplinesDetails,
                     Description = "Позволяет пользователю делать рассылку для всех студентов данной дисциплины"
                 });
 
