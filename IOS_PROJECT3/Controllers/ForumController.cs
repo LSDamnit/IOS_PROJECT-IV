@@ -104,7 +104,8 @@ namespace IOS_PROJECT3.Controllers
                 CreatorEmail=endpoint.CreatorEmail,
                 CreatorName=endpoint.CreatorFio,
                 CreationDateString=endpoint.CreationDate.ToString("d"),
-                ParentNodeId=endpoint.ParentNode.Id.ToString()
+                ParentNodeId=endpoint.ParentNode.Id.ToString(),
+                userGrants = await checkService.getUserGrants(User)
             };
             if(Errors!=null)
             {

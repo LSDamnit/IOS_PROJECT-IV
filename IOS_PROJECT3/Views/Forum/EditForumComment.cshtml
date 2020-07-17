@@ -1,40 +1,106 @@
 ﻿@model IOS_PROJECT3.ViewModels.EditForumCommentViewModel
-
+	<head>
+		<link rel="stylesheet" href="~/summernote/summernote-bs4.min.css">
+		<script src="~/summernote/summernote-bs4.min.js"></script>
+	</head>
 <h3>Редактирование комментария</h3>
 <form method="post" asp-action="EditForumComment" asp-controller="Forum" enctype="multipart/form-data">
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="form-group">
-        <input type="hidden" asp-for="EndpointId" class="form-control" />
-        <input type="hidden" asp-for="CommentId" class="form-control" />
-        <input type="hidden" asp-for="CommentCreatorEmail" class="form-control" />
-        <label asp-for="CommentText" class="control-label">Текст комментария:</label>
-        <textarea type="text" id="Multiline" asp-for="CommentText" class="form-control"></textarea>
-    </div>
-    @if ((Model.PinnedFiles != null) && (Model.PinnedFiles.Count > 0))
-    {
-        <label>Прикрепленные файлы:</label>
-        <div class="form-group" id="PinnedFiles">
-            @foreach (var f in Model.PinnedFiles)
-            {
-                <p>
-                    @f.Name <a class="btn btn-danger btn-sm" asp-controller="Forum" asp-action="DeletePinnedFile"
-                               asp-route-FileId="@f.Id" asp-route-ParentType="2">Удалить</a>
-                </p>
-            }
-        </div>
-    }
-    <div class="form-group">
-        <label>Прикрепите дополнительные файлы:</label>
-        <br>
-        <div class="input-group">
-            <div class="custom-file">
-                <input type="file" class="custom-file-input" id="inputGroupFile04" asp-for="CommentUploadedFiles" multiple="">
-                <label class="custom-file-label" for="inputGroupFile04">Выберите файлы</label>
-            </div>
-        </div>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Добавить" class="btn btn-outline-primary btn-block" />
-    </div>
-    <a class="btn btn-outline-secondary btn-block" asp-action="ForumEndpoint" asp-controller="Forum" asp-route-EndpointId="@Model.EndpointId">Назад</a>
+	<div asp-validation-summary="All" class="text-danger"></div>
+	<div class="form-group">
+		<input type="hidden" asp-for="EndpointId" class="form-control" />
+		<input type="hidden" asp-for="CommentId" class="form-control" />
+		<input type="hidden" asp-for="CommentCreatorEmail" class="form-control" />
+		<label asp-for="CommentText" class="control-label">Текст комментария:</label>
+		<textarea id="text-editor" type="text" asp-for="CommentText" class="form-control"></textarea>
+	</div>
+	<div id="commentPreview" style="display: none">
+		<label class="control-label">Предварительный просмотр:</label>
+		<div id="Comment_prev">
+			<table class="table table-borderless">
+				<tr>
+					<td class="table-primary" style="width:10%; word-wrap:normal">
+						<b>Имя Фамилия</b>
+						<br>
+						01.01.2013
+					</td>
+					<td id="CommentAndFiles">
+						<a style="display:inline; margin-right:10px" class="btn btn-outline-info btn-sm" onclick="$('#commentPreview').slideUp(500);">Закрыть предварительный просмотр</a>
+						<table class="table table-borderless">
+							<tr>
+								<td id="CommentPrevtd"></td>
+							</tr>
+						</table>
+
+					</td>
+
+				</tr>
+			</table>
+		</div>
+	</div>
+	@if ((Model.PinnedFiles != null) && (Model.PinnedFiles.Count > 0))
+	{
+		<label>Прикрепленные файлы:</label>
+		<div class="form-group" id="PinnedFiles">
+			@foreach (var f in Model.PinnedFiles)
+			{
+				<p>
+					@f.Name <a class="btn btn-danger btn-sm" asp-controller="Forum" asp-action="DeletePinnedFile"
+						  asp-route-FileId="@f.Id" asp-route-ParentType="2">Удалить</a>
+				</p>
+			}
+		</div>
+	}
+	<div class="form-group">
+		<label>Прикрепите дополнительные файлы:</label>
+		<br>
+		<input type="file" asp-for="CommentUploadedFiles" multiple="" />
+	</div>
+	<div class="form-group">
+		<input type="submit" value="Добавить" class="btn btn-outline-primary btn-block" />
+	</div>
+	<a class="btn btn-outline-secondary btn-block" asp-action="ForumEndpoint" asp-controller="Forum" asp-route-EndpointId="@Model.EndpointId">Назад</a>
 </form>
+<script>
+		var togglePreviewCommentBtn = function (context) {
+			var ui = $.summernote.ui;
+
+			// create button
+			var button = ui.button({
+				contents: 'Preview',
+				tooltip: 'Предварительный просмотр комментария',
+				click: function () {
+					document.getElementById('CommentPrevtd').innerHTML = $('#text-editor').summernote('code');
+
+					$('#commentPreview').slideDown(500);
+					return;
+				}
+			});
+
+			return button.render();   // return button as jquery object
+		}
+
+		$(document).ready(function () {
+			$('#text-editor').summernote({
+				codeviewFilter: true,
+				codeviewIframeFilter: true,
+				height: 150,
+				maxHeight: 400,
+				minHeight: 100,
+				toolbar: [
+					['style', ['style']],
+					['font', ['bold', 'italic', 'strikethrough', 'underline', 'clear']],
+					['script', ['superscript', 'subscript']],
+					['fontstyle', ['fontname', 'fontsize']],
+					['color', ['color']],
+					['para', ['ul', 'ol', 'paragraph']],
+					['table', ['table']],
+					['insert', ['link', 'picture', 'video']],
+					['view', ['codeview', 'help']],
+					['preview', ['prevBtn']]
+				],
+				buttons: {
+					prevBtn: togglePreviewCommentBtn
+				}
+			});
+		});
+</script>
