@@ -55,5 +55,5 @@ else
 </div>
 @if (Model.CreatorId != "-1")
 {
-<a class="btn btn-outline-secondary btn-sm" style="position:fixed; top:80px; left:20px" asp-action="ForumNode" asp-controller="Forum" asp-route-NodeId="@Model.ParentNodeId">Назад</a>
+<a class="btn btn-outline-secondary btn-sm" id="GoBackBtn" asp-action="ForumNode" asp-controller="Forum" asp-route-NodeId="@Model.ParentNodeId">Назад</a>
 }

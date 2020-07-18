@@ -79,3 +79,8 @@ body {
 .btn btn-sm btn-danger {
     margin-top: 5px!important;
 }
+#GoBackBtn{
+    position:fixed!important;
+    top:10%!important;
+    right:3%!important;
+}
