@@ -56,6 +56,7 @@ namespace IOS_PROJECT3.Grants
         public static class UsersAdmin
         {
             public const string View = "Grant.UsersAdmin.View";
+            public const string CreateUsers = "Grant.UsersAdmin.CreateUsers";
             public const string Edit = "Grant.UsersAdmin.Edit";
             public const string Delete = "Grant.UsersAdmin.Delete";
             public const string ResetPassword = "Grant.UsersAdmin.ResetPassword";

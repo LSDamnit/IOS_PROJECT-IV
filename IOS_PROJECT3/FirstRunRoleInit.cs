@@ -76,7 +76,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Roles.Edit,
-                    Description = "Право пользователю редактировать роли пользователей"
+                    Description = "Право редактировать роли пользователей"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -91,7 +91,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Roles.EditRole,
-                    Description = "Право пользователю редактировать роли"
+                    Description = "Право редактировать роли"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -106,7 +106,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Roles.Delete,
-                    Description = "Право пользователю удалять роли"
+                    Description = "Право удалять роли"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -121,7 +121,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Roles.View,
-                    Description = "Право пользователю просматривать страницу \"Список ролей\""
+                    Description = "Право просматривать страницу \"Список ролей\""
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -136,7 +136,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Roles.Create,
-                    Description = "Право пользователю создавать роли"
+                    Description = "Право создавать роли"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -152,7 +152,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Institutions.View,
-                    Description = "Право пользователю просматривать страницу \"Управление институтами\""
+                    Description = "Право просматривать страницу \"Управление институтами\""
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -167,7 +167,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Institutions.Edit,
-                    Description = "Право пользователю редактировать институты"
+                    Description = "Право редактировать институты"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -182,7 +182,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Institutions.Create,
-                    Description = "Право пользователю создавать институты"
+                    Description = "Право создавать институты"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -197,7 +197,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Institutions.Delete,
-                    Description = "Право пользователю удалять институты"
+                    Description = "Право удалять институты"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -213,7 +213,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Departments.Create,
-                    Description = "Право пользователю создавать кафедры"
+                    Description = "Право создавать кафедры"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -228,7 +228,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Departments.Delete,
-                    Description = "Право пользователю удалять кафедры"
+                    Description = "Право удалять кафедры"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -243,7 +243,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Departments.Edit,
-                    Description = "Право пользователю изменять кафедры"
+                    Description = "Право изменять кафедры"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -259,7 +259,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Specialities.Create,
-                    Description = "Право пользователю создавать специальности"
+                    Description = "Право создавать специальности"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -274,7 +274,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Specialities.Delete,
-                    Description = "Право пользователю удалять специальности"
+                    Description = "Право удалять специальности"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -289,7 +289,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Specialities.Edit,
-                    Description = "Право пользователю изменять специальности"
+                    Description = "Право изменять специальности"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -305,7 +305,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Disciplines.EnrollStudent,
-                    Description = "Право пользователю зачислять студента на специальность"
+                    Description = "Право зачислять студента на специальность"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -320,7 +320,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Disciplines.Create,
-                    Description = "Право пользователю создавать дисциплины"
+                    Description = "Право создавать дисциплины"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -335,7 +335,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Disciplines.Delete,
-                    Description = "Право пользователю удалять дисциплины"
+                    Description = "Право удалять дисциплины"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -350,7 +350,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Disciplines.Edit,
-                    Description = "Право пользователю изменять дисциплины"
+                    Description = "Право изменять дисциплины"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -366,7 +366,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.DisciplinesDetails.Files,
-                    Description = "Право пользователю управлять файлами"
+                    Description = "Право управлять файлами"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -381,7 +381,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.DisciplinesDetails.FilePath,
-                    Description = "Право пользователю просматривать путь до файла на сервере"
+                    Description = "Право просматривать путь до файла на сервере"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -397,7 +397,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Schedule.Edit,
-                    Description = "Право пользователю изменять расписание"
+                    Description = "Право изменять расписание"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -412,7 +412,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Schedule.Delete,
-                    Description = "Право пользователю удалять расписание"
+                    Description = "Право удалять расписание"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -427,7 +427,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Schedule.Create,
-                    Description = "Право пользователю создавать расписание"
+                    Description = "Право создавать расписание"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -443,7 +443,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.UsersAdmin.View,
-                    Description = "Право пользователю просматривать страницу \"Список пользователей\""
+                    Description = "Право просматривать страницу \"Список пользователей\""
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -452,13 +452,28 @@ namespace IOS_PROJECT3
 					GrantId = grant.Entity.Id.ToString()
 				});
             }
+            if ((from g in context.Grants where g.Name == Grants.Grants.UsersAdmin.CreateUsers select g).FirstOrDefault() == null)
+            {
+                var grant = context.Grants.Add(new EGrant()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = Grants.Grants.UsersAdmin.CreateUsers,
+                    Description = "Право регистрировать пользователей"
+                });
+
+                context.RolesToGrants.Add(new ERolesToGrants()
+                {
+                    RoleId = adminRole.Id,
+                    GrantId = grant.Entity.Id.ToString()
+                });
+            }
             if ((from g in context.Grants where g.Name == Grants.Grants.UsersAdmin.Delete select g).FirstOrDefault() == null)
             {
                 var grant = context.Grants.Add(new EGrant()
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.UsersAdmin.Delete,
-                    Description = "Право пользователю удалять пользователей"
+                    Description = "Право удалять пользователей"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -473,7 +488,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.UsersAdmin.Edit,
-                    Description = "Право пользователю изменять пользователей"
+                    Description = "Право изменять пользователей"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -488,7 +503,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.UsersAdmin.ResetPassword,
-                    Description = "Право пользователю сбрасывать пароль пользователей"
+                    Description = "Право сбрасывать пароль пользователей"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -503,7 +518,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.UsersAdmin.Roles,
-                    Description = "Право пользователю менять роли пользователей"
+                    Description = "Право менять роли пользователей"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -519,7 +534,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Message.Admin,
-                    Description = "Право пользователю отправлять сообщение всем пользователям"
+                    Description = "Право отправлять сообщение всем пользователям"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -534,7 +549,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Message.Departments,
-                    Description = "Право пользователю делать рассылку для всех пользователей данной кафедры"
+                    Description = "Право делать рассылку для всех пользователей данной кафедры"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -549,7 +564,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Message.Specialities,
-                    Description = "Право пользователю делать рассылку для всех пользователей данной специальности"
+                    Description = "Право делать рассылку для всех пользователей данной специальности"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -564,7 +579,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Message.Disciplines,
-                    Description = "Право пользователю делать рассылку для всех пользователей данной дисциплины"
+                    Description = "Право делать рассылку для всех пользователей данной дисциплины"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -579,7 +594,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Message.DisciplinesDetails,
-                    Description = "Право пользователю делать рассылку для всех студентов данной дисциплины"
+                    Description = "Право делать рассылку для всех студентов данной дисциплины"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -595,7 +610,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Complains.View,
-                    Description = "Право пользователю просматривать жалобы"
+                    Description = "Право просматривать жалобы"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -610,7 +625,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Complains.Details,
-                    Description = "Право пользователю управлять жалобами"
+                    Description = "Право управлять жалобами"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -626,7 +641,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Forum.CreateNode,
-                    Description = "Право пользователю создавать разделы и темы на форуме"
+                    Description = "Право создавать разделы и темы на форуме"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -641,7 +656,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Forum.EditNode,
-                    Description = "Право пользователю изменять разделы и темы на форуме"
+                    Description = "Право изменять разделы и темы на форуме"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -656,7 +671,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Forum.EditEndpoint,
-                    Description = "Право пользователю редактировать комментарии"
+                    Description = "Право редактировать комментарии"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()
@@ -671,7 +686,7 @@ namespace IOS_PROJECT3
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = Grants.Grants.Forum.DeleteComment,
-                    Description = "Право пользователю удалять комментарии"
+                    Description = "Право удалять комментарии"
                 });
 
                 context.RolesToGrants.Add(new ERolesToGrants()

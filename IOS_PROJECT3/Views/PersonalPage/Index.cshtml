@@ -166,7 +166,7 @@
         {
 <div id="RoleBlock" style="margin-top:10px;margin-bottom:10px">
     <h6 style="position:relative; margin-right:3%">Как учителю:</h6>
-    @if (Model.OwnDiscilpines_T.Count > 0)
+    @if ((Model.OwnDiscilpines_T!=null)&&(Model.OwnDiscilpines_T.Count > 0))
     {
         <div class="btn-group dropup">
             <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -192,7 +192,7 @@
         {
 <div id="RoleBlock" style="margin-top:10px;margin-bottom:10px">
     <h6 style="position:relative; margin-right:3%">Как менеджеру:</h6>
-    @if (Model.OwnInstitutions_M.Count > 0)
+    @if ((Model.OwnInstitutions_M!=null)&&(Model.OwnInstitutions_M.Count > 0))
     {
         <div class="btn-group dropup">
             <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

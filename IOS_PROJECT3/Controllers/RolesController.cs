@@ -17,7 +17,6 @@ namespace IOS_PROJECT3.Controllers
         private DBMergedContext DBContext;
         private RoleManager<IdentityRole> roleManager;
         private UserManager<EUser> userManager;
-
         public RolesController(DBMergedContext DBContext, RoleManager<IdentityRole> roleManager, UserManager<EUser> userManager)
         {
             this.DBContext = DBContext;
@@ -111,7 +110,6 @@ namespace IOS_PROJECT3.Controllers
                 }
 
                 await DBContext.SaveChangesAsync();
-
                 return RedirectToAction("Index", "Roles");
             }
 

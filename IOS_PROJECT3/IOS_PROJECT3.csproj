@@ -12,6 +12,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\RegFiles\initReg %281%29.xlsx" />
+    <Content Remove="wwwroot\RegFiles\initReg.xlsx" />
+    <Content Remove="wwwroot\RegFiles\Книга 3.xlsx" />
+    <Content Remove="wwwroot\RegFiles\РегДанные СОшибками.xlsx" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="wwwroot\Images\sstuLogo.png" />
   </ItemGroup>
 
