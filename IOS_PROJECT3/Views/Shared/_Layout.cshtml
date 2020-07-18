@@ -1,52 +1,91 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Главная страница"] - IOS_PROJECT3</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/js/site.js" asp-append-version="true"></script>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Главная страница"] - IOS_PROJECT3</title>
+	@*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/flatly/bootstrap.min.css" />*@
+	<link rel="stylesheet" href="~/css/site.css" />
+	<script>
+		var themes = {
+			"flatly": "lib/bootstrap/dist/css/flatly/bootstrap.min.css",
+			"darkly": "lib/bootstrap/dist/css/darkly/bootstrap.min.css"
+		}
+		$(function () {
+			var cookiesTheme = getCookieByName('theme');
+			if (cookiesTheme == null) {
+				document.cookie = "theme=flatly; path=/; max-age=2147483647";
+				cookiesTheme = 'flatly';
+			}
+			var themesheet = $('<link href="' + themes[cookiesTheme] + '" rel="stylesheet" />');
+			themesheet.appendTo('head');
+			$('.theme-link').click(function () {
+				var themeurl = themes[$(this).attr('data-theme')];
+				themesheet.attr('href', themeurl);
+				document.cookie = "theme=" + $(this).attr('data-theme') + "; path=/; max-age=2147483647";
+			});
+		});
+		function getCookieByName(name) {
+			var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+			if (match) {
+				return match[2];
+			}
+			else {
+				return null;
+			}
+		}
+	</script>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom box-shadow mb-3">
             <div class="container">
                 <a font-size="200%" class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><b>ИОС СГТУ 2020</b></a>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">На главную</a>
-                        </li>
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li>
-                                <a class="nav-link text-dark" asp-controller="PersonalPage" asp-action="Index">Персональная страница</a>
-                                </li>
-                    <li>
-                        <a class="nav-link text-dark" asp-controller="Forum" asp-action="ForumNode" asp-route-NodeId="1">Форум</a>
-                    </li>
-                            <li>
-                                <form method="post" asp-controller="Account" asp-action="Logout">
-                                    <input class="btn btn-outline-secondary" style="position:absolute; right:3%" type="submit" value="Выход" />
-                                </form>
-                                
-                            </li>
-                        }
-                        else
-                        {
-                    <li class="nav-item">
-                        <p class="nav-link text-dark" style="position:absolute; right:12%"><b>Авторизуйтесь, чтобы получить дополнительные возможности</b></p>
-                    </li>
-                            <li>
-                                <form asp-controller="Account" asp-action="Login">
-                                    <input class="btn btn-outline-secondary" style="position:absolute; right:3%" type="submit" value="Вход" />
-                                </form>
-                            </li>
-                        }
-                    </ul>
+					<ul class="navbar-nav flex-grow-1">
+						<li class="nav-item">
+							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">На главную</a>
+						</li>
+						@if (User.Identity.IsAuthenticated)
+						{
+							<li>
+								<a class="nav-link text-dark" asp-controller="PersonalPage" asp-action="Index">Персональная страница</a>
+							</li>
+							<li>
+								<a class="nav-link text-dark" asp-controller="Forum" asp-action="ForumNode" asp-route-NodeId="1">Форум</a>
+							</li>
+							<li>
+								<form method="post" asp-controller="Account" asp-action="Logout">
+									<input class="btn btn-outline-secondary" style="position:absolute; right:3%" type="submit" value="Выход" />
+								</form>
+
+							</li>
+						}
+						else
+						{
+							<li class="nav-item">
+								<p class="nav-link text-dark" style="position:absolute; right:12%"><b>Авторизуйтесь, чтобы получить дополнительные возможности</b></p>
+							</li>
+							<li>
+								<form asp-controller="Account" asp-action="Login">
+									<input class="btn btn-outline-secondary" style="position:absolute; right:3%" type="submit" value="Вход" />
+								</form>
+							</li>
+						}
+						<li class="nav-item">
+							<div class="btn-group">
+								<a class="nav-link text-dark" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false"><img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDQ4IDUwIiBoZWlnaHQ9IjUwcHgiIGlkPSJMYXllcl8xIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCA0OCA1MCIgd2lkdGg9IjQ4cHgiIHhtbDpzcGFjZT0icHJlc2VydmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxwYXRoIGQ9Ik0zOS45NjQsMTguNDMyYy0wLjE5Mi0wLjQ3Ni0wLjI4NC0wLjkzOC0wLjUxNy0xLjM5Mmw0LjIzOC03LjY0OGwtMS44MzgtMS44N2wtMS4zODctMS40MDFMMzguNiw0LjI1MiAgbC04LjE5Myw0LjcyN2MtMC4wNDgtMC4wMTktMC4wOTYtMC4wMjYtMC4xNDQtMC4wMjlMMjcuNjM1LDBoLTIuNjQ0SDI0aC0wLjk5MWgtMi42NDRsLTIuNjI4LDguOTUgIGMtMC4wNDgsMC4wMDItMC4wOTYsMC4wMS0wLjE0NCwwLjAyOUw5LjQsNC4yNTJsLTEuODYxLDEuODdMNi4xNTIsNy41MjNsLTEuODM4LDEuODdsNC4yMzgsNy42NDggIGMtMC4yMzIsMC40NTQtMC4zMjQsMC45MTYtMC41MTcsMS4zOTJMMCwyMC44NjV2Mi42NDR2MS45ODJ2Mi42NDRsNy42MjYsMi4zMTRjMC4yMjQsMC42ODIsMC4yNDUsMS4zNDIsMC41NDcsMS45ODRsLTMuOTIxLDcuMTg0ICBsMS44NywxLjg3N2wxLjQwMSwxLjQxN2wxLjg2OSwxLjkwMWw3LjE4MS0zLjg1OWMwLjQ2MiwwLjIxOCwwLjkzNiwwLjUzOSwxLjQxOSwwLjcxNkwyMC4zNjUsNTBoMi42NDRIMjRoMC45OTFoMi42NDRsMi4zNzMtOC4zMzEgIGMwLjQ4My0wLjE3NywwLjk1Ny0wLjQ5OCwxLjQxOS0wLjcxNmw3LjE4MSwzLjg1OWwxLjg2OS0xLjkwMWwxLjQwMS0xLjQxN2wxLjg3LTEuODc3bC0zLjkyMS03LjE4NCAgYzAuMzAyLTAuNjQzLDAuMzIzLTEuMzAzLDAuNTQ3LTEuOTg0TDQ4LDI4LjEzNXYtMi42NDR2LTEuOTgydi0yLjY0NEwzOS45NjQsMTguNDMyeiBNMjQsMzMuNDc1Yy00LjczNi0wLjI2MS04LjUtNC4xNzQtOC41LTguOTc1ICBjMC00LjgwMSwzLjc2NC04LjcxNCw4LjUtOC45NzVjNC43MzYsMC4yNjEsOC41LDQuMTczLDguNSw4Ljk3NUMzMi41LDI5LjMwMSwyOC43MzYsMzMuMjE0LDI0LDMzLjQ3NXoiIGZpbGw9IiMyMzFGMjAiLz48L3N2Zz4=" width="16" style="opacity: 0.7"></a>
+								<div class="dropdown-menu">
+									<span class="dropdown-header">Тема:</span>
+									<a id="flatly" class="dropdown-item theme-link" data-theme="flatly" href="">flatly</a>
+									<a id="darkly" class="dropdown-item theme-link" data-theme="darkly" href="">darkly</a>
+								</div>
+							</div>
+					</li>
+					</ul>
                 </div>
             </div>
         </nav>
