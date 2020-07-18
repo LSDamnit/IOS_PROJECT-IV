@@ -10,46 +10,48 @@
 		}
 		</style>
 	@if (Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.EnrollStudent))
-	{
-		<a asp-action="Create" id="singleRed">Зарегистрировать одного пользователя</a>
+	{	
+		<div id="singleRegAnim">
+			<a asp-action="Create" id="singleRed">Зарегистрировать одного пользователя</a>
+		</div>
 		<div style="margin-bottom:10px; margin-top:10px">
 			<input type="checkbox" id="massRegCheck" name="Массовая регистрация" value="Массовая регистрация" />
 			<label margin-right:5px;>Массовая регистрация </label>
 		</div>
-		<div hidden="hidden" id="massReg" class="alert alert-primary">
-			<form asp-action="AddFile" asp-controller="UsersAdmin" method="post" enctype="multipart/form-data">
-				@*<input type="file" style="margin-bottom:5px; display:inline;" name="uploadedFile" />
+		<div style="display:none" id="massRegAnim">
+			<div id="massReg" class="alert alert-primary">
+				<form asp-action="AddFile" asp-controller="UsersAdmin" method="post" enctype="multipart/form-data">
+					@*<input type="file" style="margin-bottom:5px; display:inline;" name="uploadedFile" />
 
-				<input type="submit" style="display:inline;margin-left:15px" class="btn btn-sm btn-primary" value="Загрузить" />*@
+					<input type="submit" style="display:inline;margin-left:15px" class="btn btn-sm btn-primary" value="Загрузить" />*@
 				
-				<div class="input-group">
-				<div class="custom-file">
-				 <input type="file" class="custom-file-input" id="inputGroupFile04" name="uploadedFile">
-					<label class="custom-file-label" for="inputGroupFile04">Выберите файл</label>
-				</div>
-				<div class="input-group-append">
-				 <input type="submit" class="btn btn-outline-secondary" value="Загрузить"/>
-				 </div>
-					</div> 
-			</form>
-		</div>
-		<div class="alert alert-info" role="alert" id="InfoReg" hidden="hidden">
-			<h6>Требования к данным для массовой регистрации</h6>
-			<p>
-				Загруженный файл должен иметь формат <b>.xlsx</b>, данные пользователей должны располагаться в <b>первых четырех</b>  столбцах на <b>первом</b> листе в порядке: ФИО|Email|Пароль|Роль.
-				Присваеваемые роли на момент регистрации должны существовать, Email и пароль должны соответствовать всем требованиям регистрации.
-			<p>
+					<div class="input-group">
+					<div class="custom-file">
+					 <input type="file" class="custom-file-input" id="inputGroupFile04" name="uploadedFile">
+						<label class="custom-file-label" for="inputGroupFile04">Выберите файл</label>
+					</div>
+					<div class="input-group-append">
+					 <input type="submit" class="btn btn-outline-secondary" value="Загрузить"/>
+					 </div>
+						</div> 
+				</form>
+			</div>
+			<div class="alert alert-info" role="alert" id="InfoReg">
+				<h6>Требования к данным для массовой регистрации</h6>
+				<p>
+					Загруженный файл должен иметь формат <b>.xlsx</b>, данные пользователей должны располагаться в <b>первых четырех</b>  столбцах на <b>первом</b> листе в порядке: ФИО|Email|Пароль|Роль.
+					Присваеваемые роли на момент регистрации должны существовать, Email и пароль должны соответствовать всем требованиям регистрации.
+				<p>
+			</div>
 		</div>
 		<script>
 			$('#massRegCheck').on('click', function () {
 				if ($(this).is(':checked')) {
-					document.getElementById('massReg').hidden = false;
-					document.getElementById('InfoReg').hidden = false;
-					document.getElementById('singleRed').hidden = true;
+					$('#massRegAnim').slideDown(500);
+					$('#singleRegAnim').slideUp(200);
 				} else {
-					document.getElementById('massReg').hidden = true;
-					document.getElementById('InfoReg').hidden = true;
-					document.getElementById('singleRed').hidden = false;
+					$('#massRegAnim').slideUp(500);
+					$('#singleRegAnim').slideDown(200);
 				}
 			})</script>
 	}
