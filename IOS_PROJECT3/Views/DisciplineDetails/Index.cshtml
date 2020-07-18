@@ -213,10 +213,19 @@
                     <form method="post" asp-controller="DisciplineDetails" asp-action="UploadFile" enctype="multipart/form-data">
                         <input type="hidden" name="id" value="@Model.DisciplineId" />
                         <input type="hidden" name="user" value="@User.Identity.Name" />
-                        <input type="file" name="upload" /><br>
+                        <div class="input-group" style="width:100%">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="inputGroupFile04" name="upload">
+                                <label class="custom-file-label" for="inputGroupFile04">Выберите файл</label>
+                            </div>
+                        </div>
+                        @*<input type="file" name="upload" /><br>*@
+
                         <input type="radio" name="tag" value="lection" checked="checked" />Лекция<br>
                         <input type="radio" name="tag" value="practice" />Практика<br>
-                        <button class="btn btn-primary btn-sm" type="submit" style="margin-top:5px">Загрузить</button>
+
+                        @*<button class="btn btn-primary btn-sm" type="submit" style="margin-top:5px">Загрузить</button>*@
+
                         <button class="btn btn-secondary btn-sm" style="margin-top:5px" onclick="ShowHideUploadForm()">Скрыть</button>
                     </form>
                 </div>

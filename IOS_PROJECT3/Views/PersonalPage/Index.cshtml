@@ -25,16 +25,7 @@
         grid-area: personal-settings;
     }
 </style>
-@if (ViewBag.Success != null)
-{
-<div id="success" class="text-success">
-    @ViewBag.Success;
-    </div>
-    <script>
-        $("#success").fadeOut(3500, () => { $("#success").hidden=true});
-        </script>
-}
-<div class="grid-container">
+<div class="grid-container" style="position:absolute">
 <div class="personal-data">
     <h4>Ваши данные</h4>
     <dl class="row">
@@ -60,17 +51,7 @@
         <div class="form-row">
             <div class="col">
                 <h5>Смена пароля</h5>
-                <div asp-validation-summary="All" class="text-danger">
-                    @if (ViewBag.Errors != null)
-                    {
-                        <ul>
-                            @foreach (string err in ViewBag.Errors)
-                            {
-                                <li>@Html.Raw(err.Replace("script", ""))</li>
-                            }
-                        </ul>
-                    }
-                </div>
+                
                 <input type="hidden" asp-for="UserId" value="@Model.UserId" />
                 <label asp-for="OldPassword">Текущий пароль</label>
                 <input class="form-control form-control-sm" type="password" asp-for="OldPassword" />
@@ -93,6 +74,25 @@
                     </div>
                 }
 
+                @if ((ViewBag.Errors != null)&&(ViewBag.Errors.Count>0))
+                {
+                    <div asp-validation-summary="All" class="text-danger" style="margin-top:5%">
+                        @foreach (string err in ViewBag.Errors)
+                        {
+                            <p><b>@Html.Raw(err.Replace("script", ""))</b></p>
+                        }
+                    </div>
+                }
+
+                @if (ViewBag.Success != null)
+                {
+                    <div id="success" class="text-success" style="opacity:100; margin-top:5%">
+                        <b>@ViewBag.Success</b>
+                    </div>
+                    <script>
+                        $("#success").fadeOut(3000);
+                    </script>
+                }
             </div>
             <input style="margin-top:10px; width:100%;" type="submit" value="Сохранить" class="btn btn-outline-primary btn-sm">
         </div>
@@ -164,70 +164,54 @@
 
         if (User.IsInRole("Teacher"))
         {
-            <div id="RoleBlock" style="margin-top:10px;margin-bottom:10px">
-                <h6 style="position:relative; margin-right:3%">Как учителю:</h6>
-                @if (Model.OwnDiscilpines_T.Count > 0)
+<div id="RoleBlock" style="margin-top:10px;margin-bottom:10px">
+    <h6 style="position:relative; margin-right:3%">Как учителю:</h6>
+    @if (Model.OwnDiscilpines_T.Count > 0)
+    {
+        <div class="btn-group dropup">
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Преподаваемые вами дисциплины
+            </button>
+            <div class="dropdown-menu">
+                @foreach (var di in Model.OwnDiscilpines_T)
                 {
-                    <script>
-                                var isHidden = true;
-                                function ShowHide() {
-                                    document.getElementById('DiscList').hidden = !isHidden;
-                                    document.getElementById('DiscBtn').hidden = isHidden;
-                                    isHidden = !isHidden;
-                                }
-                    </script>
-                    <button style="margin-bottom:10px;" id="DiscBtn" class="btn btn-secondary btn-sm" onclick="ShowHide()">Преподаваемые вами дисциплины</button>
-                    <br>
-                    <div id="DiscList" hidden="hidden" class="alert alert-info" role="alert">
-                        <button style="margin-bottom:10px;" class="btn btn-outline-secondary btn-sm" onclick="ShowHide()">Скрыть список</button>
-                        <table class="table table-bordered">
-                            <tr><th>Преподаваемые дисциплины</th></tr>
-                            @foreach (var di in Model.OwnDiscilpines_T)
-                            {
-                                <tr><td><a asp-controller="DisciplineDetails" asp-action="Index" asp-route-DiscId="@di.Id" asp-route-FromPP="true">@di.Name</a></td></tr>
-                            }
-                        </table>
-                    </div>
-                }
-                else
-                {
-                    <p>Вы не преподаете ни одной дисциплины</p>
+                    <a class="dropdown-item" asp-controller="DisciplineDetails" asp-action="Index" asp-route-DiscId="@di.Id" asp-route-FromPP="true">@di.Name</a>
                 }
             </div>
+        </div>
+       
+    }
+    else
+    {
+        <p>Вы не преподаете ни одной дисциплины</p>
+    }
+</div>
         };
 
         if (User.IsInRole("Manager"))
         {
-            <div id="RoleBlock" style="margin-top:10px;margin-bottom:10px">
-                <h6 style="position:relative; margin-right:3%">Как менеджеру:</h6>
-                @if (Model.OwnInstitutions_M.Count > 0)
+<div id="RoleBlock" style="margin-top:10px;margin-bottom:10px">
+    <h6 style="position:relative; margin-right:3%">Как менеджеру:</h6>
+    @if (Model.OwnInstitutions_M.Count > 0)
+    {
+        <div class="btn-group dropup">
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Управляемые вами институты
+            </button>
+            <div class="dropdown-menu">
+                @foreach (var di in Model.OwnInstitutions_M)
                 {
-                    <script>
-                                var isBlockHidden = true;
-                                function ShowHideInstList() {
-                                    document.getElementById('InstList').hidden = !isBlockHidden;
-                                    document.getElementById('InstBtn').hidden = isBlockHidden;
-                                    isBlockHidden = !isBlockHidden;
-                                }
-                    </script>
-                    <button style="margin-bottom:10px;" id="InstBtn" class="btn btn-secondary btn-sm" onclick="ShowHideInstList()">Институты под вашим управлением</button>
-                    <br>
-                    <div id="InstList" hidden="hidden" class="alert alert-info" role="alert">
-                        <button style="margin-bottom:10px;" class="btn btn-outline-secondary btn-sm" onclick="ShowHideInstList()">Скрыть список</button>
-                        <table class="table table-bordered">
-                            <tr><th>Управляемые институты</th></tr>
-                            @foreach (var di in Model.OwnInstitutions_M)
-                            {
-                                <tr><td><a asp-controller="Departments" asp-action="Index" asp-route-InstId="@di.Id" asp-route-FromPP="true">@di.Name</a></td></tr>
-                            }
-                        </table>
-                    </div>
-                }
-                else
-                {
-                    <p>Вы управляете ни одним институтом</p>
+                    <a class="dropdown-item" asp-controller="Departments" asp-action="Index" asp-route-InstId="@di.Id" asp-route-FromPP="true">@di.Name</a>
                 }
             </div>
+        </div>
+       
+    }
+    else
+    {
+        <p>Вы управляете ни одним институтом</p>
+    }
+</div>
 
         };        
 

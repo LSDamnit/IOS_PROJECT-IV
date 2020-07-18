@@ -10,43 +10,52 @@
 		<input type="hidden" asp-for="ParentNodeId" class="form-control" />
 		<input type="hidden" asp-for="CreatorEmail" class="form-control" />
 		<label asp-for="EndpointName" class="control-label">Введите название:</label>
-		<input type="text" asp-for="EndpointName" class="form-control" />
+		<input type="text" id="EPName" asp-for="EndpointName" class="form-control" />
 		<label asp-for="EndpointText" class="control-label">Введите текст статьи:</label>
 		<textarea id="text-editor" type="text" asp-for="EndpointText" class="form-control"></textarea>
 	</div>
 	<div id="commentPreview" style="display: none">
 		<label class="control-label">Предварительный просмотр:</label>
-		<div id="Comment_prev">
-			<table class="table table-borderless">
-				<tr>
-					<td class="table-primary" style="width:10%; word-wrap:normal">
-						<b>Имя Фамилия</b>
-						<br>
-						01.01.2013
-					</td>
-					<td id="CommentAndFiles">
-						<a style="display:inline; margin-right:10px" class="btn btn-outline-info btn-sm" onclick="$('#commentPreview').slideUp(500);">Закрыть предварительный просмотр</a>
-						<table class="table table-borderless">
-							<tr>
-								<td id="CommentPrevtd"></td>
-							</tr>
-						</table>
+		<div id="Comment_prev" class="alert alert-primary" role="main">
+			<a style="display:inline; margin-right:10px" class="btn btn-outline-info btn-sm" onclick="$('#commentPreview').slideUp(500);">Закрыть предварительный просмотр</a>
+			<h3 id="PrevName"></h3>
+			<div style="word-wrap: break-word;" id="CommentPrevtd">
+			</div>
+			@*<table class="table table-borderless">
+			<tr>
+				<td class="table-primary" style="width:10%; word-wrap:normal">
+					<b>Имя Фамилия</b>
+					<br>
+					01.01.2013
+				</td>
+				<td id="CommentAndFiles">
+					<a style="display:inline; margin-right:10px" class="btn btn-outline-info btn-sm" onclick="$('#commentPreview').slideUp(500);">Закрыть предварительный просмотр</a>
+					<table class="table table-borderless">
+						<tr>
+							<td id="CommentPrevtd"></td>
+						</tr>
+					</table>
 
-					</td>
+				</td>
 
-				</tr>
-			</table>
+			</tr>
+		</table>*@
 		</div>
 	</div>
 	<div class="form-group">
 		<label>Прикрепите файлы:</label>
 		<br>
-		<input type="file" asp-for="UploadedFiles" multiple="" />
-	</div>
-	<div class="form-group">
-		<input type="submit" value="Добавить" class="btn btn-outline-primary btn-block" />
-	</div>
-	<a class="btn btn-outline-secondary btn-sm" id="GoBackBtn" asp-action="ForumNode" asp-controller="Forum" asp-route-NodeId="@Model.ParentNodeId">Назад</a>
+		<div class="input-group">
+			<div class="custom-file">
+				<input type="file" class="custom-file-input" id="inputGroupFile04" asp-for="UploadedFiles" multiple>
+				<label class="custom-file-label" for="inputGroupFile04">Выберите файлы</label>
+			</div>
+		</div>
+		<div class="form-group">
+			<input type="submit" style="margin-top:10px" value="Опубликовать" class="btn btn-outline-primary btn-block" />
+		</div>
+		<a class="btn btn-outline-secondary btn-sm" id="GoBackBtn" asp-action="ForumNode" asp-controller="Forum" asp-route-NodeId="@Model.ParentNodeId">Назад</a>
+		</div>
 </form>
 <script>
 	var togglePreviewCommentBtn = function (context) {
@@ -58,7 +67,7 @@
 			tooltip: 'Предварительный просмотр комментария',
 			click: function () {
 				document.getElementById('CommentPrevtd').innerHTML = $('#text-editor').summernote('code');
-
+                document.getElementById('PrevName').innerHTML = document.getElementById('EPName').value;
 				$('#commentPreview').slideDown(500);
 				return;
 			}

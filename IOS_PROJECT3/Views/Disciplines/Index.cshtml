@@ -1,65 +1,156 @@
 ﻿@model IOS_PROJECT3.ViewModels.DisciplinesViewModel
 <style>
-    .grid-container-spec {
+    .grid-container {
         display: grid;
-        grid-template-columns: /*1.2fr 0.8fr;*/ 80% 20%;
-        grid-gap: 10px;
-        grid-template-areas: "disciplines-spec students-spec";
+        grid-template-columns: 1fr 1fr 0.7fr 0.9fr 1.4fr;
+        grid-template-rows: 0.6fr 1.5fr 1.4fr 1fr;
+        grid-row-gap: 5px;
+        grid-template-areas: "spec-title spec-title spec-controls spec-controls spec-controls" "spec-tables spec-tables spec-tables spec-tables spec-tables" "spec-tables spec-tables spec-tables spec-tables spec-tables" "spec-tables spec-tables spec-tables spec-tables spec-tables";
     }
 
-    .disciplines-spec {
-        grid-area: disciplines-spec;
+    .spec-tables {
+        grid-area: spec-tables;
     }
 
-    .students-spec {
-        grid-area: students-spec;
+    .spec-title {
+        grid-area: spec-title;
+    }
+
+    .spec-controls {
+        grid-area: spec-controls;
     }
 </style>
+<div class="grid-container">
+    <div class="spec-title">
 <h3 style="align-self:center; margin-bottom:25px">Специальность @Model.SpecialityName</h3>
-<div id="schedules">
-    <h5>Расписания для этой специальности</h5>
-    @if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Schedule.Create)))
-    {
-        <a style="margin-bottom:15px" asp-controller="Disciplines" asp-route-SpecId="@Model.SpecialityId" asp-action="CreateSchedule">Добавить расписание</a>
-    }
-    @foreach (var s in Model.Schedules)
-    {
-        <table>
-            <tr>
-                <td>
-                    <a asp-controller="Disciplines" asp-route-WeekScheduleId="@s.id" asp-action="WeekSchedule">Расписание @s.Name</a>
-                </td>
-                @if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Schedule.Edit)))
-                {
-                    <td>
-                        <a class="btn btn-primary btn-sm" asp-controller="Disciplines" asp-route-WeekScheduleId="@s.id" asp-action="EditSchedule">Изменить</a>
-                    </td>
-                }
-                @if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Schedule.Delete)))
-                {
-                    <td>
-                        <form method="post" asp-action="DeleteSchedule" asp-route-WeekScheduleId="@s.id">
-
-                            <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
-                        </form>
-                    </td>
-                }
-            </tr>
-        </table>
-    }
-</div>
-<div class="grid-container-spec" style="width:100%">
-    <div class="disciplines-spec">
-        <h5 style="align-self:center; margin-bottom:25px">Список дисциплин</h5>
-        @if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Create)))
-        {
-            <a style="margin-bottom:15px" asp-controller="Disciplines" asp-route-SpecId="@Model.SpecialityId" asp-action="Create">Добавить дисциплину</a>
-        }
-        @if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Message.Disciplines)))
+        </div>
+    <div class="spec-controls">
+        <h5>Выберите, что отобразить</h5>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="TableSwitch" value="1" onchange="checkTS();" id="TS1" checked>
+            <label class="form-check-label">
+                Список дисциплин
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" name="TableSwitch" id="TS1" value="2" onchange="checkTS();" type="radio">
+            <label class="form-check-label">
+                Список студентов
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" id="TS1" value="3" onchange="checkTS();" name="TableSwitch">
+            <label class="form-check-label">
+                Расписания для данной специальности
+            </label>
+        </div>
+        @if ((User.Identity.IsAuthenticated) && ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Message.Disciplines)))
         {
             <a class="btn btn-secondary btn-sm" style="position:absolute; top:10%; right:3%" asp-controller="Message" asp-action="Index" asp-all-route-data='new Dictionary<string,string> { { "ContainerType", "Speciality" }, {"ContainerId", Model.SpecialityId }, { "SenderEmail", User.Identity.Name } }'>Массовая рассылка</a>
         }
-        <table class="table table-bordered" style="border-collapse:collapse;table-layout:auto; text-align:center;">
+        <script>
+            function checkTS() {//WARINNG УЖАСНЫЙ КОСТЫЛЬ НИЖЕ, СРОЧНО ЗАКРЫТЬ ГЛАЗА
+                var TS = $("input[name='TableSwitch']:checked").val();
+
+                if (TS == "1") {
+                    //discs
+                    $('#StudTable').fadeOut(300);
+                    document.getElementById('StudTable').hidden = true;
+
+                    $('#SchedTable').fadeOut(300);
+                    document.getElementById('SchedTable').hidden = true;
+
+                    document.getElementById('DisTable').hidden = false;
+                    $('#DisTable').fadeOut(0);
+                    $('#DisTable').fadeIn(300);
+                }
+                else if (TS == "2") {
+                    //studs
+                    //$('#SchedTable').fadeOut(100);
+
+                    document.getElementById('StudTable').hidden = false;
+                    $('#StudTable').fadeOut(0);
+                    $('#StudTable').fadeIn(300);
+
+                    $('#SchedTable').fadeOut(300);
+                    document.getElementById('SchedTable').hidden = true;
+
+
+                    $('#DisTable').fadeOut(300);
+                    document.getElementById('DisTable').hidden = true;
+                }
+                else {
+                    //scheds
+                    $('#StudTable').fadeOut(300);
+                    document.getElementById('StudTable').hidden = true;
+
+                    document.getElementById('SchedTable').hidden = false;
+                    $('#SchedTable').fadeOut(0);
+                    $('#SchedTable').fadeIn(300);
+
+                    $('#DisTable').fadeOut(300);
+                    document.getElementById('DisTable').hidden = true;
+                }
+            }
+        </script>
+    </div>
+    @* CONTROLS----- *@
+    <div class="spec-tables">
+        <div id="SchedTable" hidden="hidden">
+            <h5 style="display:inline">Расписания для этой специальности</h5>
+            @if ((User.Identity.IsAuthenticated) && ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Schedule.Create)))
+            {
+                <a style="margin-bottom:5px; margin-left:10px; display:inline" asp-controller="Disciplines" asp-route-SpecId="@Model.SpecialityId" asp-action="CreateSchedule">Добавить расписание</a>
+            }
+        <table class="table table-sm">
+            <thead class="thead-light">
+            <tr>
+                <th>Название</th>
+                @if ((User.Identity.IsAuthenticated) && ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Schedule.Delete)||Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Schedule.Edit)))
+                {
+                    <th>Управление
+                        </th>
+                }
+                </tr>
+                </thead>
+            @foreach (var s in Model.Schedules)
+            {
+
+        <tr>
+            <td>
+                <a asp-controller="Disciplines" asp-route-WeekScheduleId="@s.id" asp-action="WeekSchedule">Расписание @s.Name</a>
+            </td>
+            <td>
+               
+                @if ((User.Identity.IsAuthenticated) && ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Schedule.Delete)))
+                {
+                <form method="post" asp-action="DeleteSchedule" asp-route-WeekScheduleId="@s.id">
+                    @if ((User.Identity.IsAuthenticated) && ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Schedule.Edit)))
+                    {
+
+                        <a class="btn btn-primary btn-sm" style="display:inline; margin:0 5px 0 0;" asp-controller="Disciplines" asp-route-WeekScheduleId="@s.id" asp-action="EditSchedule">Изменить</a>
+
+                    }
+                    <button style="display:inline;margin:0px;" type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                </form>
+                }
+            </td>
+        </tr>
+
+            }
+        </table>
+            </div>
+        @* ----SCHED *@
+
+    <div id="DisTable" style="opacity:100">
+        <h5 style="display:inline">Список дисциплин</h5>
+        @if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.Create)))
+        {
+            <a style="margin-bottom:5px; margin-left:10px; display:inline" asp-controller="Disciplines" asp-route-SpecId="@Model.SpecialityId" asp-action="Create">Добавить дисциплину</a>
+        }
+        
+        <table class="table" style="border-collapse:collapse;table-layout:auto; text-align:center;">
+            <thead class="thead-light">
             <tr>
                 <th>Название</th>
                 <th>Лекции(часы)</th>
@@ -71,6 +162,7 @@
                     <th>Управление</th>
                 }
             </tr>
+                </thead>
             @foreach (var di in Model.Disciplines)
             {
                 <tr>
@@ -109,24 +201,41 @@
             }
         </table>
     </div>
-    <div class="students-spec">
-        <h5 style="align-self:center; margin-bottom:25px">Список студентов</h5>
+        @* DISCS----- *@
+    <div id="StudTable" hidden="hidden">
+        <h5 style="display:inline;margin-right:10px;">Список студентов</h5>
         @if (User.Identity.IsAuthenticated)
         {
             @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.EnrollStudent))
             {
-                <div style="margin-bottom:10px; margin-top:10px">
-                    <label margin-right:5px;>Зачислить студентов из Excel файла </label><input type="checkbox" id="massRegCheck" name="Зачислить студентов из Excel файла" value="Зачислить студентов из Excel файла" />
+                <a style="margin-bottom: 5px; display:inline; margin-right:5px;" asp-controller="Disciplines" id="singleReg" asp-route-SpecId="@Model.SpecialityId" asp-action="AddStudentUNF">Зачислить одного студента</a>
+                <div class="form-check-inline" style="">
+                    <input class="form-check-input" type="checkbox" id="massRegCheck" name="Зачислить студентов из Excel файла" value="Зачислить студентов из Excel файла" />
+                    <label class="form-check-label">Зачислить студентов из Excel файла </label>
                 </div>
-                <a style="margin-bottom: 15px" asp-controller="Disciplines" id="singleReg" asp-route-SpecId="@Model.SpecialityId" asp-action="AddStudentUNF">Зачислить студента</a>
-                <div hidden="hidden" id="massReg" class="alert alert-primary">
-                    <form style="font-size:70%" asp-action="AddFile" asp-route-SpecId="@Model.SpecialityId" asp-controller="Disciplines" method="post" enctype="multipart/form-data">
-                        
-                        <input type="file" style="margin-bottom:5px; display:block;" name="uploadedFile" />
 
-        <input type="submit" style="display:block;margin-bottom:7px" class="btn btn-sm btn-primary" value="Загрузить" />
+                <div hidden="hidden" id="massReg" class="alert alert-primary">
+                    <form asp-action="AddFile" asp-route-SpecId="@Model.SpecialityId" asp-controller="Disciplines" method="post" enctype="multipart/form-data">
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="file" onchange="enableBtn();" style="" class="custom-file-input"  name="uploadedFile">
+                                <label class="custom-file-label" style="">Выберите файл</label>
+                            </div>
+                            <div class="input-group-append">
+                                <input type="submit" style="" id="fileSubmit" disabled="disabled" class="btn btn-outline-secondary" value="Загрузить" />
+                            </div>
+                        </div>
+                        @*<input type="file" style="margin-bottom:5px; display:block;" name="uploadedFile" />*@
+
+                        @*<input type="submit" style="display:block;margin-bottom:7px" class="btn btn-sm btn-primary" value="Загрузить" />*@
 
                     </form>
+                    <script>
+                        function enableBtn() {
+                            var button = document.getElementById('fileSubmit');
+                            button.disabled = false;
+                        }
+                    </script>
                 </div>
                 <div class="alert alert-info" role="alert" id="InfoReg" hidden="hidden">
                     <h6>Требования к данным</h6>
@@ -152,14 +261,16 @@
             }
             @if (Model.Students.Count > 0)
             {
-                <table id="studentsTable" class="table table-bordered" style="border-collapse:collapse;table-layout:auto; text-align:center;">
-                    <tr>
-                        <th>ФИО студента</th>
-                        @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.EnrollStudent))
-                        {
-                            <th>Управление</th>
-                        }
-                    </tr>
+                <table id="studentsTable" class="table" style="border-collapse:collapse;table-layout:auto; text-align:center;">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>ФИО студента</th>
+                            @if ((User.IsInRole("Manager") && User.Identity.Name == Model.InstManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Disciplines.EnrollStudent))
+                            {
+                                <th>Управление</th>
+                            }
+                        </tr>
+                    </thead>
                     @foreach (var s in Model.Students)
                     {
                         <tr>
@@ -185,7 +296,9 @@
         }
 
     </div>
-</div>
+        @* STUDS--- *@
+    </div>
+    </div>
 @if (Model.FromPP)
 {
     <a class="btn btn-outline-secondary" id="GoBackBtn" asp-action="Index" asp-controller="PersonalPage">Назад</a>
