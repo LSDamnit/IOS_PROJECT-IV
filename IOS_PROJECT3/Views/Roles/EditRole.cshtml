@@ -13,33 +13,109 @@
 		<input type="text" asp-for="Name" class="form-control" />
 	</div>
 	<label class="control-label">Права роли:</label>
-	<table class="table">
+	<table class="table table-sm">
 		<tbody>
-			@for (int i = 0; i < Math.Ceiling(Model.allGrants.Count / 4.0); ++i)
-			{
-				<tr>
-					@for (int j = i * 4; j < i * 4 + 4; ++j)
-					{
-						@if (j < Model.allGrants.Count)
-						{
-							<td>
-								@if (Model.roleGrantsId.Contains(Model.allGrants[j].Id))
-								{
-									<input type="checkbox" name="roleGrantsId" value="@Model.allGrants[j].Id" checked />
-									@Model.allGrants[j].Name
-								}
-								else
-								{
-									<input type="checkbox" name="roleGrantsId" value="@Model.allGrants[j].Id" />@Model.allGrants[j].Name
-								}
-							</td>
-						}
-						else
-						{
-							<td></td>
-						}
-					}
+			@{
+				List<EGrant> grants1 = new List<EGrant>();
+				grants1.AddRange(Model.allGrants.Where(g => g.Name.StartsWith("Grant.Departments")).ToList());
+				grants1.AddRange(Model.allGrants.Where(g => g.Name.StartsWith("Grant.Disciplines.")).ToList());
+				grants1.AddRange(Model.allGrants.Where(g => g.Name.StartsWith("Grant.Specialities")).ToList());
+				grants1.AddRange(Model.allGrants.Where(g => g.Name.StartsWith("Grant.DisciplinesDetails")).ToList());
+
+				var grants2 = Model.allGrants.FindAll(g => g.Name.StartsWith("Grant.Institutions") || g.Name.StartsWith("Grant.Roles") || g.Name.StartsWith("Grant.UsersAdmin") || g.Name.StartsWith("Grant.Schedule"));
+				var grants3 = Model.allGrants.FindAll(g => g.Name.StartsWith("Grant.Message") || g.Name.StartsWith("Grants.Complains") || g.Name.StartsWith("Grants.Complains"));
+				<tr class="table-active">
+					<td colspan="4"><label class="grantsHead">Права для управления кафедрами, специальностями и дисциплинами:</label></td>
 				</tr>
+				for (int i = 0; i < grants1.Count;)
+				{
+					<tr>
+						@for (int j = i; i < j + 4; ++i)
+						{
+							@if (i < grants1.Count)
+							{
+								<td>
+									@if (Model.roleGrantsId.Contains(grants1[i].Id))
+									{
+										<input type="checkbox" name="roleGrantsId" value="@grants1[i].Id" checked />
+											@grants1[i].Description
+									}
+									else
+									{
+										<input type="checkbox" name="roleGrantsId" value="@grants1[i].Id" />
+											@grants1[i].Description
+									}
+								</td>
+							}
+							else
+							{
+								<td></td>
+							}
+						}
+					</tr>
+				}
+
+				<tr class="table-active">
+					<td colspan="4"><label class="grantsHead">Остальные права системы (рассылка, жалобы, форум):</label></td>
+				</tr>
+				for (int i = 0; i < grants2.Count;)
+				{
+					<tr>
+						@for (int j = i; i < j + 4; ++i)
+						{
+							@if (i < grants2.Count)
+							{
+								<td>
+									@if (Model.roleGrantsId.Contains(grants2[i].Id))
+									{
+										<input type="checkbox" name="roleGrantsId" value="@grants2[i].Id" checked />
+											@grants2[i].Description
+									}
+									else
+									{
+										<input type="checkbox" name="roleGrantsId" value="@grants2[i].Id" />
+											@grants2[i].Description
+									}
+								</td>
+							}
+							else
+							{
+								<td></td>
+							}
+						}
+					</tr>
+				}
+
+				<tr class="table-active">
+					<td colspan="4"><label class="grantsHead">Права для управления кафедрами, специальностями и дисциплинами:</label></td>
+				</tr>
+				for (int i = 0; i < grants3.Count;)
+				{
+					<tr>
+						@for (int j = i; i < j + 4; ++i)
+						{
+							@if (i < grants3.Count)
+							{
+								<td>
+									@if (Model.roleGrantsId.Contains(grants3[i].Id))
+									{
+										<input type="checkbox" name="roleGrantsId" value="@grants3[i].Id" checked />
+											@grants3[i].Description
+									}
+									else
+									{
+										<input type="checkbox" name="roleGrantsId" value="@grants3[i].Id" />
+											@grants3[i].Description
+									}
+								</td>
+							}
+							else
+							{
+								<td></td>
+							}
+						}
+					</tr>
+				}
 			}
 		</tbody>
 	</table>
