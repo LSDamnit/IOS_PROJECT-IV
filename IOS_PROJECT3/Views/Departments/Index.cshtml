@@ -13,7 +13,18 @@
 
 
 	<table class="table">
-		<tr><td><b>Кафедра</b></td><td><b>Заведующий</b></td>@*<td><b>Управление</b></td*@</tr>
+		<tr>
+			<th>Кафедра</th>
+			<th>Заведующий</th>
+			@if ((User.Identity.IsAuthenticated)
+			   && ((User.IsInRole("Manager") && User.Identity.Name == Model.ManagerEmail)
+			   || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Departments.Edit)) ||
+			   Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Departments.Delete))
+			{
+				<th>Управление</th>
+			}
+
+		</tr>
 		@foreach (var dep in Model.Departments)
 		{
 			<tr>
@@ -23,12 +34,12 @@
 				<td>
 					@if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.ManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Departments.Edit)))
 					{
-						<a class="btn btn-sm btn-primary" style="margin-top:5px" asp-controller="Departments" asp-action="Edit" asp-route-Id="@dep.Id">Изменить</a>
+						<a class="btn btn-sm btn-primary" style="margin-right:5px; display:inline"  asp-controller="Departments" asp-action="Edit" asp-route-Id="@dep.Id">Изменить</a>
 					}
 					@if ((User.Identity.IsAuthenticated)&&((User.IsInRole("Manager") && User.Identity.Name == Model.ManagerEmail) || Model.userGrants.Contains(IOS_PROJECT3.Grants.Grants.Departments.Delete)))
 					{
-						<form asp-action="Delete" asp-controller="Departments" asp-route-Id="@dep.Id" method="post">
-							<button type="submit" style="margin-top:5px" class="btn btn-sm btn-danger">
+						<form style=" display:inline"  asp-action="Delete" asp-controller="Departments" asp-route-Id="@dep.Id" method="post">
+							<button type="submit" style="display:inline"  class="btn btn-sm btn-danger">
 								Удалить
 							</button>
 						</form>

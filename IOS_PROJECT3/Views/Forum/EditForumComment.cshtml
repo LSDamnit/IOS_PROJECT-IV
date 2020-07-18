@@ -50,15 +50,19 @@
 			}
 		</div>
 	}
-	<div class="form-group">
-		<label>Прикрепите дополнительные файлы:</label>
-		<br>
-		<input type="file" asp-for="CommentUploadedFiles" multiple="" />
+<div class="form-group">
+	<label>Прикрепите дополнительные файлы:</label>
+	<div class="input-group">
+		<div class="custom-file">
+			<input type="file" class="custom-file-input" id="inputGroupFile04" asp-for="CommentUploadedFiles" multiple>
+			<label class="custom-file-label" for="inputGroupFile04">Выберите файлы</label>
+		</div>
 	</div>
 	<div class="form-group">
-		<input type="submit" value="Добавить" class="btn btn-outline-primary btn-block" />
+		<input type="submit" value="Сохранить" style="margin-top:10px" class="btn btn-outline-primary btn-block" />
 	</div>
 	<a class="btn btn-outline-secondary btn-sm" id="GoBackBtn" asp-action="ForumEndpoint" asp-controller="Forum" asp-route-EndpointId="@Model.EndpointId">Назад</a>
+	</div>
 </form>
 <script>
 		var togglePreviewCommentBtn = function (context) {

@@ -24,22 +24,22 @@
                         {
                             <li>
                                 <a class="nav-link text-dark" asp-controller="PersonalPage" asp-action="Index">Персональная страница</a>
-                                </li>
-                    <li>
-                        <a class="nav-link text-dark" asp-controller="Forum" asp-action="ForumNode" asp-route-NodeId="1">Форум</a>
-                    </li>
+                            </li>
+                            <li>
+                                <a class="nav-link text-dark" asp-controller="Forum" asp-action="ForumNode" asp-route-NodeId="1">Форум</a>
+                            </li>
                             <li>
                                 <form method="post" asp-controller="Account" asp-action="Logout">
                                     <input class="btn btn-outline-secondary" style="position:absolute; right:3%" type="submit" value="Выход" />
                                 </form>
-                                
+
                             </li>
                         }
                         else
                         {
-                    <li class="nav-item">
-                        <p class="nav-link text-dark" style="position:absolute; right:12%"><b>Авторизуйтесь, чтобы получить дополнительные возможности</b></p>
-                    </li>
+                            <li class="nav-item">
+                                <p class="nav-link text-dark" style="position:absolute; right:12%"><b>Авторизуйтесь, чтобы получить дополнительные возможности</b></p>
+                            </li>
                             <li>
                                 <form asp-controller="Account" asp-action="Login">
                                     <input class="btn btn-outline-secondary" style="position:absolute; right:3%" type="submit" value="Вход" />
@@ -62,11 +62,16 @@
             <p>Информационная образовательная среда</p>
             @if (User.Identity.IsAuthenticated)
             {
-                <a class="btn btn-outline-danger btn-sm" style="position:absolute;right:3%;bottom:-10px"
+                <a class="btn btn-outline-danger btn-sm" style="position:absolute;right:3%;bottom:-50%"
                    asp-controller="Complains" asp-action="CreateComplain" asp-route-CreatorEmail="@User.Identity.Name">Оставить жалобу</a>
             }
         </div>
     </footer>
+    <script>
+        document.getElementById('GoBackBtn').innerHTML = '→';
+        document.getElementById('GoBackBtn').title = 'Назад';
+        $('footer').css()
+    </script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

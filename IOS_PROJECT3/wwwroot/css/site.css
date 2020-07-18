@@ -81,6 +81,14 @@ body {
 }
 #GoBackBtn{
     position:fixed!important;
-    top:10%!important;
+    bottom:7.5%!important;
     right:3%!important;
+    font-size:155%;
+    border-radius:50%;
+    padding:0px;
+    box-sizing:content-box;
+    width:30px;
+    height:30px;
+    text-align:center;
+    line-height:25px;
 }

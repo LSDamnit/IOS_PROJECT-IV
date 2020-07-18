@@ -1,6 +1,6 @@
 ﻿@model IOS_PROJECT3.ViewModels.LoginViewModel
 <style>
- 
+
 
     #loginBlock {
         position: absolute;
@@ -11,23 +11,23 @@
     }
 </style>
 
-    <div id="loginBlock">
-<h2>Вход в систему</h2>
-        <br>
-<form method="post" asp-controller="Account" asp-action="Login"
-      asp-route-returnUrl="@Model.ReturnUrl">
-    <div style="margin-top:10px" asp-validation-summary="ModelOnly" class="text-danger list-unstyled"></div>
-    <div style="margin-top:10px">
-        @*<label asp-for="Email" style="display:inline-flex;"></label><br />*@
-        <input class="form-control"  asp-for="Email" placeholder="Введите email" />   
-    </div>
-    <div style="margin-top:10px">
-        @*<label asp-for="Password" style="display:inline-flex;"></label><br />*@
-        <input class="form-control"  asp-for="Password" placeholder="Введите пароль" />
-    </div>
-    <div style="margin-top:10px">
-        <input class="btn btn-outline-primary"  type="submit" value="Войти" />
-    </div>
-    <a style="margin-top:10px;" class="btn btn-outline-secondary" asp-action="Index" asp-controller="Home">Назад</a>
-</form>
+<div id="loginBlock">
+    <h2>Вход в систему</h2>
+    <form method="post" asp-controller="Account" asp-action="Login"
+          asp-route-returnUrl="@Model.ReturnUrl">
+        <div style="margin-top:10px" asp-validation-summary="ModelOnly" class="text-danger list-unstyled"></div>
+        <div style="margin-top:10px">
+            @*<label asp-for="Email" style="display:inline-flex;"></label><br />*@
+            <input class="form-control" style="width:100%;" asp-for="Email" placeholder="Введите email" />
         </div>
+        <div style="margin-top:10px">
+            @*<label asp-for="Password" style="display:inline-flex;"></label><br />*@
+            <input class="form-control" style="width:100%;" asp-for="Password" placeholder="Введите пароль" />
+        </div>
+        <div style="margin-top:10px">
+            <input class="btn btn-outline-primary" style="width:100%;" type="submit" value="Войти" />
+        </div>
+
+    </form>
+</div>
+<a id="GoBackBtn" class="btn btn-outline-secondary" asp-action="Index" asp-controller="Home">Назад</a>
