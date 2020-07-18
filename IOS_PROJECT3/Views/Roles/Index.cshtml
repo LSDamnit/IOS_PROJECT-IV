@@ -1,6 +1,11 @@
 ﻿@model IOS_PROJECT3.ViewModels.RolesViewModel
 @if (User.Identity.IsAuthenticated && Model.checkAccess("viewRolesIndex", User.Identity.Name))
-{
+{	<style>
+	.grantsHead {
+		margin-top: 10px;
+		font-weight: bold;
+	}
+	</style>
 	<script>
 		console.log('@User.Identity.Name');
 		console.log('@User.Claims');
@@ -17,11 +22,13 @@
 			<tr>
 				<td>@role.Name</td>
 				<td>
-					@foreach (var grant in Model.getRoleGrants(role))
+					@if (Model.getRoleGrants(role).FirstOrDefault() != null)
 					{
-						<span title="@grant.Description" style="display:inline;cursor: help ">
-							@grant.Name |
-						</span>
+						<a href="#" class="badge badge-info" onclick="$('#@role.Id').slideToggle(500);">Просмотреть права этой роли</a>
+					}
+					else
+					{
+						<span class="badge badge-warning">У этой роли нет прав</span>
 					}
 				</td>
 
@@ -41,6 +48,44 @@
 					<td></td>
 				}
 
+			</tr>
+			<tr>
+				<td colspan="3">
+					<div id="@role.Id" style="display: none">
+						@{
+							<p class="grantsHead">Права для управления кафедрами, специальностями и дисциплинами:</p>
+							foreach (var grant in Model.getRoleGrants(role))
+							{
+								if (grant.Name.StartsWith("Grant.Departments") || grant.Name.StartsWith("Grant.Disciplines") || grant.Name.StartsWith("Grant.Specialities") || grant.Name.StartsWith("Grant.DisciplinesDetails"))
+								{
+									<span title="@grant.Description" style="display:inline;cursor: help ">
+										@grant.Name,
+									</span>
+								}
+							}
+							<p class="grantsHead">Права для управления системой:</p>
+							foreach (var grant in Model.getRoleGrants(role))
+							{
+								if (grant.Name.StartsWith("Grant.Institutions") || grant.Name.StartsWith("Grant.Roles") || grant.Name.StartsWith("Grant.UsersAdmin") || grant.Name.StartsWith("Grant.Schedule"))
+								{
+									<span title="@grant.Description" style="display:inline;cursor: help ">
+										@grant.Name,
+									</span>
+								}
+							}
+							<p class="grantsHead">Остальные права системы (рассылка, жалобы, форум):</p>
+							foreach (var grant in Model.getRoleGrants(role))
+							{
+								if (grant.Name.StartsWith("Grant.Message") || grant.Name.StartsWith("Grants.Complains") || grant.Name.StartsWith("Grants.Complains"))
+								{
+									<span title="@grant.Description" style="display:inline;cursor: help ">
+										@grant.Name,
+									</span>
+								}
+							}
+						}
+					</div>
+				</td>
 			</tr>
 		}
 	</table>
